@@ -1,0 +1,111 @@
+visx - 
+low-level visualization. 
+benefits of visx --
+1. visx was built with performance in mind and has a smaller size bundle than D3. visx is split into multiple packages. low level components. 
+2. they are optimized with performance and can help to reduce overhead of rendering complex visualization. it allows for efficient update to the dom & smoother user experience. 
+3. visx is more declarative than D3. can descibe what we want to render  
+4. reusable  components that can be used to create more complex visualizations quickly. components includes Area, Line, Scatterplot . can customize this components to fit our requirements. 
+5. visx was built with React in mind. it works with react's virtual DOM and lifecycle methods. 
+2. Unopinionated on purpose - build our own state management, animation library or CSS in JS solution. 
+3. not a charting library. 
+4. 
+
+
+Problems faced which lead to creation of visx.
+
+1. learning curve - should be easier
+2. Expressive - to use a single visualization framework across a large organization, it needs to support both simple as well as highly custom visualization for custom visualizations. 
+3. Performant - should be able to optimize speed and bundle size. 
+
+Solution - Low level react eccentric visualization primitives. 
+D3 and react both manipulate DOM. TWO SAME MENTAL MODULES TO UPDATE DOM MIGHT CAUSE BUGS. 
+No libraries allow for optimization we want in production because animations, styles are all encapsulated. 
+
+
+visx stands for visualization component. suite of 30 seperate packages of react visualization primitives. it can integrate with React codebase any state management, animation  . it helps keep the bundle size down by using the packages you need to create your reusable chart library or a custom one-off chart. 
+NOTE: SOME PACKAGES OF VISX USES D3 FOR MATH AND LAYOUT CALCULATIONS and functionally mirror the underlying D3 package.. with a declarative react API.
+
+D3 - 
+1. In D3 charts, everything is a group. X axis is a group. Y axis is another group and bar graph is one group. we can seperate them and then put them in any chart. 
+
+2. TO represent the data in visualizations, we need to use scales. D3 has diff types of scales. they mostly share 2 things - Domains and ranges. 
+		Domain - accepts inputs that we want to represent... 
+					in case of x-axis, d3.scaleBand().. this will the metrics you want to display on x-axis. 
+		range - amount of pixels that we have to represent that domain in our chart. 
+		    y = d3.scaleLiner().domain([0,10]).range([0,600])
+				accepts input between 0 to 10.. kind of range of data to map..  and maps it on UI between 0 and 600. kind of like a height.. 
+				so basically... 10 max value would be mapped to 600.  so 600/10 = 60... for each value between 0 to 10, scale will be n * (600/10)
+				
+			x = d3.scaleBand().domain([A,B,C,D]).range([0,width])
+3. Axis on charts are the references that we see on borders of the chart which tells us what the chart is about. WE PASS THE SCALE TO AXIS FUNCTION.  
+4. ticks are reference points on the axis. How many reference points do we actually want to see on the axis... is ticks.
+		d3.axisBottom().scale(xScale).ticks(5) // ticks we want to see. 
+		d3.axisBottom().scale(xScale).tickFormat(callbackfunction_toExtractValuefromArray)	
+
+we use <g> tag inside svg its a container to group svg elements.  
+			
+const svg = d3
+  .select(rootDiv)
+  .append("svg")
+  .attr("height", height)
+  .attr("width", width);
+
+const yMax = Math.max(...data.map((d) => d.score));
+
+const y = d3
+  .scaleLinear()
+  .domain([0, yMax])
+  .range([height - margin, margin]);
+
+// Option 1:
+// const x = d3
+//   .scaleBand()
+//   .domain(data.map((d) => d.name))
+//   .range([0, width]);
+
+//Option 2:
+const x = d3
+  .scaleBand()
+  .domain(data)
+  .range([margin, width - margin])
+  .padding(0.2);
+
+// console.log(" y ", y(200), "x ", x("Abhi"));
+
+// Option 1:
+// const xScale = d3.axisBottom().scale(x).tickSizeOuter(0);
+
+// Option 2:
+const yScale = (g) =>
+  g.attr("transform", `translate(${margin}, 0)`).call(d3.axisLeft().scale(y));
+
+const xScale = (g) =>
+  g.attr("transform", `translate(0, ${width - margin})`).call(
+    d3
+      .axisBottom()
+      .scale(x)
+      .tickFormat((d) => d.name)
+      .tickSizeOuter(0)
+  );
+
+const bar = (g) =>
+  g
+    .selectAll("rect")
+    .data(data)
+    .join(
+      (enter) => enter.append("rect"),
+      (update) => update,
+      (exit) => exit.remove()
+    )
+    .attr("x", (d) => x(d))
+    .attr("y", (d) => y(d.score))
+    .attr("height", (d) => y(0) - y(d.score))
+    .attr("width", x.bandwidth());
+
+svg.append("g").call(yScale);
+
+// console.log(" y ", yScale(300), "x ", xScale);
+
+svg.append("g").call(xScale);
+
+svg.append("g").call(bar);

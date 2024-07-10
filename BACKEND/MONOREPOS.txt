@@ -1,0 +1,149 @@
+-------------------------MONOREPOS---------------------------------------
+monorepo is a way to manage both frontend and backend into a single repository by dividing them into multiple modules. 
+Shared code reuse.
+Enhanced Collaboration. 
+
+MONOREPO FRAMEWORK contains tools to manage project that contains multiple packages or applications in a single repo which can be shared between frontend and backend.  
+
+--ZOD-- If we define a zod object in backend code, we can infer type from that. We don't need to create any seperate interface for defining the same type in frontend. 
+	export const SignInSchema = zod.object({
+		email:zod.string().email(),
+		password: zod.string().min(8)
+		})
+	
+	to use this, we can just do 
+			export type SignInType = z.infer(<typeof SignInSchema>) 	// THIS IS CALLED ZOD INFERENCE. 
+	
+	TO CREATE MONOREPOS, WE NEED TO CREATE NPM MODULES. EVERY MODULE NEEDS TO HAVE PACKAGE.JSON AND TSCONFIG.JSON.
+1. npm login to publish our common module
+2. give your package name in package.json .. usually prefix with your username. 
+3. Only publish your js files and not typescript files... so add .npmignore file and put src as we have typescript code in that -- best practice. 
+4. npm publish --access=public. npm pack - to see what packages are published.
+	to publish updated code,  just change the version in package.json and publish it. 
+5. we can just do npm install @saurabhap/commons and use it in both front end and backend. 
+6. NOTE: IF WE WANT TO HAVE TYPESCRIPT ENABLED APP, THEN IT WILL THROW ERROR FOR NO DECLARATION FILE FOUND 
+7. THERE IS A .d.ts file which includes typescript declaration file. it includes just our types file... and not JS runtime code. 
+	JUST ADD A key in TSCONFIG.JSON , "declaration": true
+	AND RUN tsc in the root folder to generate index.d.ts file.
+	JUST THE TYPES ARE ADDED IN INDEX.D.TS FILE. 
+
+--- We can do ALL OF THIS USING MONOREPO HANDLING LIBRARIES.. AS THIS WAS A BIT COMPLEX AND LONG PROCESS.
+MONOREPO HANDLING LIBRARIES - TURBOREPO, LERNA AND NPM WORKSPACES, YARN WORKSPACES.  
+
+there are 2 things - build systems, build system orchestrator.
+
+Build systems - build system converts TS to JS. can do minification (reducing file size), bundling. 
+BUILD SYSTEM ORCHESTRATOR - it doesn't build on its own but uses other tools to do build.. example - TURBOREPO
+
+--------------------TURBOREPO-------------------------
+TURBOREPO isn't exactly monorepo framework but lets us use npm/yarn workspaces.  TURBOREPO IS A BUILD ORCHESTRATOR. 
+Benefits:
+1. Caching - it caches the build output. 
+2. Parallelization - allows parallelization to run independent tasks in parallel which allows efficient use of machine's resources. 
+3. Dependency graph tracker - if same dependencies exists then it will make it available in different package. Also it keeps track of which packages are depend on each other so that the tasks are run in order. 
+high performant build system for Javascript and typescript codebases.  
+
+Instead of doing npm run build in every project folder, can do "turbo build"  and this single command can take care of everything. 
+
+TURBO BUILD PROCESS - 
+		CALL THINGS PARALLELY AND WILL CACHE OUTPUTS OF THE BUILD.
+		CALL CHILD FIRST IF ITS DEPENDENT ON PARENT..THEN PARENT WILL BE CALLED. 
+
+npx create-turbo@latest // to create a new monorepo.
+
+--------FOLDER STRUCTURE FOR TURBOREPO-----------
+-- 5 MODULES --
+
+End user apps (website/core backend)
+1. apps/web - NextJS website
+2. apps/docs - docs website that has all documentation related to project.
+
+Helper packages - this will have all commons packages that apps/web needs. 
+
+3. packages/ui - UI packages. components that are shared by both web and docs. 
+4. packages/typescript-config - shareable ts config. 
+5. packages/eslint-config - shareable eslint config. 
+
+node_modules - all npm modules required by different repos in turborepo.  
+TO ADD ANY PACKAGE, INSTALL IN THE ROOT FOLDER OF TURBOREPO. 
+
+1. THIS WILL CREATE A NEXTJS REPO CODE. 
+	apps/web/ and do npm run dev
+	apps/web/ folder is what we show to the end user -- final website code. from web we call UI folder pages.
+	THIS INTERNALLY USES OTHER MODULES.. 
+	packages/UI - folder
+
+1. IN THE APPS/WEB/package.json,   always have all the module names included in the dependencies,
+	module name should be same as that of the folder and their actual name in their own package.json.
+
+--EXPORTING ANYTHING FROM UI MODULE, EARLIER WE USED TO DO THIS. 
+2. If we want to add any new package, we install it in packages/ui/, if we want to add any new thing, we do it in packages/ui/
+	NOTE: BECAUSE APPS/WEB/PACKAGE.JSON IS INDIRECTLY CALLING THIS INTERNAL MODULES. 
+3. ALWAYS EXPORT IT FROM MAIN index.js in ui folder. 
+
+---NOW FOR EXPORTING ANYTHING FROM UI MODULE, WE DO THIS --
+	WE MENTION "exports":  { 
+					"./button" : "./src/button.jsx",
+					"./card":"./src/card.jsx"
+				}
+		now we can use button component inside apps/web.  we introduce this button in package.json of apps/web as "
+			"@repo/ui":"*"
+		and then while importing, 
+			import code from "@repo/ui/code";
+
+--package.json -
+	scripts - build system. 
+	workspaces - npm workspaces. 
+
+-- AUTOGENERATERS --
+	if we create lot of multiple component in ui folder, and we want to export them as independent react components to use them in /apps/web folder, 
+
+	THEN WE DO : npm run generate:component // uses the turbo generator template in templates folder. 
+											// uses something plop to add a react component to the internal UI library. 
+											
+-----turbo.json---
+	1. contains configuration for turbo repo. 
+	2. contains configuration for each script --  turbo build 
+		HERE WE DEFINE PIPELINES - build, lint and dev. 
+		----build - ^build it will run build on all packages. 
+				1. will run build in ui as its used by docs and web folder and then parallely in app/docs, app/webs
+				2. it caches the build output inside of .next/** where we have all final js output alongwith our assets.
+							cache this .next/** but not .next/cache/** as its a nextjs cache and it will get two way caching. 
+					when we run npm run build in next app, ".next" folder is getting created where we have our final output - production build. 
+				WE CACHE THIS BUILD TO AVOID BUILDING IT AGAIN. 
+			NOTE: FOR EXPRESS AND REACT APP, WE WILL HAVE TO REPLACE BUILD CONFIGURATION WITH DIST FOLDER. 
+		----lint is for linting the code.. 
+		----dev -- 
+				we SET cache false as we don't want to cache in dev mode  // AS WE ARE DEVELOPING AND DEBUGGIN AT THE SAME TIME.
+				WE SET PERSISTENT TRUE AS we want it to be long running process. 
+	---CAN ADD A DEPLOY STEP IN THIS PIPELINE. FOR PUSHING ANY APP TO AWS S3. 
+		
+------ADDING REACT/NODE PROJECT TO OUR TURBOREPO----- can add multiple projects inside apps/
+	/api backend node apis, /admin react app
+	1. IF WE WANT INITIALIZE TSCONFIG.JSON, We can reuse packages/typescript-config
+					every tsconfig.json in web and docs folder will be extending base.json. 
+						  "extends": "@repo/typescript-config/base.json",
+			We also can extend base.json in our backend tsconfig.json file. 
+			NOTE: CAN COPY TSCONFIG.JSON FILE FROM TURBOREPO DOCS. 
+	2. 
+
+
+
+------CAN CREATE COMMON MODULES IN packages/common folder------------
+No need to write outDir in tsconfig.json here for compiling because we want to use typescript only.. 
+
+just add exports in the package.json as 
+	"exports": {
+		"./config":"./src/index.ts"
+	}
+
+NOTE: WHENEVER ADDING NEW PACKAGE OR CREATING A NEW PACKAGE IN PACKAGE FOLDER , ALWAYS DO NPM INSTALL IN GLOBAL FOLDER. 
+
+------FOR ADDING CI/CD PIPELINES-----
+WE CREATE  folder .github/workflows/ and store .yml files there. 
+
+
+----THERE ARE FREQUENT ERRORS HAPPENING IN TSC COMPILER -- TSC CAUSES ISSUES WHEN TRYING TO IMPORT FROM OTHER MODULES IN TURBOREPO. 
+We can use other compiler such as  ---- esbuild and tsup. This TSC compilers are used to compile typescript to javascript. 
+esbuild is good. 
+

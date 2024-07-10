@@ -1,0 +1,192 @@
+React testing and jest
+
+react testing - provides virtual dom for test. testing library is family of packages which helps test UI components. core library is DOM testing library. 
+React testing is just wrapper around DOM Core library to test react app in easier way.
+REACT TESTING LIBRARY USES JEST and JEST USES BABEL. 
+jest - js testing framework. test runner. finding tests, running tests and finding if passed or failed. 
+JEST WATCH MODE - WATCH FILES THAT HAVE BEEN CHANGED SINCE LAST COMMIT AND EXECUTE TESTS RELATED ONLY TO THOSE FILES THAT ARE CHANGED.  
+
+TO SETUP REACT TESTING LIBRARY AND JEST. 
+npm i testing-library jest  babel_dependencies babel jsdom testing-library/jest-dom 
+npx jest --init : to generate jest configuration.
+	jsdom -  we use jsdom as test environment for testing as we don't have any node server running. its like a runtime environment  which will actually behave like a browser. if we are unit testing a header, it will be testing in jsdom. 
+
+__word__ : double underscores before and after is called dunders. also called as DUNDERS TESTING. 
+BABEL PRESETS : presets are a bunch of plugin code used to convert JSX to normal html code
+
+npm test - starts by running jest in watch mode. 
+
+TYPES OF AUTOMATED TESTS - UNIT TEST, INTEGRATION TEST AND END TO END TEST. 
+
+UNIT TEST - TESTING CLASS, FUNCTIONAL BLOCK OR A COMPONENT. 
+INTEGRATION TEST - TESTING COMBINATION OF UNITS/components. TO TEST APPLICATION FLOW. 
+END TO END/acceptance test - FOCUS ON TESTING ENTIRE APPLICATION FLOW AND ENSURING IT WORKS. DESIGNED FROM START TO END.selenium
+functional test - test a functionality. close to how user interacts or uses that functionality
+
+BDD vs TDD - BDD is done by qa, developers, business.
+ 
+react testing library strikes a balance between unit test and end to end.  
+
+render method of react testing - creates a virtual dom for whatever jsx we give as argument. 
+screen global method of react testing - access virtual dom via screen global. screen.getByText(/learn by react/) 
+
+test('renders learn react link', ()=> {
+render(<App/>) 													// create virtual dom for testing
+const linkElement = screen.getByText(/learn by react/) 			// access virtual dom by screen global object. find element by dom. 
+expect(linkElement).toBeInTheDocument()							//  assertion is what causes test to success or fail
+})
+
+expect() - global in jest. we pass argument as the subject of the test and then we call the matcher toBeInTheDocument()... 
+matchers - expect(element.textContent).toBe('Hello') .. toHaveLength(7)
+
+-----------------SETUP---------------
+
+Setting up Testing in our app
+Install React Testing Library
+Installed jest
+Installed Babel dependencies
+Configure Babel
+Configure Parcel Config file to disable default babel transpilation
+Jest - npx jest --init
+Install jsdom library
+Install @babel/preset-react - to make JSX work in test cases
+Include @babel/preset-react inside my babel config
+npm i -D @testing-library/jest-dom
+
+JEST-DOM - INSTALLED BY DEFAULT. src/setupTests.js imports jest-dom before each test and makes matchers available. 
+This are DOM-based matchers. for e.g, toBeChecked() and toBeInTheDocument()
+
+HOW JEST WORKS -  
+test(string_description_ofTask, test function)
+
+TDD - TEST DRIVEN DEVELOPMENT.  write tests before writing code. red-green testing. first tests fails and then after writing tests, it passes. 
+
+testing library recommends finding elements by accessibility handles. getByText, getByRole, getByLabelText, getByPlaceholderText, getByDisplayValue.
+
+CAN USE test.skip() or test.only() to run or skip that test. 
+
+FOR GROUPING A TEST, WE USE describe(name , function_thatContainsExpectationToTest => test() ).
+CAN NEST DESCRIBE UNDER DESCRIBE. 
+
+NAMING CONVENTION FOR TEST FILE - filname.test.tsx or filename.spec.tsx 
+or folder - ___test___   and under this folder can have our test file. 
+NOTE: UNIT TEST ONLY IF COMPLEX LOGIC DIFFICULT TO TEST VIA FUNCTIONAL TESTS. UNIT TEST IF TOO MANY EDGE CASES.
+
+NOTE: CAN START IMPORT A FUNCTION OF UI FOR UNIT TEST COVERAGE AND PASS IT IN EXPECT WITH PARAMETERS TO SEND TO ASSERT ON THE OUTPUT OF THE FUNCTION. 
+
+NOTE: INSTEAD OF TEST(), WE CAN USE IT().
+
+for code coverage, we can determine how much code is tested.
+Statement coverage, branches coverage, function coverage, line coverage
+
+npm test --coverage --watchAll 
+
+npm test --coverage --watchAll --collectCoverageFrom='src/components/**/*.{types,stories,constants,test,spec}.{ts,tsx}'
+
+WE CAN SETUP COVERAGE THRESHOLD FOR TEST CASES - IN PACKAGE.JSON
+"jest": {
+"coverageThreshold": {
+	"global": {
+		"branches": 80,
+		"functions": 80,
+		"lines":80,
+		"statements":-10
+	}
+	}
+}
+ 
+
+FLOW OF TESTING - 
+1. TEST COMPONENT RENDERS.
+2. TEST COMPONENT RENDERS WITH PROPS.
+3. TEST COMBINATION THAT IT RENDERS IN DIFFERENT STATES.
+4. TEST COMPONENT REACTS TO EVENTS. 
+
+FOR TESTING CSS  FOR IMPORTED CSS MODULES, JEST CANNOT IMPORT THE CSS MODULES. FOR STYLES TO BE INTERPRETED IN TESTS, WE NEED A TRANSFORMER TO TRANSFORM THE CSS CLASSES INTO STYLES. 
+FOR DOING THAT, CAN USE JEST-CSS-MODULES-TRANSFORM.  
+
+Commands for running tests:
+
+1. Running individual tests:
+npm test <file-name-of-component>
+ex: npm test side-menu
+
+2. Running entire coverage:
+npm test -- --coverage --watchAll
+(or) npm run test:coverage
+
+3. Running coverage on a particular file:
+npm test <file-name-of-component> -- --coverage --watchAll
+ex: npm test side-menu -- --coverage --watchAll
+saved peer benchmark
+
+
+ESLINT - linter for js. analyzes static code and marks that syntax that breaks rules. 
+can have eslint plugin. eslint-plugin-testing-library and eslint-plugin-jest-dom
+
+
+.eslintrc.json - 
+{
+"plugins": [
+"testing-library","jest-dom"
+],
+"extends": [
+"react-app","react-app/jest", "plugin-jest-dom/recommended"
+]
+}
+
+
+fireEvent dispatches DOM events whereas userEvent simulates full interactions, which may fire multiple events and do additional checks 
+instead of fireEvent, userEvent - can be used. 
+
+FOR userEvent, userEvent.setup() has to be done before rendering the component. 
+
+
+Screen query methods - 
+get - expect element to be in the DOM
+query - expect element to not be in the DOM. 
+find - expect element to appear asynchronoously
+
+All - expect only one match or more than one match. 
+
+NOTE: WE HAVE TO IMPORT @testing-library/jest-dom mandatory.  
+
+--------USED FOR INTEGRATION TEST---------- USUALLY FOR TESTING 2-3 COMPONENTS. 
+-----TO MOCK FETCH FUNCTION OF JS-------------
+global.fetch = jest.fn({
+	return Promise.resolve({
+		json: () => {
+			return Promise.resolve(MOCK_DATA_RETURNED_FROM_API)
+			}
+		})
+	})
+	
+jest --watch -- command to run unit test live.. 
+
+--- WHENEVER WE HAVE ASYNCHRONOUS STATE UPDATES, OR FETCH API CALL AND WE WANT TO RENDER THAT COMPONENT, WE HAVE TO WRAP THE RENDER INSIDE ACT(). 
+		await act(async() => render(
+		        <Provider store={store1}>
+					<BrowserRouter>
+						<Body/>
+					</BrowserRouter>  // have to wrap the component inside 
+		        </Provider> // TO LET SUPPLY REDUX MOCK DATA HERE. 
+		))
+	
+------ if there's nothing to get by screen, we can give data-testid = "searchInput"
+	and then we can get it in unit testing by : 
+			const searchInput = screen.getByTestId("searchInput")
+
+--------------TO SIMULATE AN INPUT CHANGE------------------
+			fireEvent.change(searchInput, {target: {value : "burger"}})
+			
+			
+---------------BEFORE ALL---------------------- will run before all test cases
+	beforeAll(() => {
+	 console.log()
+	})
+	
+---------------BEFORE EACH-------------------- will run before each test case. 
+
+---------------After ALl--------------------- will run after all test cases are run.
+
+--------------afterEach-------------after each test case is run. 

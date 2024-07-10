@@ -1,0 +1,186 @@
+1. CREATE A VPC (IN ORDER TO CREATE SUBNETS IN VPC). SPECIFY CIDR WHILE CREATING VPC. CIDR of VPC will have more IP addresses than CIDR of subnet as subnet is smaller
+2. while creating subnets, give CIDR block. 
+3. then we create INTERNET GATEWAY and attach Internet Gateway to VPC FOR CONNECTING TO PUBLIC SUBNET. 
+4. create ROUTE TABLE of 0.0.0.0/0 and choose subnet associations to public subnet. 
+5. CREATE PUBLIC SECURITY GROUP FOR PUBLIC SUBNET. ADD INBOUND RULE FOR ANWHERE IPV4.. TO ALLOW TRAFFIC FROM OUTSIDE. 
+6. can launch AWS EC2 INSTANCE INTO PUBLIC SUBNET AS WELL AS PRIVATE SUBNET. 
+		1. WHILE CREATING INSTANCE FOR PUBLIC SUBNET - CHOOSE MACHINE IMAGE.
+		2. INSTANCE TYPE - t3.micro - for instance types..2 vCPU and 1 Gb memory.
+		3. INSTANCE NETWORK SETTINGS - choose our VPC and public Subnet. 
+		4. CONFIGURE EXISTING SECURITY GROUP FOR THIS INSTANCE. 
+		5. CONFIGURE USER DATA - IAM instance profile 
+	now we can connect to this ec2 instance in the public subnet via Session manager	
+7. FOR PRIVATE SUBNET, WE SHOULD CREATE NAT GATEWAY AND CREATE route table TO ROUTE TRAFFIC TO PRIVATE SUBNET. 
+		1. while creating nat gateway - we should choose a public subnet in which NAT GATEWAY WILL RESIDE. CAN SPECIFY AN ELASTIC IP ADDRESS TO ASSOCIATE WITH NAT GATEWAY. 
+		2. Creating new route table for private subnet -  Destination 0.0.0.0/0  and target choose NAT GATEWAY. UPDATE SUBNET ASSOCIATIONS AS PRIVATE SUBNET. 
+8. NOW CREATING SECURITY GROUP FOR PRIVATE SUBNET. 
+		1. private SG with Inbound rule for HTTPS. custom -  source - Public SG
+9. Launch EC2 instance into private subnet..can carry out same steps only In INSTANCE NETWORK SETTING - CHOOSE PRIVATE SUBNET. AND CHOOSE SECURITY GROUP OF PRIVATE SUBNET. 
+
+10. TO CONNECT TO PRIVATE SUBNET FROM PUBLIC SUBNET, WE UPDATE SECURITY GROUP OF PRIVATE SUBNET TO ALLOW CUSTOM IPV4 - PUBLIC SECURITY GROUP.. (ALLOW FROM PUBLIC SECURITY GROUP TO PRIVATE SECURITY GROUP - IN PRIVATE SG SERVICE) 
+		
+
+
+
+----- TO CONFIGURE EC2 INSTANCE AS A WEB SERVER. 
+
+#!/bin/bash
+
+# To connect to your EC2 instance and install the Apache web server with PHP
+
+yum update -y &&
+amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2 &&
+yum install -y httpd &&
+systemctl enable httpd.service
+systemctl start httpd
+cd /var/www/html
+wget  https://us-west-2-tcprod.s3.amazonaws.com/courses/ILT-TF-200-ARCHIT/v7.3.2.prod-23af203c/lab-2-VPC/scripts/instanceData.zip
+unzip instanceData.zip
+
+
+3 types of services in AWS:
+unmanaged services - provisioning, installation, etc.. for example - ec2 instances
+managed services - provisioning we do, but installation, managing will be managed by aws.. for e.g - RDS, EKS, EMR, Elastic beanstalk.
+Serverless -  we only code provisionoing, installation will be done automatic.  AWS Lambda
+
+---- Elastic Beanstalk -  directly use Platform as a service. like heroku. deploy your application directly.
+
+Compute services -- 
+EC2, EBS and Lambda. 
+
+-------------------EC2 - elastic compute cloud. - virtual machine running on cloud---------------------------------------
+
+Considerations while creating EC2 - 
+1. Names and tags - 
+2. Application and OS Image 
+3. Instance type and size - (t3.micro)
+4. Authentication and Key pair -
+5. Network and security - What VPC, subnet, Security group. 
+6. Storage.
+7. Placement and tenancy 
+8. Metadata and script settings
+
+ec2 instances are zonal. Can launch various size and configuration machines at will. 
+AMI - amazon machine image - bootable images - at regional level. template for instance volumes. Launch permissions. Block device mapping. 
+	  Benefits - Repeatable, Reusable n recoverable.  AMIs can include 
+cost of EC2  - computing cost + license cost. 
+BYOL(Buy your own license) - within EC2 is supported for Oracle and MS licenses. 
+Tags - assign a name & other tags to your AWS resources. 
+ sizing - names as per the type of family. choose instances as per family. memory optimized family (r), compute optimized(c), storage optimized(h1,i3 )
+AWS Compute Optimizer - gives recommendation for EC2 instances.. give % of the ec2 instance its using. 
+EC2 KEY PAIRS -- public/private keys. private keys are issued to you and public keys are put on the machine. 
+
+TENANCY OPTIONS - machined is tenant..  
+SHARED TENANCY (least costly) - share your hardware, dedicated instance (isolate hardware), dedicated host (very costly) - dedicated hardware.
+Placement groups - way to provision machines in a manner as a cluster to achieve high availability(do not anything additional )
+	-- cluster - HPC - high performance computing. provide low network latency.. EC2 instances is grouped and work as closed group.. clustered mannered
+	--spread - storage across the availability zones..spread across network segments. compute is highly available. fault tolerant.g mental health record 
+	-- partition placement -- data layer is highly availability - in logical groups on seperate hardware. 
+						use case for partition - Large distributed and replicated workloads - Kafka, Hadoop and cassandra.
+
+AWS FARGATE - SERVERLESS CONTAINERIZATION. 
+AWS INFERENTIA & TRAINIUM PROCESSORS(for machine learning inference models) AND AWS GRAVITRON PROCESSORS(built around ARM cores) - AWS CUSTOM-BUILT & specialized processors.						
+	
+-------------------EBS - HARD DISK TO EC2 INSTANCES - ELASTIC block storage
+-- is network attached storage(NAS), persistent	.
+CAN TAKE SNAPSHOTS OF EBS VOLUMES. SNAPSHOTS ARE STORED AT REGIONAL LEVEL.
+
+cloudwatch to monitor your ec2 instances EVERY 5 MIN.. its free, enhanced monitoring can be enabled at a cost. 
+
+EBS - block level storage with automatic volume. not too fast. for longer time storage.
+gp2 and gp3 and io1 and io2 
+
+io - number of read write operation one can do. 
+
+EC2 pricing -  
+On demand (pay as per compute), 
+spot instances(spared ec2 instances at savings of upto 90% - not to be used at production.. can be used when trying to play around) , 
+Savings plan(1 to 3 year commitment based on type of saving plan)
+ 
+instance storage volume - fast but not storing for longer time. local to instance. doesn't support snapshots. 
+
+----------------------AWS Lambda - can run code without provisioning or managing EC2 instances. 
+will enable architecture to be highly available at ease with low cost of operations. 
+Lambda - serverless compute. can be used to run event driven microservices. will create lambda functions which run for 15 mins with max 10 GB memory.
+		 They run in a blackbox. Fully managed by AWS. 
+	Put AWS event source which will invoke AWS LAMBDA (supports upto 10 GB memory)
+	EVENT SOURCES - AMAZON DYNAMODB. AWS cloudwatch. 
+
+
+-------------------------5. STORAGE------------------------------------------------------------
+Block storages - EBS - hard drive storage, raw storage,  Data organized as an array of unrelated blocks. storage area network(SAN), storage arrays
+Object storages - S3   - images, media files 
+File storage - EFS 
+
+-----S3 - simple storage service- serverless
+Object oriented storage. Objects - pdf, mp3, document. 
+Objects are stored in buckets. Buckets - global unique named placeholder for storing objects. 
+Data is stored at regional level. Object metadata is detected at the time of upload - name , size content type.
+A single object can be max 5 TB. but A bucket can store UNLIMITED storage of data. Each object in a bucket can be accessed uniquely with a unique URL.
+BY DEFAULT, ALL OBJECTS AND BUCKETS ARE PRIVATE. Bucket is governed by Bucket policy (resource policy)
+	Accessing Objects - 
+		1. All objects in bucket to have same policy. 
+			Policy can be generated by AWS policy generator and adding policy in  edit Bucket policy option. 
+		2. Object ACLs - each object has its own ACL. to make specific object public. 
+	ENcrypting key types - encrypt objects in s3 objects.
+		Amazon S3- managed keys - used to create keys 
+		, amazon kms , customer provided keys
+		
+		
+	EACH OF THE STORAGE CLASS DICTATE COSTS, HA, REPLICATION DURABILITY. 
+	each Object can have its own storage classes . 7 storage classes.
+	Higher cost , frequent access
+	1. S3 standard.
+	2. S3 standard IA
+	
+	4. S3 Glacier instant retrieval
+	5. 
+	
+	Lower cost, Less access
+	
+	Glacier is archive level stoage. 
+	
+	Amazon S3 versioning - disabled by default and can be enabled at bucket level. 
+	
+	Lifecycle policies - to transition objects to another storage classes. 
+----S3 suports multipart upload - larger Objects can be divided into multiple chunks. programmatically and through CLI
+----S3 transfer acceleration - edge locations to transfer data over longer distances and then they transfer to the AZ. to reduce network variability.  will incur additional cost
+----S3 object notifications - get notifications sent to lambda functions. 
+
+
+-----EFS - ELASTIC FILE SYSTEM  (zonal and regional) - mountable file system
+EFS can store unlimited amount of data. serverless. can store data which requires multiple writing and reading.. 
+EFS is networked capability should be in a single VPC. choose EFS for a scalable and elastic file system. 
+
+Fsx - used for windows file server. launch, run high performing file systems in AWS. 
+
+---------Data migration tools -
+1. online and 2. offline. 
+1. Online - AWS Datasync. sync files from one prem to Amazon EFS or S3 bucket. 
+			AWS storage gateway - sync file with SMB, NFS. for hybrid file sync...has to be setup. time costly.			
+			AWS transfer family - FTP server. transfer file with SFTP protocol. 
+			
+		Different types of storage gateways appliance 
+			1. Memory gateway
+			2. Tape gateway. 
+			3. Amazon S3 File gateway. 
+		
+		
+2. Snow family - 3 service models 
+
+
+
+CRR - cross region resource. 
+
+
+
+
+
+
+
+
+
+
+
+
+

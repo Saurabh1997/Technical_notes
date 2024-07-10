@@ -1,0 +1,32 @@
+
+---REACT FIBER ---- 
+
+---ongoing implementation of react's core algorithm. 
+its feature is incremental rendering: split rendering into multiple chunks and spread it out over multiple frames.  
+Goal of fiber is to increase its suitability for animation, layout & gestures. 
+FIBER REIMPLEMENTS THE RECONCILER. 
+React doesn't take advantage of the scheduling as an update is directly rerendered if anything is updated. 
+So PRIMARY GOAL OF REACT FIBER - IS TO TAKE ADVANTAGE OF THE SCHEDULING. 
+for e.g,  pause work and come back to it later. assign priority to different types of work. don't recompute and reuse previously used work. Fibre represents a unit of work. 
+
+
+Implementation :
+
+	1. Usually a computer tracks a program's execution using call stack. After a function is completed. new stack frame is added into call stack to execute. 
+	2. When dealing with UI, frame rate can drop if everything is done all at once. Newer browsers implement APIs such as 
+		requestIdleCallback to call a function which is low priority.. which is called during an idle period. requestAnimation Frame is used to call a function which is high priority - to be on next animation frame. But to use this APIs, we need need to break them into incremental units.. 
+	3. this is the purpose of React Fiber to reimplement this call stack especially for React components. SINGLE fiber can be called as virtual stack frame.
+	
+STRUCTURE OF FIBER: 
+	Fiber is a JS object that contains info about a component, its input and output. It corresponds to a stack frame and also a component instance.
+	
+	Key fields in fiber :  
+	1. type and key. key is same as that of component. type is the type of element (div, span).
+			Fiber reconciles based on this two info. 
+	2. child and sibling:
+		this field points to other child and sibling's fiber. 
+	3. return : fiber uses this to return the fiber which is to be processed after the current one. 
+	4. pendingProps and memoizedProps - pendingProps is the prop at the beginning and memoizedProps is the previous prop.. When this two are equal, fiber's final output can be reused.
+	5. pendingWorkPriority - priority of every work is defined. larger number - lower priority. for 0 only = no priority. 
+	
+	

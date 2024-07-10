@@ -1,0 +1,228 @@
+3 types of cookies - persistant, session, Secure
+
+persistant - stored by web browser.. n will remain valid until its expiration time. 
+session - will expire at the end browser session close. 
+Secure - only sent over https.
+
+-----PROPERTIES--------
+-- httpOnly - don't let client access cookies through reactjs code. can't access through cookie.get method unlike localstorage.
+-- Samesite - ensure cookies are not sent on cross origin requests. 
+		can setSite to 3 props -
+			1. Strict - strictly limited to that one site. project.100xdev.com and app.100xdev.com can send cookies. 						
+---IMP---	2. Lax - by default this is selected. only for get request and top level navigation (ALLOW TRAFFIC THROUGH NAVIGATION - CLICKING ON A LINK)         (DIFF WEBSITE POINTING TO YOUR WEBSITE) 
+					EXAMPLE - 
+					if OUR SECOND website has a hyperlink to navigate to our FIRST site.. and while navigating to our site we want the same cookie to go to our NEXTJS App to login automatically via same cookie, we can set Samesite to LAX.. 
+					IF WE SET TO STRICT, THEN IT WON'T SEND COOKIE FROM OUR SECOND SITE.. TO DIRECTLY LOGIN AND WE WILL LAND UP ON "LOG IN" PAGE. 					
+					
+			3. none. - csrf attack can happen. 
+		
+			-- ORIGIN AND SITE --
+				difference between origin and site is their scope. Origin means one domain name.. while site has multiple domain names.
+				EXAMPLE - https://app.example.com:443
+				
+				origin takes whole URL into consideration so each one is different. While site takes https:// and example.com into consideration. 
+				
+				https://example.com, https://example.com are having same origin and same site.				
+				https://app.example.com, https://intra.example.com are having same site but different origin. 
+			
+			
+-- domains -- can specify WHITELIST list of domains which is allowed to send token in cookies along with api. DON'T SEND COOKIE IF THE DOMAIN IS DIFFERENT.. 
+			THIS IS USEFUL WHEN ONE LOGIN TOKEN CAN BE USED FOR MULTIPLE SITES. 
+
+COOKIES ARE PIECES OF DATA SENT BY SERVER TO CLIENT WHICH IS STORED IN USER'S LOCAL SYSTEM BY BROWSER WHILE USER IS BROWSING. similar to localstorage. 
+
+COOKIES ARE USED FOR : 
+	1. Session Management -  to track users session data across multiple pages or visits.
+	2. Personalization - for showing ads and content to users based on user tracked data. to store user's preferences.
+	3. tracking : tracking users across websites to provide insights into their behavior.. for analytics purpose.
+	4. Security : for authentication purposes.
+	
+-----AUTHENTICATION USING COOKIES ----
+
+WHEN CLIENT LOGS INTO DB, SERVER WILL SET A COOKIE ON THE BROWSER. 
+AND THEN THE CLIENT WILL SEND THAT COOKIE IN EVERY SUBSEQUENT REQUEST. 
+
+ -- WHY NOT LOCAL STORAGE  ???????? --  FROM PERSPECTIVE OF NEXTJS(SERVER SIDE RENDERING) -- IN REACTJS (CLIENT SIDE RENDERING) THIS IS NOT AN ISSUE
+		Both Cookies and localstorage provide ways to store data on client-side. but they serve different purpose. 
+		1. Cookies are sent with every request by browser.. by default // DON'T HAVE TO EXPLICITLY ADD A HEADER FOR ADDING COOKIES IN THE FETCH CALL. 
+			IN FIRST REQUEST, WE CAN'T SEND REQUEST WITH HEADER BY GETTING TOKEN FROM LOCAL STORAGE.. (IN NEXTJS APP)
+		
+		cookies can have expiry attached to them and can be restricted to certain domains and only https.
+		IN A NEXTJS APP, We Have server side rendering, VERY FIRST REQUEST THAT COMES FROM BROWSER HAS THE USER'S DATA as in SSR, we first render the page on server and then send it to client. 
+		SO IN FIRST REQUEST, we cannot send the localstorage.getItem("") // as THIS IS STORED IN USER'S PC AND NOT SERVER'S MACHINE.. 
+		
+		FOR NEXTJS - server side rendering, LocalStorage can't be sent from the first request. but Cookies can be sent from the first request. 
+	-- server sets the cookies. it returns header : { set-cookie : "tokenjwt "}
+
+-- BROWSER mechanism for cookie, if server send the cookie in header, it will automatically send the cookie in every subsequent api request. 
+	
+	
+----------CSRF ATTACKS---------------CROSS SITE REQUEST FORGERY---
+	We are forging the request of a genuine site (for e.g banking) and sending the forged request from a different malicious site.
+A Malicious Website/User can send an API request to the same backend(banking website domain) with same cookie (browser mechanism) and can update the details on the backend..or make a transaction (which is authorized via cookie token as cookie is attached by default as its the same api just different malicious website/user sending request).
+
+  to avoid CSRF attacks we can use sameSite attribute  as STRICT to have cookie sent from only one domain. 
+  
+  
+-----------HOW TO DO AUTHENTICATION USING COOKIES-------------------
+
+1. HOW TO SEND COOKIES FROM EXPRESS APP :
+
+	NOTE: CAN DO WITHOUT COOKIEPARSER NPM PACKAGE USING REQ.headers("cookie") but we get a long string will have to parse. 
+	
+	import cookieParser from "cookieParser"; // middleware to parse cookies from request/resposne header
+	app.use(cookieParser())
+	app.use({
+		credentials:true 			  //if we are allowsing cross origin access CORS, and want cookies to be set.
+		origin: "localhost:5143"	  // frontend which is allowed to set the cookie in each request. 
+		})
+	
+	
+	app.post("/signin", (req,res) => {
+		const email = req.body.email
+		const password = req.body.password
+		const token = jwt.sign({email} , secretkey)
+		res.cookie(token) 	// to set the token in cookie
+		res.json({data})
+	})
+	
+	FOR PROTECTED ROUTE ::::::::::::::
+		const token = res.cookies.token
+		const decoded =  jwt.verify(token,secretkey)
+			
+	WHEN LOGGING OUT - TO CLEAR COOKIES,
+		res.clearCookie()
+
+2. TO SET COOKIE IN FRONT END, 
+
+	 useEffect(() => {
+        axios.get(`${BACKEND_URL}/user`, {
+            withCredentials: true,				// WE SENT WITHCREDENTIALS: TRUE TO SEND COOKIES IN CROSS ORIGIN.
+          })
+            .then(res => {
+                setUserData(res.data);
+            })
+			}, []);
+			
+	NOTE: IF BOTH FRONTEND AND BACKEND ARE FROM SAME ORIGIN THEN WE DON'T NEED TO MAKE withCredentials:true.
+
+3. WHEN SENDING FRONTEND FROM EXPRESS, 
+	WE CAN REMOVE CORS FROM EXPRESS as its not cross origin. 
+	Also we can remove withCredentials from front end..as its the same rogin
+	
+	
+------------------NEXTAUTH----------------------------
+There are external libraries which can do authentication - 
+		authentication-clerk, auth0, firebase auth but they are expensive using cookies
+		NextAuth is one good option for authentication using cookies.
+		Using NextAuth can login using google, github.
+		
+		BACKEND - NEXTJS - 
+		If in NextJS, if we want to catch all common api routes in next app  for e.g - api/auth/signin and api/auth/signup
+		create folders such as api/auth/[...nextRoutes]/route.ts  // [...nextRoutes]/route.ts -- to handle all routes in a single folder
+					in here we can define a global get API function for all routes.. inside api/auth/anything. 
+		
+		FRONTEND - NEXTJS - 
+			CAN handle any routes like courses/[...courseId]/index.tsx - can handle any common routes for courses/anything
+	
+	nextAuth tells us that anything on /api/auth/[...nextauth].js can be handled by NextAuth.
+	NextAuth is a session management library. It can even create cookies, jwts or send them to the browser. We have to write the logic for authenticating user like checking in the DB. 
+		We have to specify type of provider.. 
+		3 types : 
+			1. OAuth (google, facebook).
+			2. Email - email without password. passwordless login. it sends an email to verify if user can be logged in. 
+			3. Credentials - allows to handle own credentials login such as username, password. 2 factor auth. used to support and existing system we need to authenticate users against. 
+			
+			
+			
+		3. Credentials -- 
+		
+		We write providers in which we can provide Gmail, facebook credentials provider. 
+		To do our custom we can do CredentialsProvider  and have username and password with placeholder and text type to show. 
+		This will automatically pull up a Sign in page. 
+		Authorize function is where we handle all authentication logic. 
+		
+		import { RequestInternal, Awaitable, User } from "next-auth";
+		import NextAuth from "next-auth/next";
+		import CredentialsProvider from "next-auth/providers/credentials";
+
+		const handler = NextAuth({
+		  providers: [
+			CredentialsProvider({
+			  name: "credentials", // this is used for displaying on sign in page.
+			  credentials: {
+				username: { label: "Username", placeholder: "Username", type: "text" },
+				passowrd: {
+				  label: "password",
+				  placeholder: "password",
+				  type: "password",
+				},
+			  },
+			  authorize: function (
+				credentials: Record<"username" | "passowrd", string> | undefined,
+				req: Pick<RequestInternal, "body" | "query" | "headers" | "method">
+			  ): Awaitable<User | null> {
+				return { id: "saurabh" };
+			  },			  
+			}),
+			  GoogleProvider({
+				clientId: process.env.GOOGLE_CLIENT_ID,
+				clientSecret: process.env.GOOGLE_CLIENT_SECRET
+			})
+		  ],
+		  secret: SECRETKEYTOBEUSEDTOENCODE
+		});
+
+		export const GET = handler;
+		export const POST = handler;
+
+NextAUth takes care of setting the cookies also. 
+NextAuth gives signIn(), SignOut() methods to actually sign in reroute and while signing out route to sign out and clear cookies. 
+
+.env file: 	we give NEXTAUTH_URL : http://localhost3000 // replace this in prod with actual URL. 
+																Where we are doing authentication. 
+					NEXTAUTH_SECRET : secret_key_for_encoding_jwt_tokens 
+					
+To be able to use useSession react hook, we need to wrap our {children} into a provider component. 
+			<SessionProvider> {children} </SessionProvider>
+		
+useSession() - hook to get client side data about session details. 
+
+await getServerSession() - hook used for getting session details of user in server side components and also API side in nextJS.
+			can return in a api get response.
+	
+CALLBACKS IN NEXTAUTH --Nextauth lets us hook into various parts of authentication flow via builtin callbacks.
+	for e.g, after signing in, if we want to modify JWT tokens, pass additional user info, restrict a certain type of user after authenticating 
+	can write the logic  BUILTIN CALLBACK FUNCTIONS - jwt = (), session, signIn(), redirect().
+	
+	SignIn() - If we want to additionally restrict a particular user after authenticating, can write login in signIn(). we return false in the condition  for that. 
+	Jwt() - this callback is called whenever jwt token is generated. can make changes to jwt token and return it in jwt callback function. 
+	Session callback - this callback is called whenever a session is checked. can use this callback to make something available to the client.
+	for e.g - useSession(), getServerSession(). 
+	
+	NOTE:  We can't send ID from DB.. to send ID, 
+		can define the object inside NextAuth() as a seperate object in a reusable folder and then use the same object everywhere in client side when we are calling getServerSession(Next_Auth_object) and alsoin backend - NextAuth(Next_Auth_object).
+		
+		For doing Google sign in, 
+			just generate a google Oauth client ID and api key. we give js engine as localhost:3000 or actual UI domain which is accessing google auth. 
+			We give redirect URL as "hostname/api/auth/callback/google"
+			
+			
+------to make our own custom sign in page instead of nextauth----
+	Create a signin/page.tsx // will route to localhost:3000/signin
+	2. Write a normal functional app. 
+			On click of button -- 
+					onClick = {
+								await signIn("google") 		// to do google sign in.
+							}
+					onClick = {
+					await signIn("github") 		// to do github sign in.
+					}			
+		But this will still render the nextAuth signin page, whenever redirected...
+			We will have to tell nextauth that we have our own sign in page..
+		In NextAuth Provider, 
+			pages: {
+				signIn : "/signIn"
+			}
+		
+		

@@ -1,0 +1,36 @@
+---------------------------SOLANA---------------------------------
+Deployed code is called program or smart contract. To interact with a smart contract we need to send a transaction on the blockchain from a client. 
+
+solana uses POH - proof of history. 
+
+2 development workflows -
+	1. Program development - allows to create custom Rust, C and C++ programs to the solana blockchain network. Once these programs are deployed, anyone can use JSON RPC api under the hood to communicate with them. 
+	2. Client development - allows to build dapps to communicate with the program deployed on the blockchain network. can submit transactions via client sdks. 
+
+--Wallet - pair of public and private key used to verify transactions on the network. Public key - for identifying account and private for signing the transaction. 
+
+--transaction - fundamental unit of activity on the blockchain.. its a signed data structure which can give info about the actual transaction - instructions about the operation to perform - like transferring token. 
+	We need transaction to create read and update but not read. 
+	ALL TRANSACTIONS INTERACT WITH THE PROGRAM ON THE BLOCKCHAIN NETWORK, CAN BE SYSTEM BUILT OR USER BUILD PROGRAM. 
+--Solana CLI - for compiling Solana programs. to create and manage file systems Solana wallets/keypairs.
+
+---ANCHOR ------- framework for solana runtime providing dev tools for writing onchain programs. 
+	we use avm to installl desired version of anchor framework. 
+	
+solana-test-validator - to setup localhost blockchain cluster. 
+
+SOLANA FILE SYSTEM WALLET - to deploy a solana program with solana CLI, we need to have Solana wallet with few solana tokens to pay for the cost of transaction & data storage for the blockchain..
+
+solana-keygen new -- command to generate file system wallet. 
+solana airdrop 2 - to request few air drop for solana tokens. 
+solana balance - to check current wallet's sol tokens.  	
+
+
+---------------------Solana Program-----------------
+SOLANA programs written in Rust are libraries that are compiled to BPF byte code. 
+
+---to initialize a new library - Hello_world. 
+cargo init hello_world --lib
+cd hello_world
+
+cargo add solana-program // 	add solana-program to our new rust library. 

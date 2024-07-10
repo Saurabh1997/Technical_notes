@@ -1,0 +1,271 @@
+--------------------------EC2-------------------------------------
+
+---AWS BUDGET SETUP ----
+can do setup of AWS budget to minimize monthly billing or to maintain zero billing and send alert notifications on email. 
+To do this from IAM role, we need access from root account and can be gotten from IAM and role access to billing info. 
+This gives access for root account to billing data. cam have billing ALARM. 
+AWS BUDGET - 0 SPEND BUDGET OR MONTHLY COST BUDGET. 
+
+---EC2---  Elastic compute cloud--
+	main functions -- VMs (ec2), store data on virtual drives (EBS), distribute load across machines (ELB), 
+		Scaling of services using ASG (autoscaling groups)
+	Configurations to be done for EC2 -
+		1. OS type - windows, linux, MACos
+		2. Preferred RAM 
+		3. Required CPU/cores
+		4. Preferred Storage type - 2 types
+			networked attached - EFS, EBS
+			Hardware storage - ec2. 
+		5. high Network card - Public IP address
+		6. Firewall rules - Security group.
+		7. Bootstrap script - EC2 User Data -  script to be executed at the first launch of ec2 instance. 
+	EC2 USER DATA - possible to bootstrap our ec2 instance with a ec2 user data script. bootstrapping means firing commands at the launch of the ec2 instance. it can be used to automate tasks : 
+			Downloading common files, installing software and updates. the more heavy the script, the more it will take time for launch of the instance. ec2 user data script execution requires sudo root user. 
+	there are 100 types of ec2 instances -- 
+		t2.micro - 1 cpu, 1GB mem, EBS only. low to moderate network performance.    for free tier we use
+		t2.xlarge - 4, 16GB mem, ebs only. moderate network performance
+		c5d.4xlarge - 16 vcpus, 32 gb mem,  NVM ssd. 10 gbps network performance. 4750 mbps bandwidth. 
+		
+	EC2 CONFIGS - 
+		key-pair should be created to access instance securely.. For macOs, linux, windows 10 and above we use .pem file. 
+		whereas before windows 10, we use .ppk file for use with putty
+		
+	7 different types of EC2 instances  ACCRO - GCMASIM - 
+		1. General purpose - m5.2xlarge : m - instance class. 5 - version. 2xlarge - size within instance class. 
+			usually used for workload of web servers and code repos. 
+			it has good balance between memory, compute and networking. 
+		2. Compute optimized - for Compute intensive tasks that require high performance such as batch processing, HPC(high performance compute), 	 scientific modelling n machine learning, high performance web servers, dedicated gaming servers.
+			instance type NAME starts with c.. 
+		3. Memory optimized - that require high RAM. fast performance for large dataset workload which requires high memory such as high performance relational/non relational db, in-memory DB for BI (business intelligence), distributed caches stores. 
+			instance type NAMES START WITH "M".. x and z too. 		
+		4. Accelerated computing
+		5. Storage optimized - Great for storage intensive tasks which require high sequential read/write of large datasets in LOCAL STORAGE.
+			relational/non relational, HIGH frequency OLTP, data warehousing, in memory cache (redis)
+				name starts with I, G or H. 
+		6. Instance features
+		7. Measuring instance performance. 
+	
+	SECURITY GROUPS - 
+		acts as firewall to the ec2 instance. they control how traffic goes in and out of the ec2 instances. 
+		SGs contains only rules. rules can be refered by IPs or SG.
+		rules will have inbound traffic (allowed into the ec2) and outbound traffic (from ec2 to outside)	
+		they also regulate traffic to ports. Authorized IP ranges IPv4 and IPv6. 
+		-- SGs can be attached to multiple instances and one instance can have multiple SGs.
+		-- its locked down to a region/VPC (in another region, will have to create another SG)
+		-- it lives outside EC2 instance. if traffic is blocked, instance won't be able to see
+		-- NOTE: IF ERR - APPLICATION NOT ACCESSIBLE: "CONNECTION TIMEOUT", THEN ITS A SECURITY GROUP ISSUE.
+		-- NOTE: IF ERR - APPLICATION GIVES : "CONNECTION REFUSED", APPLICATION ISSUE - MIGHT BE BROKEN OR ERROR IN APPLICATION.
+		-- GOOD PRACTICE: to maintain one SECURITY group for SSH.
+		-- DEFAULT: INBOUND RULE - deny all traffic is blocked. OUTBOUND RULE -- allow to access all outside. 
+		---- Can  reference other Security groups in one one security group which can allow to access traffic from other instances.. 
+			SG 1 -- Authorizing 1 and SG 2.
+			
+		PORTS - 
+			80 - http, 443 - HTTPS, 22 - SSH (SECURE SHELL) - to loginto linux instance.
+			21 - FTP (file share protocol) to transfer files into file share,  22 (SFTP) - secure ftp using ssh.
+			3389 - RDP remote desktop proto. 
+		While doing ssh, we can use ssh -i file.pem ec2-user@public-ip 
+		on amazon linux 2 ami - we have one user setup named ec2-user.   "AWS IAM LIST-USERS" : to return list of users. 
+		GOOD PRACTICE : Never ever enter EC2 aws access key id and secret using aws configure. we can use IAM roles. WE ATTACH IAM ROLE(POLICY) TO EC2 INSTANCE WITH READONLY PERMISSION.
+		
+----EC2 INSTANCES PURCHASING OPTION - 
+	1. on demand instances - cheaper, for short workload, predictable pricing, pay by time. 
+		Linux/Windows - Pay per min.. other OS - pay per hour. high cost, but not upfront. 
+		no long term. recommeded for short term and uninterrupted workload		
+	2. reserved (1 & 3 years) - upto 72% discount. you reserve a specific instance attribute (region, instance type, OS) whereas in convertible you	can change ec2 instance type in between but 66% discxount. reservation period - 1 or 3 yrs (more discount). 
+		ALL UPFRONT payment IS HAVING MORE DISCOUNT. 
+		reserved instances - long workloads.  convertible reserved instances - long workload with flexible instances. 
+		instance's scope - regional/zonal. recommended for stable and steady state application (DB). can buy and sell in marketplace.  
+	3. saving plans (1&3) - commit to amount of usage. all instance type n region is locked for certian type of usage(10$ per hour)
+		its flexible across ec2 family, instance type, tenancy (dedicated, host, default)
+	4. spot instances - less reliable, can lose instances . cheaper. for very short workloads. most cost efficient. 
+		can lose instance if max price is more than the spot price. 
+		not for critical jobs. 
+		--CONDITIONS: we define max spot price and then get the instance till currennt price < MAX SPOT PRICE. 
+			IF CURRENT PRICE >  SPOT PRICE, CAN CHOOSE TO TERMINATE or stop INSTANCE WITHIN GRACE PERIOD OF 2 MINUTES. after 2 min, we can initiate another spot instance or can follow other strategy :  SPOT BLOCK
+			 SPOT BLOCK-  WILL BLOCK THE SPOT DURING SPECIFIED TIME FRAME (1 TO 6 HRS).			
+	5. dedicated hosting - entire physical server is dedicated. can do instance placement. MOST EXPENSIVE OPTION. useful for software that have licensing model (BYOL - BUY YOUR OWN LICENSE). reserved 1 or 3 yrs.
+		for companies that have strong regulatory and compliance needs. 
+		can get visibility into netowk sockets visibility and physical cores.  
+	6. dedicated instances - instance run on hardware dedicated to you. other instances of our account might share same hardware. no placement control of instances. can move hardware after start/stop. 
+	7. capacity reservation - reserve some capacity in az for short duration.  
+		reserve on demand instances. combine with regional reserved instances and savings plan to benefit from billing discounts. 
+		Suitable for short term workload that needs to be in a specific AZ. 
+		no time commitment.. can create/cancel anytime. 
+		
+	HOW TO TERMINATE SPOT INSTANCES - 
+		NOTE: TO CREATE SPOT INSTANCES, WE CREATE SPOT REQUEST.. with configuration such as :
+			 Maximum price, type - one time/persistent, valid from - to.. desired number of instances. 
+			
+		1. If One time spot instance, once instances are launched, and max < current, then it will be fail.. closed.
+		2. If persistent, instances will stop/interrupt for a time until current < max.. then spot request will create the desired no. instances. 
+	
+	to cancel spot instances requests, can only do in open, active and disabled, First step would be to cancel spot request and then terminate all the instances. 
+
+SPOT FLEETs = spot instaces + on demand instances. 
+		Spot fleets will give the most flexibility to launch spot instance to meet target constraints with price.
+			1. can have multiple launch pools. spot fleets stop instances when price increases  or max capacity is reached. can define possible launch pools.. OS, instance type, AZ
+		Strategy to allocate spot fleets :
+		a. lowestPrice - lowest price from the pool. (short workloads, cost optimized)
+		b. diversified - distributed across all launch pools. (high availability, long workload)
+		c. capacityOptimized - pool with optimal capacity for no. of instances..
+		d. priceCapacityOptimized - pool with highest capacity and then picked up the lowest price among the pool. Best choice for workloads.
+	NOTE: SPOT FLEETS ALLOWS TO AUTOMATICALLY pick lowest price spot instances. 
+
+---------------- 3. IP ADDRESSES--------------------
+3 types of IP addresses - public, private and elastic.   also IPV4 AND IPV6. 
+IPV6 IS MOSTLY USED FOR IOTS.  each number can    [0-255].[0-255].[0-255].[0-255] -- total 3.7 billion combination. 
+Public is unique. and everytime ec2 instances starts and stops, public ip addr can change. 
+Private IP - is used in a private network. two different networks can have same private ips. 
+			Private IPs can be accessed using NAT (NETWORK address translation)  + INTERNET GATEWAY  (Proxy)
+ELASTIC IP - You will own the ip addresses unless and until you delete it. we will have to associate that elastic ip address with an instance.
+			next time that instance stops and starts, it will have the same ip address. 
+			can Have upto 5 elastic addresses in one account. can ask AWS to increase. 
+			It is also used to mask an instance which has failed by rapidly assigning the ip address to another instance. 
+			NOTE: TRY TO AVOID USING ELASTIC IP. POOR ARCHITECTURAL DESICIONS. USE A RANDOM IP ADDRESS AND THEN ASSIGN A DNS NAME TO IT. 
+				OR can use a load balancer. 
+
+----PLACEMENT GROUPS 
+	Sometimes we want a control over placement groups. 
+	strategies to have placement groups :
+		1. Cluster : cluster instances using low latency in a single AZ. High performance, but higher risk of failure as single AZ.
+			same rack, same AZ. PROS: great network bandwidth (10 gbps). CONS : if rack fails, all instances fail. 
+			Best for big data jobs which are extremely fast. application which needs low latency & high network throughput.
+		2. Spread: Spread across hardware (7 instances per AZ). High availability. for critical apps which requires all instances seperated from one another. MAXIMUM AVAILABILITY.
+			Pros: can span across multiple AZs. Reduced risk of failure. 
+			Cons: only 7 instances per AZ is allowed. 		
+		3. Partition: Spread across many different partitions across different AZs in same region..rely on different set of racks. 100 instance per group.. used for hadoop, cassandra, kafka. 
+		7 Partitions per AZ. one partition is basically a rack of instances. instances in one partition don't share same rack as another partition. 
+		Instances get info to the partition info as metadata service.. 
+			WHEN TO USE: if we need application to make partition aware to distribute data across partitions. 
+			Use case: big data, HDFS, cassandra, kafka, hbase. 
+			
+-----ENI (ELASTIC NETWORK INTERFACE) - LOGICAL COMPONENT IN VPC THAT REPRESENTS VIRTUAL NETWORK CARD. 
+		to the ec2 instance, a primary ENI will be attached to ec2 instance which will provide ec2 instance network connectivity. 
+		ENI can have attributes: one primary private ipv4, one or more secondary private ipv4. one elastic ipv4, one public ipv4, MAC ADDRESS, one or more security groups. 
+		-- You can create independent ENIs on the fly and attach to EC2. bound to have a independently. ENI is bound to a specific AZ.
+		-- We can also attach one ENI to another instance.. to have same private static IP and detach from earlier ec2 to do network failover..
+	USING ENI, WE HAVE MORE CONTROL OVER OUR PRIVATE IPS AND NETWORK. NOTE: IF WE TERMINATE INSTANCES, ENIs attached to it automatically will be deleted automatically.. MANUAL ENIs ARE NOT DELETED IF WE STOP THE INSTANCES.. ENI WILL NOT COST ANY MONEY IF WE JUST HAVE IT. 
+	NOTE: ENIS CANNOT BE ATTACHED TO INSTANCES OF ANOTHER AZ. 
+----EC2 HIBERNATE ----
+	We can stop and hibernate instances. 
+	Stop - data on disk(EBS volume) will be kept in the next start.
+	Terminate - data on disk (EBS volume - root) which is setup to be destroyed will be lost but the ones with setup to kept intact will remain as it is. 
+ON START, OS LOADS AND EC2 USER DATA SCRIPT IS EXECUTED THEN AFTER OS BOOT IS DONE, CACHES GET WARMED UP.  
+	
+	1. In-memory RAM state is preserved in Hibernate process. 
+	2. instance Boot up time is faster as OS is not shutting down or restarting.
+	3. Whenever any instance is going into hibernate mode, it writes the RAM state into a file in EBS volume which is encrypted. and when instance is starting RAM reads from the file in EBS volume. 
+		USECASE: for a long running process where we need to maintain the state..RAM state. can be used to fire up instances quickly.
+		
+	HIBERNATE supports all on demand, reserved , and spot instances. 
+	RAM state must not be more than 150 GB. Root Volume must be EBS and encrypted (not instance store volume)
+	supported instaces family - T,C,M,I
+	AMI supported - ami linux 2, ubuntu, rhel, centOS, windows. INSTANCE SHOULDN'T BE HIBERNATED FOR MORE THAN 60 DAYS. 
+	
+---------------------7. EC2 Storage------------------
+--EBS Volume - Elastic block storage:
+	--EBS volume is network drive (not physical) that is attached to an instance when they are running. it acts as a network USB drive.
+		it uses network to communicate the instance, which might cause latency.
+	--Data persists on ebs volume even if instance is terminated. 
+	--EBS can only be attached to one instance at a time.. and its done at CCP(cloud certified practitioner) level only. it can be detached to another instance by detaching first and then attaching to another instance. 
+	--locked to a specific AZ. if we want to move ebs volume to another az, we need to take snapshot first. 
+	--We have provisioned capacity (size in gbps, iops io operations per second). based on the capacity, we are billed.  (upto 30 gbps is free)
+	NOTE: BUT ONE INSTANCE CAN BE ATTACHED TO 2 EBS VOLS. can leave them unattached. 
+-----EBS - DELETE ON TERMINATION ---
+	there is flag for delete on termination which is by default checked (checkbox) for root volume and unchecked for EBS volume.
+	this means root volume is deleted on termination by default and EBS volume is not. but we can enable to disable this using AWS console, CLI. 
+	can Preserve root volume on termination. 
+	
+---EBS SNAPSHOTS ---
+	--used to make backup of an EBS volume at any point. its recommeded to detach the instance and then take snapshot. but we can do the opp.
+	--can move the snapshot across AZs or region.
+	FEATURES -- can create volume from snapshots. 
+		-- 1. EBS snapshot Archive 
+					- can archive the snapshot which 75% cheaper option. but it takes 24 to 72 hours to restore the snapshot to EBS volume. 
+		-- 2. Recycle bin for snapshots - protect snapshots against accidental deletion. 
+					- can setup rules for retention of the snapshot when accidental deletion happens.
+					- specify retention between 1 day to 1 year. 
+		-- 3. FSR - fast snapshot restore
+					- can quickly force full retention of the snapshot to have no latency.. but its very expensive. 
+	
+ ---AMI - AMAZON MACHINE IMAGE - IT POWERS OUR EC2 INSTANCE. 
+	AMIs are customization of the EC2 instances.
+		can add our own configuration, OS, monitoring tools, own softwares.
+		if we add AWS AMI, we get faster reboot, faster configuration because everything is prepacked.
+	AMIs are built for a specific region but can be copied across regions. 
+	Can build EC2 INSTANCE FROM - 
+		1. public AMIs - faster setup. 
+		2. own AMI - but we will have to setup and maintain.. can automate this task. 
+		3. AWS Marketplace - can buy custom AMIs from marketplace made by someone who is selling. We can also make our own and sell. 
+	
+AMI PROCESS (From an EC2 instance) -  we can create instances from our own AMI.
+	- can Launch EC2 Instance and customize it. can stop instance for data integrity.
+	- can Build AMI from it which will also create EBS snapshot. 
+	- can launch instances from other AMIs(including this one)  in another region..
+THE EC2 INSTANCES CREATED FROM OUR OWN AMI WILL ALREADY HAVE THE INSTALLED CONFIGURATION THAT WE DID WHEN CREATING FIRST EC2 INSTANCE. THIS WILL SPEED UP THE BOOT TIME.
+
+--- EC2 INSTANCE STORE -
+	EBS volumes are network drives with limited performance. 
+	If we want High performance physical hardware disk attached to EC2 instance, we can use EC2 instance store. 
+	Better IO throughput. 
+	Cons - After termination of ec2 instance, Store loses its data. 
+	can be better used for caching/ temporary content/Buffer as risk of data loss is there if hardware fails. 
+	Data replication and backup is our responsibility. 
+		local EC2 instance store - i3.large, i3m.large , i3m.xLarge	
+--- EBS VOLUME TYPES-----------
+	1. gp2, gp3 - General purpose SSD balancing performance and price. 
+		cost effective and low latency. used for virtual desktops, boot volumes, dev and other test env. Size - 1 gb to 16 Tb.
+		GP3 - newest have baseline IOPS of 3000 & throughput upto 125 MBPS. IOPS can be increased to 16000 and throughput to 1000 MIBs independently means IOPS are not linked. 
+		GP2 - small GP2 volumes can have upto 3000 IOPS. but size of the IOPS & Volume are linked. max IOPS - 16k. 
+			3 IOPS per GB means 5334 GB we are at the max IOPS. 
+	2. io1, io2 - Highest performance SSD used for mission critical low latency or high throughput workload	
+	3. st1 - Low cost HDD used for frequently accessed throughput intensive workload
+	4. sc1 - lowest cost HDD used to less accessed workload. 
+	
+	EBS volumes are characterized in size, IOPS (I/O ops per second), Throughput
+	Only GP2/GP3 and IO1,IO2 can be used as boot volumes - means where root OS is gonna be running.. 
+
+-- HDD use cases - ST1 and SC1
+	-- cannot be used for Boot Volume. 
+	-- size - 125 GB to 16 TB. 
+	2 types of HDD -   			
+		1.Throughput optimized HDD - Good for frequently accessed. ecample - data warehousing, logging, big data
+		2. Cold Storage HDD - mostly used as an archival. lowest cost. used for infrequently accessed. 	
+-----PROVISIONED IOPS (piops) SSD - 
+	 --critical business applications with high IOPS performance or application requiring more than 16000 IOPS. 
+	 --used for critical database operations (sensitive to performance consistency & storage pref)
+	 -- for this, can use io1 or io2 (4 GB to 16 tB):
+			-- for NITRO EC2 INSTANCES WITH IO1 OR IO2, max piops - 64000 and for other - 32000.
+			-- can increase PIOPS independently from storage size.
+			-- io2 is more durable than io1 and has more iops at the same price. 
+	IO2 BLOCK EXPRESS (4 GB to 64 TB) --
+			-- have max PIOP as 256000 with ration of 1000:1 (IOPS per GB). supports Milli-second latency.. 
+	PIOP Supprts Multi-attach EBS. 
+------MULTI-ATTACH EBS - only for IO1, IO2 family. 
+	1. Unlike other EBS, IO1/IO2 PIOPS EBS can be attached to multiple EC2 instances in the same AZ.
+	2. EC2 instances will have full read and write permissions to the high performance EBS volumes. 
+	Usecases: can achieve high application availability in CLUSTERED (NETWORKED-DISTRIBUTED) LINUX APPLICATION (SUCH AS TERADATA).
+			  APPLICATION WILL HAVE TO TAKE CARE OF CONCURRENCY IN WRITE OPERATIONS AS MULTIPLE EC2 INSTANCES ARE HAVING ACCESS TO SAME VOLUME. 
+	Each EBS volume can be attached to 16 EC2 instances. 
+	NOTE: FILE SYSTEM MUST BE CLUSTER AWARE (SHOULD BE NETWORK SHARED TYPE) - NOT XFS
+------EBS ENCRYPTION -----------
+	-- When we create encrypted EBS volume, we get the following: 
+		- All the data at rest in EBS vol is encrypted, Data moving in flight from EC2 instance to Volume is encrypted,
+		- Alls Snapshots are encrypted, All volumes are created from the snapshot. 
+	-- ENCRYPTION and decryption is handled transparently it leverages keys from KMS(AES-256). 
+	-- ENCRYPTION has minimum impact on latency.. 
+	-- when we copy unencrypted EBS snapshot allows encryption.. Snapshot of encrypted vol is encrypted.
+	-- NOTE: SNAPSHOT CREATED FROM THE UNENCRYPTED VOLUME WILL NOT BE ENCRYPTED. 
+
+	-------HOW TO ENCRYPT unencrypted EBS volume -
+				1. create snapshot of the volume. 2. Encrypt the EBS snapshot using COPY. 
+				3. Create new EBS volume from the snapshot.
+				4. Attach the encrypted EBS volume to the same original instance. 
+				
+----------EFS - ELASTIC FILE SYSTEM---------
+EFS - managed NFS (network file system) that can be mounted on multiple EC2 instances. EFS works with EC2 in multi AZ. IT IS HIGHLY AVAILABLE, HIGHLY SCALABLE AND EXPENSIVE (3X OF GP2 ) - PAY PER USE.
+Usecase - for content managing, web serving, data sharing. 
+It uses  NFSv4.1 Protocol. It supports LINUX-BASED AMI. 
+Security Group is used to control Access to EFS. ENCRYPTION is done using KMS. 
+POSIX FILE SYSTEM PROVIDES STANDARD file APIS.  File System scales automatically .. Pay per usage.. cannot do capacity planning.  
