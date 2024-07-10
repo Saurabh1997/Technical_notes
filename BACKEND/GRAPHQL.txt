@@ -1,0 +1,34 @@
+Graphql -
+
+A query language for api which gives client a power to ask for what exactly they need. 
+benefits of Graphql  - 
+
+1. Prevents over fetching - 
+		we define the structure of data that we want through a query. We define the structure pf data that we want. 
+				query {
+				products {
+				name 
+				image
+				}}	
+	With Rest API, we get all data ... even if we don't want. 
+	
+2. Prevents under fetching - 
+		Suppose we have to fetch data as per the category.. then two api calls would be required.
+			1. first api call to get category id.. and 2. second api to get the products in that category id. 
+			THIS PROBLEM CAN BE CALLED AS UNDER FETCHING AS WE ARE NOT ABLE TO FETCH ALL DATA IN SINGLE CALL. 
+		query {
+		category(id:1) {
+			name 
+			products {
+			image
+			name }}}
+		
+Graphql is very very strictly typed. 		
+		
+GRAPHQL SERVERS - to create a graphql , we need two things --- TYPE DEFINITIONS AND RESOLVERS. 
+TYPE DEFINITIONS - SCHEMA - way that our query is going to look, data is going to look, the way our mutations are going to look. 
+
+for e.g :  fruits: [String]
+
+RESOLVERS - functions that return the data that conforms(obeys the rule) the way we have defined in the schema. 
+fruits : () => {return ["banana", "apple"]}

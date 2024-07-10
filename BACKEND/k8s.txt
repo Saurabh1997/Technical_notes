@@ -1,0 +1,43 @@
+Kubernetes - container orchestration platform. used to automate deployment, managing containers, scaling of containerized application..  
+Kubernetes cluster - set of machine called nodes used to run containerized apps.
+2 core pieces - 
+1.control plane - responsible for managing state of the cluster. in Prod it runs across multiple nodes across several DCs. 
+2. worker nodes - run containerized application workloads. they run is a pod. pod - smallest deployable units in k8. 
+	pods hosts one or more containers and provides shared storage n networking for those containers. 
+	
+	Pods are managed n controlled by kubernetes control plane.  
+	
+1. control plane consists of core components - controller manager, scheduler, etcd, api server. 
+
+API server - primary interface between control plane and rest of worker nodes. it exposes a restful api to interact with control plane to manage the cluster.
+Etcd - distributed key value storage for managing state. API server, scheduler and controller manager uses etcd to store and retrive the info about the cluster. 
+scheduler - is used to schedule pods into the worker nodes in the cluster. it uses info about the requirement of resources by the pods and availability of resources to manage placement decisions.
+controller manager - it is responsible for running controllers that manages the state of the cluster. 
+	for e.g replication controller - to ensure the desired number of replicas of pod are running.
+		deployment controller - to manage rolling update (to be updated) and rollback(reversals) of the deployments.. 
+
+In worker nodes, there are more components - kubelets, kube-proxy, container runtime. 
+1. kubelet - daemon that runs on each worker nodes and communicates with the control plane to ensure and get instructions from control plane to run which pod on node and to ensure that the desired state of the pod is maintained. 
+2. container runtime - responsible for running containers on the worker node. also for pulling images from the registry and running them as container, starting n stopping containers and managing container resources..
+3. kube-proxy -  network proxy which is present in every worker node. its responsible for routing traffic to correct pod. it also does load balancing to distribute traffic evenly on the pods. 
+
+benefit of kubernets - horizontal scaling, self-healing, automated rollbacks. 
+
+downsides - complexity. upfront cost is high. high level of expertise is needed. overkill for smaller org.
+Cost - kubernetes required set of minimum resources to run to support all feature of kubernets.  
+one option is to offload control plane to a managed kubernetes service like - EKS, AKS and GKE. 
+Elastic kubernetes service. 
+
+
+yaml file 
+apiVersion: v1   					// k8s is extensible can add custom object. specifies object we want k8s to look at
+kind: Pod							// kind of object to create
+metadata: 							// config options for the object we are about to create
+	name: posts   					// name of pod 
+spec: 								// attribute to apply to the obj we want to create
+	containers: 					// we can create multiple containers in a single pod. 
+			-name: posts  			// make a container with name of posts.
+			 image: stephengrider/posts 	// exact image to use
+			 
+We don't usually use above pod yaml. Instead of creating each and every pod, we create deployment..Deployment is a kubernetes object that is used to handle set of pods. 
+If any pod crashes, deployment will automatically create that pod. Deployment can also create new version of pod running updated code. Once new pods are running, it will be used. Older pods will fade away.. 

@@ -1,0 +1,251 @@
+Websockets - WebRTC 
+
+-- Monolithic vs microservices ---
+There are lot of backend communications which need to happen asynchronously. 
+
+EXAMPLE - PAYTM APP. Paytm needs to happen at primary Backend.. but Email, OTP, SMS push notifications can be handled by different backends. Analytics can be handled by another backend. Its better to offload other things to other backend services and let the main backend service handle the actual service... 
+For pushing notification, can use a queue.. for e.g rabbitmq and redis queue. 
+
+	Whenever we are dependent on another services, we maintain a queue as this services can be unreliable. If the push notification fails, we push it back to queue..  
+	If queues are down, it depends on how critical the operation we want to perform. if its important, can reverse transaction or do error handling. can compromise on the push notification service as its not a imp.
+
+TYPES OF COMMUNICATION PROTOCOLS --
+1. SYNCHRONOUS	(Strong Coupling)
+	HTTP (REST/GRAPHQL). websocket (debatable is sync or async)
+		HTTP - we send the server a request and then server will respond. its happening synchronously.
+		Websocket is sync because we are waiting for a socket event, as soon as it happens we do some logic.
+2. ASYNCHRONOUS (Weak coupling)
+	messaging queues, pub-sub, Server sent Events.
+	Messaging queue is async because one service will push the data to queue and can carry on with its work while other service will pickup the data from messaging queue and perform some operation. 
+
+-- For Real time updates, we cannot use HTTPs calls. We can use various other protocols - 
+1. Long polling - calling http apis every few seconds.
+	Polling means checking for new data from server every few intervals of time to check real time updates. 
+	Two types polling - short polling and long polling 
+		short polling - request data from server. if response is there, server will send response otherwise will send empty response. 
+		long polling - request data from server... if the response is there, then only server will send response..  long waiting is there. 
+2. can use something as Server side events.. but its not trustful.  
+
+WebRTC - realtime communication. uses UDP. therefore, packet loss can happen. usually used for online gaming, video calling. 
+		Pros - browser support. Browsers can debug webrtc. create a connection with another browser using webrtc. 
+			UDP can fallback to TCP. udp can be used to send audio, files.. mostly P2P. 
+
+WebSockets - uses TCP protocol. therefore, packet loss is not there. Used for chat apps where we don't want to lose any messages. 
+	Websocket is persistent connection between client and server. it is full DUPLEX communication channel. 
+	FULL DUPLEX MEANS BOTH CLIENT AND SERVER CAN SEND PACKETS. CONNECTION CAN BE SHORT-LONG LIVED. 
+
+Websocket can handle limited number of connections at a time. to have a large pool, can use redis.
+NOTE : Many libraries to handle socketio - but raw websocket is preferred AS ITS A PROTOCOL WHICH USUALLY PREFERRED. 
+
+TCP - most reliable way machines can talk to each other. 
+TCP server - process that runs in a machine listening to a port. 
+
+--------------------Websockets--------------------------
+Various ways to create a websocket server in nodejs. Websockets, ws and socket.io. 
+	problem with socket.io is it provides a good construct to create rooms but doesn't support platforms like android, ios, rust to receive/emit socket events. 
+		We can create socket client in android using socket native or rust socket io in rust but they are not maintained. Can stick with the core websocket client. 
+		
+		2 more ways to do client server communication - quic and webRTC. 	Websocket goes through http request only then its upgraded to a websocket connection. can create websocket server using http or express.  
+					npm i ws @types/ws 
+					
+	Websocket is built in in React project. 
+	
+-------Backend Code------------
+	
+	const socketServer = app.listen(8080);
+
+	const wss = new WebSocketServer({ server: socketServer });
+
+	wss.on("connection", function connection(socket) {
+	  socket.on("error", console.error);
+	  socket.on("message", function message(data, isBinary) {
+		console.log(" here 1 ", data, " jd ", socket);
+
+		wss.clients.forEach((client) => {
+		  if (client.readyState === WebSocket.OPEN) {
+			console.log(" here ", data);
+			client.send(data, { binary: isBinary });
+		  }
+		});
+	  });
+	  socket.send("Hello! Message From websovket!!");
+	});
+		
+-----------Client code-----
+	
+		useEffect(() => {
+			const socket = new WebSocket("ws://localhost:8080");
+			socket.onopen = () => {
+			  //   console.log(" connected to server ");
+			  socket.send("Connected to socket server");
+			  setSocketStatus(socket);
+			};
+
+			socket.onmessage = (message) => {
+			  //   console.log(" message received ", message);
+			  setSocketMessages(message);
+			};
+
+			return () => socket.close();
+		}, []);
+		  
+------------In NextJS, we do the same, just that we have to put "use client" to make it client side rendering page.
+			If we don't make it client side rendering, then NextJS Server will make websocket connection but we want client to make websocket connection. 
+			
+------Scaling ws servers-----------------
+	As website gets more traffic we have scale ws servers by creating a WS FLEET. WS ARE SCALED HORIZONTALLY. There is a central layer behind it which orchestrates messages, PUB SUB. 
+	Single ws server running on nodejs can't support more than roughly 10-20k persistent connection(users) As nodejs is already single core.. 32 core machine might support it. 
+	Need 50 - 100 servers to support 1 million users persistent connection. 
+	
+	We have 2 or more Peers in same room and connected to different WS servers.... how can they connect. 
+		1. Whenever same room connections are there, connect to same WS Server. 
+			This is called sharding the users.. based on room, connecting to same ws server.
+			latency issues if user is not geographically located in same ws server area.
+			cannot horizontally scale ws servers here.. 
+			
+		2. Better way. doesn't matter which country user belongs to, if want to connect in same room, then can connect through different ws server which is closer to their region. 
+			We create a pub sub server. When user1 joins room1 in ws1, ws1 tells pub sub that I am subscribed to room1, 
+				then if user2 joins room1 in ws2, ws2 can publish the message for room 1 there and ws1 can pick the message as its subscribed to room1. 
+		
+	
+-----------WEBRTC------------------------------0.1 sec delay. - live calls. 
+Webrtc is the only protocol that lets us do real time media communication (real time in milliseconds live - real time)
+HLS is used for video streaming (e.g youtube live)
+WebRTC is P2P protocol. we directly send the media to other peer without need of central server. 
+NOTE: We need a central server for SIGNALLING & sometimes for SENDING MEDIA as well. 
+Note: its a bit insecure as we can directly see the IP from where the user is communicating as its P2P. 
+	
+
+--Signaling Server----
+Both browsers need to exchange their IP address before starting the real time communication. usually a websocket server but can be a http. this is before media communication, need to know location of both the peers.. where should the packets be sending between. 
+
+Once we have exchanged the addreses, we don't need this signaling server. 
+
+--NAT------Network Address Traversal----
+	NAT IS A TECHNIQUE THAT ALLOWS MULTIPLE DEVICES TO SHARE A SINGLE IP ADDRESS INSIDE A LOCAL ADDRESS. 
+	There is public IPv4 address assigned to our machine if we are accessing the internet. Basically to access the internet, one public ipv4 is needed. EXAMPLE: IF WE ARE IN A HOTEL/OFFICE ACCESSING A WIFI ROUTER, PCs will be ACCESSING THAT WIFI ROUTER which MIGHT HAVE THE SAME IPV4 ADDRESS through we will be accessing the internet. SO HOW will WE KNOW WHICH PC TO REDIRECT THE WEBRTC CALL TO WHEN COMING TO WIFI ROUTER OF THAT SPECIFIC IPV4 ?? -- NAT works on the router or firewall level to resolve this issue by translating a private IP to a public IP address. It also does translation of port numbers so that the packet will be directed towards the specific destination. 
+		Working - If a packet outside the local network (PCs connected to a router) enters the local network,  public ip is converted to private ip to send the packet to the specified PC only. If packet is going outside the local network, it converts private to public ip. 		
+		Benefit - it conserves IP address by making multiple devices share a single ip address. it provides a security layer to protect local IPs from the external internet. 
+
+--STUN-----session traversal utilites for NAT------own stun protocol to return ICE candidates.
+	Before telling the signalling server our Public IP address, we actually want to know our own publicly accessible IP Address. It gives us this. It shows how world sees us. Then we can inform the signalling server what is our publicaly accessible IP address. 
+	Signalling server don't have all the Publicly accesible IP address that's why STUN server is used. 
+		It gives ICE candidates (list of addresses of how world sees us. our publicly accessible IP Addreses.)
+
+--Ice Candidates--  INTERACTIVE CONNECTIVITY ESTABLISHMENT. 
+	Ice candidates are potential networking endpoints that WebRTC uses to establish connection between peers. Each candidate represents the type of method for 2 devices to communicate in real time in video, voice calls. 
+	Ice candidates are nothing but transport addresses used to establish connection between peers. We Get ICE candidates of a particular remote system/ or our own system via a STUN Server. 
+	FREE GOOGLE STUN SERVER : stun:stun.l.google.com:19302  // AS ITS NOT MUCH OF A TASK TO MAINTAIN A STUN SERVER. 
+	
+	There are usually multiple ICE candidates - if one fails, webrtc can use another one. 
+	example - if 2 peers connected to same router wants to communicate, webrtc can happen via their private ice candidate while from different geographically region, can connect via public IP ICE candidate.
+	
+---TURN SERVER --	Traversal using relays around NAT.	(FALLBACK FOR REAL TIME COMMUNICATION)
+	1. Sometimes from from Peer 2 media communication doesn't happen due to restriction of the network. One of the big reason is as we are getting ICE candidates from STUN server our network might block any other incoming data except from STUN server. 
+	It will accept connection from STUN server as it has provided us the ICE candidates. 
+	2. NAT restrictions prevent a direct connection. A firewall might block the connection. Router might block the request
+	So to solve this problem, we use a TURN server for relaying network traffic between the peers. 
+		TURN gives you bunch of extra candidates. we don't need TURN servers for 95% of the calls. for 5% of the video calls, we have to fallback on TURN servers. 
+		Alongwith the addresses of each of the peer, Peer will also get TURN Server Addresses and Now Peer to peer communication is happening via TURN Server.. its no longer P2P IT IS PEER TO PEER VIA A TURN SERVER. 
+	NOTE: STRICTER THE NAT SERVER IS, HIGHER THE POSSIBILITY OF COMMUNICATION VIA A TURN SERVER. 
+	
+INTERVIEW QUESTION: Why TURN server works and not STUN server. how is it different approach ? 
+	IN STUN SERVER APPROACH, we get the ICE candidates from STUN server and then we exchange it on Signalling Server. So Sometimes due to NAT restrictions, Media communication doesn't happen as it expected media communication via STUN server. 
+	So in TURN Server Approach, we get the ICE candidates from TURN Server and the media communication also happens via TURN server. 
+	SO NAT RESTRICTION DOESN'T APPLY HERE. TURN SERVER CAN BE A BIT EXPENSIVE.
+THERE ARE OPEN SOURCE CODE FOR TURN SERVERS WHICH WE CAN JUST DEPLOY ON AN EC2 MACHINE. 
+
+---Offer --
+	process of first browser/peer sending its ICE candidates to the other browser/Peer for connection via Signaling server
+---Answer --
+	process of second browser/peer returning its own ICE candidates to the other browser/Peer via Signaling server
+	
+	Usually for both Peers/browsers to send data to each other, we do 2 WebRTC connections. so first Peer/browser sends offer and Second Peer gives answer for the first connection and for second connection Second peer will send offer and first peer will send Answer. 
+
+---SDP - Session description protocol -- THIS IS THE FILE THAT IS SENT IN THE OFFER AND RECEIVED IN THE ANSWER. 
+	We send this SDP to the other side via signalling server. 
+	SDP - single file that contains ICE candidates, what media we want to send, what protocol to be used to encode the media.. 
+	standard for P2P connection. its a way of describing a session. SDP contains timing info of audio n video, source address, codec 
+	SDP is used by WebRTC, RTP (real time protocol) n SRTP (Secure RTP). SRTP is used by WebRTC for encryption and decryption. 	
+	-- RTP - network protocol used for sending various media from one endpoint to another in real time. 
+	-- RTSP -  real time streaming network protocol that controls how streaming of media will happen between a server and a client. basically it describes what happens when we click play/stop when streaming a video. 
+	-- codec - coder-decoder - program,device/algorithm for encoding and decoding a data stream. 
+	
+-----TRICLE ICE-----------------
+We are collecting ICE candidate from STUN of Peer 1 and then relay turn server of peer 1 and then sending offer and same thing is happening for peer 2 and then establishing connection between them but synchronously.. so instead of doing synchronously, we can Collect ICE CANDIDATES AND ESTABLISH CONNECTIONS CHECKS IN PARALLEL AS SOON AS WE GET THE LOCAL IP ADDRESS. as soon as we get more candidates we update the ICE candidates to establish the connection initially. THIS PROCESS IS CALLED AS TRICKLING ICE CANDIDATES AS WE ARE TRICKLING THE ICE CANDIDATES FROM THE BEGINNING OF THE SESSION UNTIL THE CONNECTION IS ESTABLISHED PROPERLY. 
+
+Encoding protocol -	Whenever video calling, we don't send data frame by frame. we send encoded data - audio, video which compresses this things. 
+
+---RTCPeerConnection----------------------------
+	RTCPeerConnection interface represents the connection between local PC and remote PC. it provides methods to connect with the peer, maintain the connection and close it when not required. it gives access to sdp, lets us create answers/offers and and send media.
+		it hides the complexity of webrtc protocol. 
+	
+Peer A initiates the connection creating an offer in SDP format in a chosen signal and sending it to peer B. Peer B will receive the offer from the signal channel and will create answer and send it back to the peer A. 
+We Exchange information like endpoints IP address n port, transfer protocol being used, media to be sent and its format using SDP. Each Peer has 2 descriptions stored in hand - the local (itself) and the remote (other one). 
+
+Logical Flow:
+Step 1: Before connection, peer asks STUN Server for his ICE candidates and after getting ICE candidates, we send it to another Peer via signalling server. 
+Step 2: Peer 2 also asks STUN server for his ICE candidates and then sends it to Peer 1 via signalling server. 
+
+-- Code Flow -- Connecting the two sides --
+	1. Browser 1 creates an RTCPeerConnection. // const p1 = new RTCPeerConnection(); 
+	2. Browser 1 creates the offer. 	// const offer = await p1.createOffer()
+	3. Browser 1 set the local description to the offer. // offer.setLocalDescription()
+	4. Browser 1 send the offer to the signaling server which then sends it to the browser 2.
+	5. Browser 2 receives the offer. 		
+	6. It sets the remote description to the offer. 	// const p2 = new RTCPeerConnection();   const ans = await p2.createAnswer();
+	7. It creates an answer. 				// p2.setRemoteDescription(p1.localDescription) // offer from p1 is my remote
+	8. It sets the local description to the answer.	// p2.setLocalDescription(answer) // my local is my answer from p2.					
+	9. It sends the answer to the other side via signaling server. 	
+	10. Broswer 1 receives the answer and set the remote description to the answer. // p1.setRemoteDescription(p2.localDescription) // received by p1.
+
+--- just connection flow---
+
+===========TO ACTUALLY SEND THE MEDIA================
+1. Ask for mic/camera permissions.
+2. get audio/video stream.  
+3. call addTrack on the PC. this would trigger addTrack callback on the other side.  
+		pc1.AddStream(stream)
+		pc2.onTrack 
+
+------------------------ABOVE WEBRTC ARCHITECTURE IS ONLY FOR PEER TO PEER COMMUNICATION. 
+==================WE USE ANOTHER ARCHITECTURE FOR DOING GROUP CALLS. 
+	Problem with p2p architecture is that it doesn't scale well beyond 3-4 people because we would have to create a complex mesh of RTCPeerConnections. 
+
+2 popular architectures for doing webRTC -
+	1. SFU - SELECTIVE FORWARDING UNIT - selectively forwards our data packets. USED FOR GROUP CALLS.  
+			acts as a central media server which can send forwards data packets between users.
+		It can do several optimizations such as Stopping people's video, downscaling people's video - if we pin a particular user's video, it will show that video in a more proper pixels - 720p. if unpinned, will be downscaled.  
+		THIS DOWNSCALING is called Simulcast.
+		SIMULCAST : browser sends video in different px - 360p, 480p and 720p. If user is not pinned and in small screen, SFU will decide to send data packets of 360p. If user is pinned, SFU will send data packet of 720p. 
+		libraries : mediasoup, pion, JANUS, JITSI
+		Example: google meet where we want to connect with 100 people. we connect with google server and we send our video to google server which then distributes it with other people to create a video call. 
+		MEDIASOUP IS A PROPER SFU LIBRARY. 
+		PION - its more of webrtc protocol in golang. 
+	
+		Disadvantage with SFU -
+			If there are 50 people in a call, video can be paginated ( only specific number of video can be streamed at a time) but audio can come from 50 people at once, so audio crackling can happen as browser has lot of audio tracks coming in. 
+			
+	2. MCU - MULTIPOINT CONTROL UNIT----
+		It allows for multi party communication by integrating audio and video stream into a single stream before forwarding it.  It solves the problem of SFU by merging audio streams - only 3 loudest audio stream can be heard at a time. 
+		WHILE SFU JUST FORWARDS THE DATA PACKETS WITHOUT DECODING ANY VIDEO STREAM, MCU DECODES VIDEO/AUDIO STREAM (USING FFMPEG FOR COMPRESSING) and mixes them to create a single stream and then send it to everyone. 
+		MERGING PROCESS - when user 1 and user 2 sends audio, user 3 will receive them as merged audio but user 1 and 2 won't receive merged audio as then it will also contain repeated audio of their own, so they will only receive other user's audio. 
+		Latency issue can happen in MCU as it needs to encode and decode videos. 
+		
+	---ZOOM RECORDINGS - IF SFU IS USED FOR THE VIDEO CALLING, data of SFUs can be sent to MCU servers/ or mixers who will merge all video/audio streams and then convert it into mp4 and save the video. 
+
+------IMPLEMENTATION OF WEBRTC WITHOUT LIBRARY------------
+
+=====1. Creation of signaling server==========
+--3 things to be done by Signaling Server--- we implement this on a websocket server. 
+	websocket because we want setup process as quickly possible for video calling 
+
+3 types of socket message to handle:
+1. CreateOffer by browser 1 to send to browser 2.
+2. CreateAnswer by browser 2 to send to browser 1. 
+3. AddIceCandidates by browser 1 to browser 2 and viceversa.  AddIceCandidates will be used by both the browsers to send each other their own ice candidates. 
+
+=====2. Frontend - React + PeerConnectionObject=====
+		
+------------HLS-----------------------10 second delay. 
+protocol for live streaming. http live streaming. bandwidth cost is lower. 

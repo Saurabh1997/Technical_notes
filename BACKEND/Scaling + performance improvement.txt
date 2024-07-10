@@ -1,0 +1,10 @@
+Vertical scaling - increasing the size of machine to support more load. nodejs won't be able to fully utilize vertical scaling as compared to a Multi-threaded language like java, Golang, Rust.  
+	In Rust we spawn threads to fully utilize vertical scaling. in Go, we have subroutine. in Java we have threads. 
+	In Nodejs we can use cluster module to spawn more nodejs app to fully utilize our CPU. but this spawning is not much light weight as much as a goroutine. 
+	
+	for loop till os.cpus().length, 
+		can do cluster.fork().
+		
+	
+	
+Horizontal scaling - we are increasing number of machines. 

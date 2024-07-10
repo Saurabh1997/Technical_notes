@@ -1,0 +1,41 @@
+useSelector and useDispatch()
+
+map state to props - useSelector. 
+takes in a function argument and returns the part of state that we want. 
+
+map dispatch to props - useDispatch.
+takes 
+
+return statement in useEffect() - if our component unmounts before promise resolves, useEffect will try to update state on unmounted component. 
+we might get an error - can't perform a react state update on an unmounted component. To fix this, we write a clean up function. 
+
+
+Redux async Data flow - 
+1. to add async data flow, we introduce a Redux middleware function which will can make API calls, to enable writing logic that has side effects. 
+2. It lets us pass a function to dispatch instead of an action object. 
+3. Once that dispatched function with any value reaches the middleware, it can make an async call and then dispatch a real action object when async call is completed which will update the store variable. 
+
+Thunk is a piece of code that does some delayed work. 
+Thunk is the middleware for Redux. it allows writing functions with logic inside that can interact with Redux store's dispatch and getState method. 
+Thunk is a function that wraps an expression to delay its execution. 
+
+Redux thunk allows to write action creators that return a function instead of an action.. can be used to delay dispatch of an action..  
+It allows to return function in which we can write logic (calling API) and then this function can be passed to dispatch.. 
+
+export const editPeerBenchmark = (payload:any) => async (dispatch: Dispatch<any>) => {
+ try catch 
+}
+
+while calling editPeerBenchmark, 
+
+	const dispatch = useDispatch()
+	dispatch(editPeerBenchmark(payload)
+
+function createAction = (type:string) => {
+return function(payload? : string) => return {type: type, payload : payload}
+}
+
+
+can use this createAction function like..
+
+export const renameEdit = createAction(ACTIONS.NAME)

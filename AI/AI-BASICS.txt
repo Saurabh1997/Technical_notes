@@ -1,0 +1,36 @@
+------------------------------TYPES OF AI ------------------------------
+
+1. AI - capacity for machines to perform tasks which require some human intelligence like data processing, image processing, robotics.
+2. Data science to leverage AI on data. used for general statistics and general model building.
+3. ML - trains model to identify and predict patterns based on human processed data.
+4. Deep learning -    powerfull and advanced ML to improve model performance without feature engineering. 
+5. 
+
+
+
+
+
+-------------------------GENERATIVE AI------------------------------------
+TYPE OF AI WHICH GENERATES NEW ORIGINAL CONTEXT BASED SET OF DATA AND RULES.  POWERED BY FOUNDATIONAL MODELS - GPT4, NVIDIA'S MEGATRON, 
+-can generate complex text, art, music and even code.
+-Improvement of human computer interaction. 
+- self programming machines. 
+
+	mechanism - 
+		1. OUTPUT - Application like gpt generate content (text, code, music, art) based on how their models were trained as well as user inputs.
+		2. PREDICTION - GENERATIVE AI MODEL - mimicking inputs to generate outputs. models generate outputs based on their understanding of human generated inputs.
+		3. MODELS - they process vast amount of data inputs. they use neural networks to learn patterns from huge amount of data & store the information to use it to generate original content.
+		4. CLOUD & DATA PLATFORM - where data is stored.
+		5. COMPUTE POWER - scale of compute power capacity needed to train and process foundational models. 
+	
+3 major components - 
+	1. foundational models - building block to create genAI models. 
+	2. Developer tools- packages, managed services, model hubs, frameworks to build own GenAI based on the usecase
+	4. Application - client facing 
+
+MULTIPLE TYPES OF FOUNDATIONAL MODELS FROM TEXT-BASED LANGUAGE LEARNING MODELS (LLMS) to audio, video, multimodal generators. 
+Google - Lambda - language model for diagogue application. Palm 2, Bert 
+		Bard is built on Lambda. 
+Anthropic , Meta - Llama, 
+
+SOUTH KOREA'S - GIGA GENIE IS BUILT ON NVIDIA'S NEMO MEGATRON FRAMEWORK. 

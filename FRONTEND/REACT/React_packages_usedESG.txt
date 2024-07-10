@@ -1,0 +1,46 @@
+Packages used 
+
+node version - 14.18.0.. 
+
+history - for managing session history stack and navigate in between and persist state betweeen sessions. createBrowserHistory()  
+
+connected-react-router - synchronize router state through redux store through uni-directional flow (history - store - router - component)
+
+createBrowserHistory method is supplied to connected-react-router
+
+@azure/msal-browser, msal-react, msal-common  - for microsoft authentication with azure for single page applications. (2 storage methods - localStorage & sessionStorage) - sessionStorage is more secure. localStorage can give single-sign across multiple tabs. 
+msal-common - to handle authorization tokens in AuthenticationResult.  
+ 
+-------FOR ENABLING PROTECTED ACCESS TO EXPRESS APIS, 
+1. FIRST STEP - OBTAIN JWT ACCESS TOKEN FROM AZURE AD (azure access token directory) tenant. 
+(will have to generate Azure AD tenant(organization) and then a personal ID of the tenant ID)
+2. access token is used as bearer token to authorize the user to call nodejs api protected by azure AD.
+3. protected api responds with claims in access token.
+
+TODO_PRACTICE
+
+REACT-HISTORY WITH connected-react-router 
+createBrowserHistory - manages page navigation as per the browser preference. prevents disturbing virtual DOM as it won't rerender if user uses browser buttons for navigation. 
+
+@azure/msal-browser, msal-react WITH NODEJS API CALLING. 
+
+Route and Switch from react-router-dom : for creating switches and routes.. (tabbed routes) 
+
+<Switch>
+<Route path="/Compare"></Route>
+<Route exact path="/insightPath"></Route>      // EXACT IS ADDED WHEN WE HAVE MULTIPLE PATHS WITH THE SAME INITIALS later SUCH AS /insightPath/:2 
+</Switch>
+
+WHEN DOING ROUTING --- can directly do history.push("/pathname")
+
+useLocation hook from react-router-dom ---- returns current location object. 
+location.state will give state regarding the state sent from history.push...
+location.hash - to direct all traffic to our react router application. 
+
+react-mock-store- for mocking dummy values for use in unit testing
+react-testing, jest - as an assertion library for carrying out tests. react-testing - giving access to test DOM elements. 
+enzyme -  reactwrapper
+
+classnames - for conditionally joining classNames together. 
+
+enzyme adaptor for react 17. 

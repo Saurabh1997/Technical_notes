@@ -1,0 +1,76 @@
+HOW TO DEPLOY FRONTENDS TO AWS AND SETUP CLOUDFRONT FOR THE SAME - REACTJS - 
+
+--------------CDN----------content delivery networks-----------------
+We store media objects in S3 buckets. it provides URL to access the media object. but we can't serve the URL directly from application..
+for example person sitting in india will take longer time to access the media object stored in S3 bucket in US. 
+So it is cached in india locations.. which is called CDN.. 
+
+We give actual source location URL to the CDN..from where it should be cached. 
+When we create CDN, we mention the source URL. from there we distribute in the application. 
+
+Application has to fetch data from CDN, whenever front end calls for an image/video - from CDNLINK/image.jpg link, find whatever application wants and cache at the CDN link.. and then serve to the application. 
+
+AWS CloudFront - will create CDN link for an S3 store. After creating S3 store, we create CDN and point it to the S3 store link which is the actual source.
+CloudFront will give a URL link WHICH WE WILL ACTUALLY USE TO FETCH THE IMAGE/VIDEO FROM THE SOURCE.. IT WILL ALSO CACHE THE SAME AT ITS END - nearest location.
+CDNs has bunch of POPS all around the world - POINT OF PRESENCE. APPLICATION WILL ASK FOR SOME VIDEO/IMAGE THROUGH THE CLOUDFRONT URL, IT WILL THROUGH A POP - NEAREST POINT OF PRESENCE WHERE ITS CACHED from the source link(s3 lINK). 
+CACHES ARE CLEANED AFTER ITS NOT USED FOR SOMETIME. 
+
+S3 - Object Store  ;:::    CLOUDFRONT - CDN - distribution is handled. 
+S3 will charge as per the storage capacity.. CDN will charge as per the network storage consumed. 
+WHEN AWS IS ASKING FOR DISCOUNT , WE CAN ASK ON CDN.. AS ITS HIGHER. 
+NOTE : IF WE DON'T HAVE ANY USER, BUT STORAGE IS HIGHER THEN S3 WILL BE CHARGING MORE. 
+IMPORTANT : WE CAN USE USE SOME OTHER CDN TECH, AWS S3..
+
+---WE USE CDNS FOR FRONTEND DEPLOYMENTS.. WE CAN'T USE CDN FOR BACKEND, BECAUSE BACKEND HAS TO BE DYNAMIC USER SPECIFIC IT CAN'T REALLY BE CACHED. BACKEND RESPONSE IS USER SPECIFIC.. BUT FRONTENDS ARE EQUAL.. IMAGE/FILES.. CAN BE CACHED. 
+For every user, we Send the the same front end so can use CDNs. NO NEED TO USE EC2 MACHINE AS ITS PRESENT IN ONE REGION ONLY. 
+WE HAVE EDGE NETWORKS FOR BACKEND, WHERE WE DECIDE WHICH LOCATIONS TO DEPLOY OUR BACKEND. 
+
+For Frontends, MP4, Images, Object stores + CDNs are a better approach. 
+
+THIS APPROACH IS NOT FOR SERVER SIDE RENDERING - NEXTJS - ONLY WORKS FOR HTML/CSS/JS RETURNING PROJECT. 
+
+--------
+Step 1: Building the app. npm run build. - will create a dist folder. 
+serve - serve the react app using serve command. 
+	or we can use express and then serve through express.
+serve - helps serve a static site, SPA or just a static file.
+
+We have to store this files of dist folder in S3 bucket. 
+
+Step 2: Create an S3 Bucket. keep everything default. Always block all private access and give limited access to CloudFront (CDN) only. 
+Step 3. Upload all the files of dist folder which is already built. Don't upload the folder created by build.. only upload index.html, assets and other files present at root level. 
+Step 4: Create CloudFront Distribution.  A DISTRIBUTION MEANS WE ARE CREATING A PLACE/POP FROM WHERE CONTENT WILL BE DISTRIBUTED AND CACHED. 
+	1.	Choose origin domain (S3 bucket origin URL in domain)
+	2.	origin path - as we have index.html in root folder. 
+	3.	Name - can be anything 
+	4.	Origin access - 
+			is origin (S3) open (Public) 
+			Origin access control settings (recommended - as bucket restricts access to CLOUDFRONT only)
+	5.		Create OAC - ORIGIN ACCESS CONTROL POLICY. 
+			NOTE: FOR OAC, HAVE TO UPDATE S3 BUCKET POLICY. 
+	6. Enable Security protections (WAF)
+	7. CNAME - alternate domain name. 
+	8. Default root object - default path to starting point - index.html. 
+Step 5. Update that S3 bucket permission to update policy. Edit Bucket Policy.
+	Update generated policy condition Statement - condition : Include CLOUDFRONT DISTRIBUTION name. 
+	Resource: anything inside S3 bucket - react-app-12/* should be accessible to cloudfront distribution mentioned in policy. 
+Step 6. Can add custom domain name if we have bought it. 
+Step 7. can add new SSL certificate to support https url with new domain name. can buy SSL certificate from GoDaddy or 
+		can create from AWS. 
+		CLICK ON REQUEST CERTIFICATE. AWS CERTIFICATE MANAGER (ACM) - REQUEST FOR A CERTIFICATE. 
+		1. add the domain we have bought for which we want to create the SSL certificate. 
+		2. select DNS Validation. can select any encryption algorithm. 
+		3. TO VALIDATE OUR DOMAIN WITH THIS SSL CERTIFICATE, GO TO THE DOMAIN BOUGHT SERVICE...
+			FOR EXAMPLE IN GOOGLE DOMAINS, 
+			DNS - ADD A RECORD -  WHERE OUR ACTUAL DOMAIN WILL POINT TO 
+			TYPE CNAME RECORD	--> ADD THE CERTIFICATE NAME (CNAME NAME) --> ADD CNAME VALUE OF SSL CERTIFICATE. 
+			
+		4. ATTACH THIS CERTIFICATE TO THE CLOUDFRONT.. FOR WHICH WE HAVE ADDED THIS DOMAIN NAME. 
+		5. NOW IN GOOGL DOMAINS, WE HAVE TO POINT OUR URL DOMAIN (WHICH WE BOUGHT) TO THE CLOUDFRONT URL..
+			ADD A RECORD -->  URL --> CNAME --> CLOUDFRONT distribution URL WITHOUT HTTPS.
+Step 8. Adding an error page. Default Error Page. 
+		Create Error Page response in cloudfront distribution.
+		ALSO CREATE INVALIDATIONS - /* TO REMOVE ALL THE CACHE AFTER CREATION OF ERROR PAGE. 
+			
+		
+			

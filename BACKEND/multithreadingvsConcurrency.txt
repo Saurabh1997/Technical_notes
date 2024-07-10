@@ -1,0 +1,5 @@
+CONCURRENCY VS MULTITHREADING :
+
+CONCURRENCY - multiple tasks/ processes running on a single CPU. OS executes tasks by switching them frequently.
+Unit of concurrency - process. Different process. 
+MULTITHREADING - Multiple part of same program is executing. Same process

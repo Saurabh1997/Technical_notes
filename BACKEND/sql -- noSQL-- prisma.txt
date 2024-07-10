@@ -1,0 +1,175 @@
+1. Data model and structure
+SQL is suited for tabular structure and well-defined relationships.  whereas nosql can be used for unstructured data, dynamic data.
+
+2. Scalability requirements - 
+	Vertical scaling - sql dbs are suited for scaling vertically by adding more resources (CPU, storage ) to a single server. This may hit performance limitations as resource demands increase, 
+	Horizontal scaling - NOSQL DBs are designed to scale horizontally enabling distribution of data across multiple servers.. and they have built-in support for replication, sharding and partitioning. this makes NOSQLs have better suiting for large scale applications with high write loads.
+	
+		replication - keeping copy of same data on multiple servers.
+		partitioning - splitting a large database into multiple databases based on data cohesion. 
+		Sharding - horizontally sharding and vertically sharding it is partitioning on seperate database server instance to spread the load. 
+			horizontally scaling - adding more machines in the network and distributing the load on these machines for daster processing..
+			vertical scaling - increase server size.
+			
+
+3. Consistency and availability -
+	SQL supports ACID especially consistency of the data.. 
+		atomicity - in a transaction, either all piece of commands are committed or not. follows all or nothing rule. 
+		consistency - a transaction either creates a new valid state of data, or if any failure is there, return all states to normal. 
+		isolation - a transaction in process and not committed should be isolated from any other transaction.
+		durability - is such that a committed data is saved in system in such a way that in case of system failure n resstart, data is available in its committed state only. 
+		Therefore more supported for banking applications as it requires ACID transactions. 
+-----------------------TRANSACTIONS -----
+	SHOULD START A SESSION WHENEVER TRANSACTION IS ABOUT TO BEGIN.. FOR EXAMPLE SENDING MONEY FROM ONE ACCOUNT TO ANOTHER ACCOUNT. WHEN SENDER SENDS MONEY TO RECEIVER, TRANSACTION SHOULD START.. DEDUCTION WILL HAPPEN FROM SENDERS AND THEN RECEIEVER'S ACCOUNT WILL BE ADDED THAT AMOUNT.. IN BETWEEN IF ANYTHING FAILS, TRANSACTION SHOULD BE ABORTED AND ROLLED BACK. 
+	SQL query for transaction --
+		BEGIN; 
+		INSERT INTO STATEMENT
+		INSERT INTO STATEMENT
+		COMMIT;	
+	
+	NoSQL prioritizes high availability and fault tolerance. it can lead to challenges maintaining data integrity.. more suitable for high availability applications. NOSQL can lead to data INCONSISTENCIES..CAN CAUSE RUNTIME ERRORS. 
+	
+4. Query complexity 
+	SQL supports powerful and very complex querying ability.. like joining multiple tables. 
+	NoSQL doesn't support this powerful querying abilities.
+	
+5. Performance & latency - 
+	if we need high performance and low latency with high write loads, large scale data storage, no SQL is better optimized for this.\
+	SQL DBs perform highly reliable operations and its robust. 
+	
+---------------------------foreign key-----------------------
+	in create table (
+	id SERIAL PRIMARY KEY,
+	user_id INTEGER NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES tableName(column_id) ON DELETE CASCADE 
+	)
+	
+	NOTE : ON DELETE CASCADE - IF WE DELETE FOREIGN KEY DATA OF THAT TABLE, IT WILL AUTOMATICALLY DELETE THAT REFERENCES IN OTHER TABLE ALSO.. 
+	
+	
+Performance improvement while forming a SQL query:
+
+Always use indexes. 
+Use Sargable queries - Search argument Able. 
+		Query that can efficiently use indexes to speed up execution process for optimizing DB performance. 
+		Bad :   YEAR(COLUMNName)
+		1. Avoid using functions on the indexed columns in WHERE CLAUSE. as function we have to apply to every row so can't use index. 
+		2. Use direct comparisons. avoid wrapping columnn in functions.
+		3. if want to use function on a column, create a compute based column. or function based index. 
+Optimize Select queries using indexes - USE IN WHERE, JOIN.  
+
+consider using pagination with Limits.. for larger dataset. use sorting as well. 
+
+TIME SERIES DBS - series of data indexed in time order.. graph data. line graphs.
+used for monitoring stuff like trading. uses time as index. we just extract data based on time.
+every data getting collected at a particular point of time can be stored in time series DBs.
+ElasticSearch, InfluxDB , Prometheus. 
+
+----Graph DBs - data stored in form of graph. Extremely high number of relationships. specially in cases where relationship are imp (social network apps). Example - Neo4j 
+
+----Vector DBs - stores data in the form of vector. used in machine learning. 
+					text is converted into objects which are vectors (values- 0.8,0.3) using embedding model and this values alongwith text are stored in vector DBs.
+	example - pipecone 	
+----SQL DBs - used for strict schemas. difficult to change schema.. have to do migration. 
+----NOSQL DB - schemaless, easier for faster development. every row can have different schema.  no strictness. can lead to inconsistent DB.
+				
+		connection string	-	postgresql://username:password@host/databaseName
+NOTE : ALWAYS USE PARAMETERIZED QUERIES INSTEAD OF DIRECT QUERIES WHEN QUERYING THROUGH NODEJS. When using direct queries, sql will execute them as normal queries and can inject erroneous sql code.. while doing so.. so just supply values seperately so that DB will treat user input as data and not sql query. 
+	// sql injection - can send "; Delete * from users;" // this will end our sql statement and directly execute delete. 
+	  const insertQuery = `INSERT INTO dev_users (
+        username,
+        name ,
+        email
+      ) VALUES ($1, $2, $4)`;
+	const Values = ["gauravgap123", "gaurav patil", "gap123@gmail.com"];
+	const result = await client.query(insertQuery, Values);
+
+// Benefits of using joins - Reduced latency, transactional integrity (as one liner query)
+
+------------------------------PRISMA-----------------------------------------------
+ORMs - connects and maps objects in programming language to tables in a RDBMS.
+Prisma can be used for mongoDB, Postgres. Prisma gives data models, type safety, automated migrations, auto completion.  
+In Prisma , in a single file - data model is defined. what tables we have, how the table will look. how the rows are related to each other.
+automated migrations - it will gives centralized store where all migrations are present. 
+
+NOTE: PRISMA DIRECTLY READS ENV VARIABLES FROM THE .ENV FILE. 
+PRISMA GIVES AUTOMATIC MIGRATION AND TYPE SAFETY, AUTO COMPLETION. 
+IF WE WANT TO ALTER A TABLE AFTER THERE ARE ALREADY SOME ENTRIES AND WANT TO ADD A NOT NULL COLUMNS, WHILE ALTERING WE WILL HAVE TO ADD A DEFAULT VALUE USING @default(value). 
+
+npx prisma init - to initialize prisma config file. 
+
+to define a prisma model , 
+model User {
+id Int @id @default(autoincrement()),
+email String @unique,
+done Boolean @default(false)
+name String? // to have null value as well. 
+}
+
+NOTE : CREATED A SINGLE SCHEMA FILE BUT HAVEN'T RUN THE CREATE COMMAND SO WE CAN GENERATE TABLE USING MIGRATION COMMAND.. 
+	npx prisma migrate dev --name name_of-Schema 
+	
+	model Users {
+  user_id Int @id @unique @default(autoincrement())
+  email String @unique
+  firstName String
+  lastName String?
+  password String 
+  profile_pic String?
+  mobile_number String
+  date_of_birth DateTime
+  CreatedDt DateTime
+}
+-------------  npx prisma generate - to generate client. 
+autogenerated clients in prisma - prisma will autogenerate prisma client that nodejs files can use to interact with the db. 
+	prisma will need to create js classes or js clients. 
+	CLIENT REPRESENTS ALL FUNCTION THAT CONVERT USER.CREATE INTO INSERT INTO SQL QUERY. 
+	
+	NOTE: ANYTIME WE CHANGE SOMETHING IN THE SCHEMA.PRISMA.. WE NEED TO DO 2 STEPS 
+		1. NPX PRISMA MIGRATE DEV
+		2. GENERATE CLIENT - NPX PRISMA GENERATE. 
+		
+	we can directly const prisma = new prismaClient() 
+		can do prisma.user.delete //  methods to manipulate in user table is already created by prisma client. 
+		
+------------AUTOGENERATED CLIENTS--------------
+anything that lets us interact with the Database tables is a client. 
+
+-----------RELATIONSHIPS IN PRISMA-----------------------------------------------
+model User {
+	id Int @id @default(autoincrement())
+	username string @unique
+	email string @unique
+	firstName string
+	lastName string
+	todos Todo[]   	/// to define one to many relationships
+	}
+	
+	
+model Todo {
+	id Int @id @default(autoincrement())
+	title string
+	description string
+	user_id Int // this is the foreign key
+	user User @relation(fields: [user_id], references: [id])  // mentions column which is going to reference which column in //User
+}
+
+for prisma query we can do .. prisma.todo.FindMany({where : {} , select : { 
+	user:true // will get data of user table linked to this todo. 
+}})
+
+-------------------CONNECTION POOLING--------------------------------------------
+--Serverless backends have one issue dealing with Databases. There can be many open connections to the DB if there are multiple workers open in multiple regions. At some point of time, connection won't happen as it will reach maximum connections. 
+--FOR THIS WE MAINTAIN A CONNECTION POOL WHICH ONLY CONNECTS TO THE DATABASE AND OUR WORKERS WILL CONNECT TO THE CONNECTION POOL.
+--Cloudfare workers don't work with prisma ORM. We have to use Prisma accelerate to allow cloudfare workers to use connection pool and work with prisma ORM. 
+1. -- We have to enable accelerate in prisma data platform. have to put env variables in wranger.toml. 
+--PRISMA ACCELERATE IS GLOBAL DATABASE CACHE AND SCALABLE CONNECTION POOL.
+
+2. -- WE DON'T DIRECTLY USE URL OF DATABASE IN OUR CLOUDFARE FUNCTION.. WE CREATE PROJECT ON ACCELERATE PRISMA AND THEN PUT THE URL OF OUR DB SERVICE IN THE ACCELERATE AND ENABLE ACCELERATE & SELECT THE SAME REGION AS OUR DATABASE AS THEY HAVE TO BE CLOSE TO CREATE THE CONNECTION POOL. 
+3. Create Accelerate URL API KEY and put it inside WRANGER.TOML (THAT'S WHERE CLOUDFARE WORKS FIND FOR ENV VARIABLES). 
+		1. Put DATABASE_URL AND DIRECT_URL (TO HOSTED POSTGRES) IN WRANGLER.TOML. DIRECT_URL IS FOR MIGRATIONS.
+		2. put direct_url in schema.prisma. 
+4. npm i @prisma/extension-accelerate. npx prisma generate --no-engine.
+
+We put Database URL in .env file. and prisma accelerate API KEY in WRANGLER.TOML
+ 

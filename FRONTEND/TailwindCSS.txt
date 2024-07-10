@@ -1,0 +1,51 @@
+------------------TAILWIND CSS-------------------------------
+
+postCSS - tool to transform CSS . to understand tailwind. 
+There are lot of utility classes to create custom designs without writing css. 
+
+1. Responsive - can't use media queries but we have 5 types of breakpoint prefixes designed for each screen resolution. 
+BREAKPOINT PREFIXES  - sm, md , sxl, xl, 2xl
+
+can use modifiers for states such as hover, selection. also can use ::After and ::before. 
+can use first:css and last:css in a loop where we have a list. 
+hover:bg-color. 
+can change color of highlight by doing selection:bg-color.
+
+It prefers color scheme based on the OS dark/white mode selected by user. 
+can specify color of dark mode by using dark:bg-color.
+
+Tailwind CSS is customizable and extensible. can define custom styles, custom color palletes, typography, screen by adding them as a normal variable like mixins inside of themes of tailwind.config.js. 
+-- can extend styling of tailwind css by using extend. 
+
+themes : {
+screens: {
+sm:"480px"
+},
+colors: {
+'blue': 'colorcode'
+}
+extend: {
+spacing : {
+128: '32rem' }}
+}
+
+
+-- If we want to keep the base layer css as it is for the html, body css and update css for specific elements, then :
+We can do something like :
+	@layer base {
+		h1 {
+			@apply text-2xl;
+		}
+	}
+	
+--COLUMNS ---
+	for equal widths - use grid-cols-3
+	for unequal widths - grid-cols-12 // 12 columns
+					and set cols-span-5 // will take space of 5 spans for a cols.
+
+--MOBILE-FIRST APPROACH - 
+	Tailwind CSS works mobile first. Never use sm for mobile screens. default css will be used mobile screens. 
+		TO ASSIGN FOR MORE SCREEN WIDTH - CAN USE SM, MD, LG AND 2XL. 	
+
+PROS:
+Tailwind is very light weight. if we use m-3 class everywhere, only once it will be imported while bundling. it keeps bundle size very small. 

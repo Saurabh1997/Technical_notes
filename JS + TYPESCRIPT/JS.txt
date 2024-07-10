@@ -1,0 +1,116 @@
+ECMASCRIPT - scripting language specification on which js is based. Defines rules for the JS. 
+JS is the actual language conforming to the ECMASCRIPT specification. 
+BUN HAS A FASTER RUNTIME THAN NODEJS. WRITTEN IN ZIG.
+
+call() vs bind() vs apply() --
+
+call - calls function with a this value and arguments provided individually. used to call a function of one object on another object. 
+
+apply - calls function with a this value & arguments provided as an array. 
+
+bind - creates a new function ,that when called, has its "this" set to the provided value with a given sequence of arguments preceding any provided when the new function is called. 
+
+for example, 
+function log(...args){
+console.log(this, ...args)
+}
+
+const boundLog = log.bind("this value", 2,3 )
+boundLog(4,5)  /// "this value", 2,3,4,5
+
+Immediately Invoked Function Expressions (IIFE) -- 
+(function (){ 
+// Function Logic Here. 
+})();
+
+JS IS SINGLE THREADED SYNCHRONOUS LANGUAGE. 
+JS is interpreted language. runs code line by line unlike compiled language which compiles the code all at once. 
+JS is single threaded so it uses one core at a time. hences its bad for SCALABLE SYSTEMS. 
+for scalable, we can use java, C++, golang. 
+Javascript runtime environment - container required to run js code. 
+JS can run anywhere and on any devices. 
+setTimeout of browsers can be different as compared to the one in Nodejs. 
+ECMASCRIPT - governing body for js standards. 
+JS engine, set of APIs to connect with outer env. event Loop in JRE.. callback queue and microtask queue   --- all this in JRE. 
+JS engine is not a machine. 
+
+if there's a long loop running, thread will be blocked for the loop.. even if the setTimeout timer is over.. and the pending callback will have to wait until the thread is free. 
+
+setTimeout is an async function. because as soon as JS gets the timer, it starts the timer and switches to another task. 
+setTimeout is a web api.. means its made available by browser and not from JS. 
+
+Asynchronous functions are better handled by callbacks. can do simple tasks by callbacks but are not beneficial. Promises are syntactic way to handle asynchronous functions. can make our own asynchronous function by using promises. 
+
+EVENT LOOP - 
+JS is synchronous single-threaded language. it has CALL STACK which can do one thing at a time. CALL STACK PRESENT IN JS ENGINE. 
+it continuously monitors call stack and callback queue. 
+JS engine - heart of JRE.
+
+Inside JS engine, code - parsing then compilation and then execution. 
+1. In Parsing - code is broken down into tokens. also there is syntax parser..which breaks code into AST - abstract syntax tree. 
+2. Compilation - JIT (just in time compilation) - it uses both interpreter alongwith a compiler. 
+		Interpreter - executes code line by line. this is faster. 
+		compilation - code is compiled before execution. code is compiled into optimized version and it is executed. THIS IS MORE EFFICIENT. 
+	JS can be interpreted or compiled based on JS engine. 
+AST goes to interpreter. Interpreter converts high level to byte code and moves it to execution step using compilation...to optimize the code. can happen in multiple phases. 
+	in some JS engines, there is something called as AOT - AHEAD OF TIME COMPILATION. 
+3. Execution - memory heap - function and variables are stored and call stack is there to execute the AST. its in sync with garbage collection too. 
+GARBAGE COLLECTOR - TO SWEEP garbage using mark and sweep algorithm. 
+
+Optimizations done by Compiler - Inlining, Copy elision, Inline caching. 
+
+v8 - interpreter engine known as Ignition. Turbofan optimizing compilter.  
+
+1. CALLSTACK - in JS engine, we have call stack. whenever any synchronous piece of code is running, a GLOBAL EXECUTION CONTEXT IS CREATED. n its pushed inside call stack. 
+	used for executing synchronous code.	
+in GLOBAL EXECUTION CONTEXT, CODE WILL BE RUN LINE BY LINE.  
+For any function invocation, global context is created for that function and put inside call stack.  after finishing global execution context, it get popped out of stack. if there is anything inside call stack, it directly executes that.  
+if we want to wait for something like a setTimeout, it cannot exist in call stack. 
+
+We have web apis like set timeout, DOM APIs, fetch, local storage, console, location. its not part of JS. this are part of browsers. they are made global to have accessed by call stack. 
+ALL THE WEB APIS ARE FIRST RESOLVED - FETCH CALL FETCHES DATA, TIMER FUNCTION WAITS FOR THE TIMER TO GO OFF AND THEN THEY ARE PASSED ONTO CALLBACK QUEUE AND MICROTASK QUEUES. 	
+
+2. EVENT LOOP AND CALLBACK QUEUE - 
+CALLBACK QUEUE IS EXECUTED AFTER CALL STACK IS EXECUTED. after set timeout expiration callback is put into callback queue and from there it is put into call stack to execute. till expiration is not over, it is into WEB APIs execution area. 
+EVENT LOOP is responsible as a gatekeeper to check callback queue if we have something in it, it pushes to call stack. DOM apis comes into callback queue. 
+
+3. Microtask queue - all callback functions which comes through promises can go to microtask queue. FETCH CALLBACKS GOES INTO MICROTASK QUEUE. similar to callback queue but higher priority than callback queue. in case of network call/fetch call, callback function for it will go to microtask queue. EVENT LOOP WILL CHECK IN CALL STACK AND THEN WILL CHECK IN Microtask QUEUE.  while setTimeout will get into callback queue. Mutation observers also comes into it. 
+EVENT LOOP WILL FIRST TAKE MICROTASK QUEUE (FETCH CALL) INSIDE CALL STACK TO EXECUTE ITS CALLBACK AND then it will take the task from callback queue into call stack to execute. 
+
+STARVATION OF CALLBACK QUEUE : if callback functions in microtasks creates more tasks and those tasks create more, then callback queue will starve for execution.. 
+
+CLOSURES - function along with its lexical scope is known as closure. combination of function bundled together with reference to its surrounding state. when inner function is returned, they still maintain their lexical scope irrespective of when its used outside as a reference to outer variable. FUNCTION ALONGWITH ITS LEXICAL SCOPE STATES IS RETURNED... THAT IS CLOSURE.  
+
+HOISTING - not defined and undefined is different. not defined is we haven't declared. 
+hoisting - we can access variables and functions even before initializing those variables. 
+NOTE: even before starting execution of code, javascript create memory allocation for all the properties in the code.  in case of variable memory allocation, it is declared and assigned undefined value but in case of function, whole code is put into assigning. 
+For arrow function, it behaves like a variable... so undefined value is assigned. 
+
+IN NORMAL FUNCTIONS AND NORMAL VAR VARIABLES, IF WE USE IT BEFORE DECLARATION, THEN THEY ARE INITIALIZED TO THE TOP OF THEIR CONTAINING SCOPE. this is called hoisting. 
+WHEREAS IN ARROW FUNCTIONS AND LET/CONST VARIABLES, if we use it before declaration then they are not hoisted to the top. they cause Reference Error. 
+
+two types of export and import -
+1. Named export - can export multiple things from same file and import multiple things from same file. import {} from ""
+2. Default export/import - only one per file.. import -- from --
+
+DIFFERENCE BETWEEN DEBOUNCING AND THROTTLING - 
+
+THROTTLING -  DELAY EXECUTING THE FUNCTION. will reduce notification that fires multiple times... IF WE WANT TO RESTRICT THE BEHAVIOR.  TO CALL FUNCTIONS AT REGULAR INTERVALS..
+
+DEBOUNCING - IT WILL MAKE CALLS AT THE END OF A BUNCH OF EVENTS. FOR EXAMPLE.. AT THE END OF TWO KEYSTROKES, API CALLS...  
+
+JS can context switch and delegate tasks.
+
+Promise is a class. IF WE DECLARE A FUNCTION AS ASYNC, THEN IT RETURNS A PROMISE BY DEFAULT. 
+
+HTTP 429 - rate limiting error from backend. 
+
+----------------------------------------------WEBSTORAGE - LOCALSTORAGE AND SESSION STORAGE------------------------------------------
+1. SessionStorage - window.sessionStorage - stores data for only one session of an opened tab.. data will persist for a tab or a window. 
+	 http and https will have different sessionStorage object. 
+		sessionStorage.setItem(), sessionStorage.getItem()
+		
+2. localStorage - persists even when browser is closed.  it will get cleared through localStorage.removeItem and cache clearing.
+
+
+----------------------------------EVENT BUBBLING & CAPTURING & PROPOGATION--------------

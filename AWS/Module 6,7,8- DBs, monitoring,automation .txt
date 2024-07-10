@@ -1,0 +1,155 @@
+---------------------------------------------------------------------6. DATABASE----------------------------------------------------------
+
+Amazon RDS, Aurora(mysql, postgres), Redshift (data analytics service for structured datasets)
+
+Document DB (mongoDB), DynamoDB (Row - column), ElastiCache(Redis)
+
+Amazon Timeframe (time series data), 
+
+
+Can do DB installation on EC2 - but not a good idea. CAN USE RDS (MANAGED DB ON AMAZON RDS)
+AMAZON RDS -  Aurora, PostgresSql
+can do instance configuration using burstable classes - db.t3.small 
+
+supports Multi-az deployments - replicate data in secondary DB. in case of failure, standby DB instance in another AZ. Not used for read-only scenarios.
+it is synchronized. 
+can have read replicas. can horizontally scale 
+Data encryption 
+
+Amazon aurora - supports mysql and postgresql. upto 15 replicas can be supported. 
+	DB clusters can have one or more DB instances 
+	
+DynamoDB - serverless noSQL DB. we just deal with a table. 
+A table can store unlimited amount of data. 
+
+
+
+-------------------------Database Caching - cache DBs in cloud to maximize performance. 
+Caching architecture - 
+
+1. all app serveers will be doing write queries... if data is not there in cache, it'll be fetched from DB and then cached. 
+
+caching strategy - 
+	Cache hit - data served from cache when available.
+	Cache miss/penalty - data not in cache. cache penalty when data is not in cache, so call will go to db can add extra latency. 
+	Cache when in DB.
+	
+ElastiCache Engines - 	
+	1. ElastiCache - cache cluster.
+---------Lazy loading - when cache miss, missing data request by application is get from DB and then saved in cache. You only cache frquently accessed data. Cache can be smaller. Low cost.  disadvantage - Cache penalty. data is modified in DB.. but in cache is old - serving of stale data. 
+		in order to use new data, we do "Lady loading  with ttl for autoexpiry". will give stale data for sometime. 
+
+----WriteThrough - app will write everything into cache that we want to write into database. so No cache miss. cache will be expensive. ADVANTAGE IS WE WILL GET LATEST DATA. will alawys get latest data.
+
+	1. Elasticache for memecached. 
+	2. ElastiCache for Redis -
+		Pub-sub. while memecache is for multi-threaded performance. for complex data types, always for redis. 
+		sorting ranking is there. 
+	3. DynamoDB accelerator - DAS - own cache DB for DynamoDB. DAX cluster is cluster of cache DBs.
+
+
+Database migration tool -
+		DMS - database migration service.
+		DMS - allows you to do hot migration(migrating active workload). hot migration is done with zero workload. 
+		it will source and destination and then migrate over internet. 
+		
+	2 types of migration - homogenous (DB engine not changes - oracle to oracle ) and hetergenous( MYSQL to MSSQL - diff DB)
+		Before doing hetergenous , DB engine schemas are compatible with each other. 
+		there's AWS schema conversion tool(SCT) to do this. 
+		
+	DMS is hot migration technique FOR DOING HETERGENOUS MIGRATION. 
+
+
+
+--------------------------------7. MONITORING AND SCALING -------------------------------------------------------------------
+Operational health, Application performance, Resource Utilization, Security auditing. 
+
+CLOUDWATCH - default monitoring service. integrated with everything in AWS. REGIONAL SERVICE.. MONITORS IN A REGION. 	
+can be used to monitor infrastructure in AWS and applications in certain capacity. 
+Metric - parameter we intend to monitor for a specific resource/service. cpu usage, ips. a number of default metrics are automatically captured. 
+can also create custom metrics in it. 
+ALARMS - get notified if a certain metric value has crossed a threshold. 
+		3 states in alarm -
+		InsufficientData - initially when created. during this time, alarm is capturing the data.
+		OK - threshold is not broken
+		Alarm - threshold is broken. 
+		
+CLOUDWATCH LOGS - cloudwatch serves as a log collector for serverless/container applications. One can use cloudwatch logging api to write logs or logging agent to capture application logs. this agent we will have to configure in application. 
+
+AWS CLOUDTRAIL - auditing service. captures all aws api calls. captured in form of events. Events history.  
+					captures who did what, when and what was the outcome. like who deleted DB...capture root login failures
+
+VPC FLOW LOG - capture IP traffic info going to and from VPC network interfaces. source and destination. has to enable vpc flow log and then we can capture in cloudwatch. 
+
+AMAZON EVENT BRIDGE - it captures events. serverless for building event-driven applications. Event are published on event buses. CLOUDWATCH IS PART OF EVENT BRIDGE.
+						we subscribe to events here...
+						
+EC2 instance sends metric data to cloudwatch metric:CPU utilization -- when alarm crosses threshold, two events will happen
+		1. amazon SNS(simple notification service) - email to app team
+		2. Event Bridge - API destination: third party monitoring tool
+
+-------------------------LOAD BALANCING - ELB -  ELASTIC LOAD BALANCER
+frontend goes to ELB and elb will go to backend. SDN(software defined) and are regional resource
+
+4 types of load balancers - 
+1. ALB -application lb - multilayer http/https load balancer. Lambda functions as a target. Redirects n Fixed-response actions.
+2. NLB - network lb - superscalable, costliest, to deal with tcp UDP. 
+3. GLB - gateway lb - used with virtual security appliance.  SSL offloading, redirects fixed response action are not allowed.
+4. CLB - classic LB - old generation multi-purpose LB. 
+
+can distribute traffic, HA, Health check, Logging.
+ALB CAN DO EVERYTHING EXCEPT STATIC IP ADDRESSING.
+
+AWS AUTOSCALING - Provides application scaling for multiple resources across services. in short intervals.
+CAN DEFINE AUTOSCALING GROUP - WHEREIN WE DEFINE WHICH RESOURCE WILL BE AUTOSCALED based upon alarm policy..
+AUTOSCALING POLICY WILL BE INTEGRATED WITH CLODWATCH.
+
+autoscaling components - Launch templates  
+
+3 WAYS TO AUTOSCALE - 
+SCHEDULED - 
+DYNAMIC - when traffic is unpredictable.
+PREDICTIVE
+
+					
+
+
+
+
+
+-------------------------------8----------------------AUTOMATION------------------------------------------------------------------------
+CLOUDFORMATION ---- IAC(infra as a code) TOOL FOR PROVISIONING RESOURCES IN AWS. templates(json/yaml). templates - stack(resources will be created)
+					works with aws while terraform can be used with multi-cloud environment.
+				architecture template. scale architecture. we create template and can create a stack
+				
+		DELETING A STACK WILL DELETE ALL THE ASSOCIATED RESOURCES WITH IT. 
+			
+inframanagement tools - configuration management - 
+
+	Opsworks(chef & puppet) - define, inspect, monitor you infrastructure
+	Systems manager(agent based) - gain operational insight. can do deployment of scripts on 100s of management..script execution on all 1000s machines. 
+	
+	
+	TO BRING EC2 UNDER SYSTEM MANAGER, ROLE TO COMMUNICATE WITH SSM API, OR SSM AGENT. 
+	
+	DEVELOPERS CAN USE CDK WITH CLOUD FORMATION - dev can use any programming language. they can call preconfigured resources with proven defaults. 
+	cdk - cloud development kit. DEFINE CLOUD APPLICATION RESOURCES USING NORMAL PROGRAMMING LANGUAGES. 
+
+
+
+
+
+
+
+
+
+LAB - 
+1. We create an Aurora DB. 
+2. To have a load balancer to access the DB Instances -  we create an application load balancer. to configure this load balancer, we create target groups and then register targets within our target groups. Targets will be our EC2 instances connecting DB instances.
+3. then we create application load balancer - and then add the created target group to the application load balancer. 
+ 
+ writer
+ aurora.cluster-coqlc72uevcm.us-west-2.rds.amazonaws.com		3306 
+ 
+ aurora.cluster-ro-coqlc72uevcm.us-west-2.rds.amazonaws.com
+ 
