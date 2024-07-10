@@ -1,0 +1,28 @@
+----------------------RUST-------------------------------------------
+
+rust modern systems programming language which focusses on speed, concurrency and safety. it is memory safe without using garbage collection. 
+println! - macro that prints text to the console. MACROS ARE FUNCTIONS WHICH ENDS WITH ! AND THEY ARE EXPANDED INTO THEIR SOURCE CODE WHICH GETS COMPILED WITH THE REST OF THE PROGRAM.
+ RUST PROVIDES A MACRO SYSTEM WHICH ALLOWS METAPROGRAMMING -  
+ METAPROGRAMMING - PROGRAMS CAN BE DESIGNED TO READ, TRANSFORM OTHER PROGRAMS N MODIFY ITSELF. 
+
+FORMATTED PRINTING -     println!("{0}, this is {1}. {1}, this is {0}", "Alice", "Bob");
+
+rustc program.rs  - to compile.
+
+to disable dead_code which is not used.    #[allow(dead_code)] // disable `dead_code` which warn against unused module
+
+-------------STRUCTS---------------
+3 TYPES OF STRUCTS -- 
+	1. CLASS C STRUCTS  - DIFFERENT SET OF DATA TYPES GROUPED 
+		struct Person {
+			name: String,
+			age: u8
+			}
+			
+			
+	2. Unit structs fieldless and used for generics. 
+		struct Unit;
+		
+	3. Tuple structs:
+		struct Pair(i32, f32)
+		

@@ -1,0 +1,23 @@
+Secure frontend
+XSS 
+iframe protection - safeguard against iframe based threats.
+security headers.
+client side security
+https
+dependency security. compliance  n regulation. 
+input validation and sanitization. 
+SSRF - server side request forgery. 
+SSJI - server side js injection. 
+feature policy oermission policy. CSRF
+SRI - subresource integrity. 
+local storage, session storage, cookie storage, indexed DB, normalization, HTTP caching, service working caching, api caching. 
+GRPC, communication protocols. 
+PWA. service workers to enable app like offline capabilities. 
+Logging and monitoring, telemetry, alerting
+OPTIMIZATION - asset , performance, network optimization. build optimization. React, JS optimization, 
+		performance monitoring, performance tools, 
+		
+LLD, design patterns in frontend. Infinite scroll, image carousal, pagination, live streaming chat ui
+
+HLD 
+Accessibility - keyboard, screen reader, colour contrasts. 

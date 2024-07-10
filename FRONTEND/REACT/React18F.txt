@@ -1,0 +1,15 @@
+React 18 features
+
+1. reactdom.render is deprecated. reactdom.createRoot is the new method. 
+2. concurrent rendering - can have 2 or more concurrent calls at the same time. if a call is taking time, react can hold it and complete the other call. THIS ALLOWS REACT TO RESPOND TO THE USER EVEN WHEN ITS IN THE MIDDLE OF A HEAVY TASK. 
+3. Automatic batching - batching reduces the number rerenders when a state changes.. when we call useState. 
+			NOTE: EARLIER, SETSTATE INSIDE A EVENT HANDLERS WERE BATCHES.. AND THEN A SINGLE RERENDER HAPPENED ONCE AT THE END.
+			When we had network call or promise, batching won't be happening. Now REACT 18 ALLOWS AUTOMATIC BATCHING EVEN IN CALLBACKS AND TIMEOUTS. if want to opt out, can use flushSync. 
+4. Transitions: Can mark UI update non-urgent.. by using startTransition.. 
+			for example, user has to loader before fetching the content.. 
+			startTransition executes immediately unlike setTimeout. it doesn't delay.. 
+5. Suspense: 
+	code splitting on server using Suspense. Streaming rendering on the server.
+	During rendering of a page in server side rendering where we HTML output on the server and send HTML from the server, one slow component could bring down the performance or could take more time to render.
+	With the help of Suspense on server, we could wrap a slow part of the app within the Suspense telling react to delay the component loading. 
+6. Strict mode will simulate mounting, unmounting and remounting the component from the previous state by using the same previous state. 
