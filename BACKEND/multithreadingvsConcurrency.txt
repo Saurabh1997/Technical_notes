@@ -2,4 +2,12 @@ CONCURRENCY VS MULTITHREADING :
 
 CONCURRENCY - multiple tasks/ processes running on a single CPU. OS executes tasks by switching them frequently.
 Unit of concurrency - process. Different process. 
-MULTITHREADING - Multiple part of same program is executing. Same process
+
+MULTITHREADING - Multiple part of same program is executing. 
+
+THREADS -- PROCESS
+	Process is any program under execution. Process takes more time to start and terminate and managing process takes more memory. Processes cannot share memory data between them. Sharing memory data between multiple processes requires more system resources and Interprocess communication. 
+		Multiple processes are suitable for cpu bound tasks for heavy computations. 
+		
+	THREAD IS LIKE A SEGMENT OF A PROCESS. they take less time to start and terminate. creating n managing threads is easier and faster and consumes less memory. Multiple threads can share same memory data as they are part of the same process. 
+		Multithreading is usually suitable for I/O operations like DB calls, networks calls, DB queries to handle concurrent requests at a time where less memory is to be consumed. 

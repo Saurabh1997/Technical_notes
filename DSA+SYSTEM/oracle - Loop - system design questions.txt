@@ -1,0 +1,8 @@
+--------SYSTEM DESIGN---------
+
+1. LEARNING PORTAL DESIGN for oracle employess -- TABLE STRUCTURES
+		--- CLUSTERS - MASTERS SLAVE
+		--- SHARDING - VERTICAL AND HORIZONTAL SHARING. 
+2. Implement LRU cache..  (double ended queue + hashmap)
+
+3. Implement thread pool executor - 

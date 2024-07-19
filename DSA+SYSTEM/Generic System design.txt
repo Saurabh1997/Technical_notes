@@ -1,0 +1,7 @@
+Start with something as simple as this - users -> load balancer -> service -> database. Talk about the functionalities and problem statement and then gradually add components as needed.
+
+Here's a few very generic examples:-
+Need async communication between services? Add queues.
+Need faster read response times from DB? Think of replicas.
+Need search functionality? Introduce ElasticSearch.
+Need analytics? Push to Amplitude.

@@ -7,4 +7,26 @@ Vertical scaling - increasing the size of machine to support more load. nodejs w
 		
 	
 	
-Horizontal scaling - we are increasing number of machines. 
+Horizontal scaling - we are increasing number of machines. Implement AutoScaling group. 
+
+--TO DO SCALING, WE HAVE TO DO CAPACITY ESTIMATION---
+	-- paper math depending upon the number of requests per second, number of users using our applicaiton. 
+	number of requests one single application running on one single server can handle. 
+	-- Questions - How to scale our application, How to handle spikes, How to manage SLA support for given traffic.
+			basically SLA is service level agreement between a vendor (AWS) and service (EC2) that our application is integrating of that vendor to use that service - basically that service uptime agreement - For 99.5% of the time in a month, the service will be up but for 0.5% of the time the service might be down and they won't charge money for that but we WILL HAVE TO HANDLE THIS SCENARIO (TRAFFIC) AT THAT TIME. We don't have to have a downtime of more than 30 mins. For this, we can use all different types of cloud services to support any downtime because a single provider cannot have enough bandwidth of networks for every location. 
+		-- When IPL/World cup matches happen once a year, we will have to specifically monitor all services every 2-3 min, if there's any spike in number of requests, then can scale our services. 
+	--ESTIMATION--
+		1. Estimation of req per seconds - number of requests in a day/number of seconds in a day
+			number of users in a day (10k) * number of requests a users send in a day (10 req)/3600 (60 * 60) * 24 
+			Now we get 1000000/ 3600* 24 requests per second. 
+				Let's say 100 req per second our application is getting.
+				If we have one nodejs application running in one ec2 which can handle 10 requests per second.
+				so we will have to have 10 * 10 ec2 instances to handle 100 requests per second. 
+					Every 2 minutes, we can track in aggregator service which can keep track of requests per second and the CPU usage %, can configure if our CPU usage % goes more than 80%, then autoscale the machine to 10. if not, then downscale the machine to 3. 
+			--Can configure all this in AutoScaling groups of 3 ec2 instances which will increase as per our configuration.
+		2. In a chess like application, we need to have certain amount of fixed persistent connections that our application should handle. If one server can handle 10k persistent connections at a time, we can implement a aggregator service to keep track of number of persistent connections. If they go above 10k, can autoscale via autoscaling group. 
+	
+----3 more scenarios --
+	1. Video transcoder of youtube - takes 2 hours.. it transcodes our video into 360p, 720p and 1080p
+	2. Replit like site  - sometimes we have to give user access to compute machine and takes 2 hours 
+	3. leetcode takes 2 second 

@@ -67,6 +67,9 @@ A CLASS CAN EXTEND ANOTHER CLASS AND IMPLEMENT ONE OR MORE INTERFACES.
 a CLASS IMPLEMENTING AN INTERFACE MUST BE PUBLIC. BY DEFAULT METHODS IN INTERFACE ARE ABSTRACT AND PUBLIC. 
 
 ----------------------WRAPPER CLASSES-------------------
+	Data TYpes - primitives 
+	Primitives - 4 types : 
+		Integer - int, short, byte, long , Float- float, double , Character - char , Boolean - boolean 
 WRAPPER CLASSES are used to encapsulate primitive data types.. such as byte (1 byte), short(2 byte), long(8 byte), int (Integer) (4 byte), float(4 byte), boolean 1bit,char (Character) (2 bytes), double(8 byte)..
 	Integer - byte, short, int, long.
 	float - double, float. 

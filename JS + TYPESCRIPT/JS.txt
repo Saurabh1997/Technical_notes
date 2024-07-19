@@ -114,3 +114,21 @@ HTTP 429 - rate limiting error from backend.
 
 
 ----------------------------------EVENT BUBBLING & CAPTURING & PROPOGATION--------------
+--Event Bubbling--  when an event is received in an element then that event will get propagated to the root element 
+					basically child to parent propagation.  this is default scenario 
+			in vanillaJS, 
+				div.addEventListener("click", () => {}, false) // third parameter is by default false. 
+			in react normal onclick handler.
+
+--Event capturing-- when an event is received in an element, it propagates to child element. top to bottom. 
+			in VanillaJS,
+				div.addEventListener("click", ()=> {}, true) 	// third parameter to be true.
+			in ReactJS, 
+				instead of on click handler we supply onclick handler to parameter oncaptureClick,
+					onCaptureClick={this.handleCLick}
+--STOP PROPAGATION --
+		event.stopPropagation()
+--Immediate propagation - this is in case of multiple event listeners attached to same button and if we don't want some of the later event listeners then can do
+	event.stopImmediatePropagation(). 
+--event.preventDefault()  - this is to stop default behavior of an element. for example a tag or submit button tag behavior. 
+			

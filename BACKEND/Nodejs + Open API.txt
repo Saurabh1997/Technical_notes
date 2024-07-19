@@ -143,3 +143,9 @@ IF IN A API HANDLERS -- If there is any DB call, it can be offloaded to another 
 			1. Browser/web api API, event handlers like onclick, onmouseover. 
 			2. Promises - js object to perform asynchronous operations.
 	Async functions are pushed onto the libuv or other thread to execute it there. 
+	
+	
+-------------------With Worker threads, we can spawn multiple threads inside a single nodejs process and share same memory data between threads. 
+THREADS ARE HELPFUL FOR PERFORMING CPU INTENSIVE TASKS.  
+
+----------------USING CLUSTER MODULE, - WE CAN SPAWN MULTIPLE NODEJS PROCESS RUNNING THEIR OWN EVent loop and having own memory data. 
