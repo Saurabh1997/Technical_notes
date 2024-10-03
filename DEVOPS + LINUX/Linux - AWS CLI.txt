@@ -1,0 +1,19 @@
+
+
+-------LINUX ----------------
+
+Systemd - system & service manager specifically designed for linux kernel. it has lot of utilities to do basic admin & maintenance tasks. 
+	
+	systemctl - controls systemd system & services 
+	journalctl - to manage journal, systemd's own logging system. 
+	hostnamectl - can control hostname. 
+	
+		systemctl start service-name
+		systemctl stop service-name
+		systemctl restart service-name
+		
+		systemctl reboot
+		
+	---journalctl --- query & display log messages from systemd journal. 
+		journalctl -g "keyword" - to filter logs containing keyword. 
+	

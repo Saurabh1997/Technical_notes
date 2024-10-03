@@ -1,7 +1,11 @@
+--------java is 99.99% object oriented now fully as java provides primitive data types as well. and fully object oriented programming language should have everything as objects. Primitive data types don't extend object class. 
+ 
 ------------------------HOW JAVA WORKS---------------------
 jAVA CODE IS COMPILED INTO BYTE CODE (HAVING .CLASS EXTENSION) USING JAVA COMPILER... AND JVM LOOKS FOR BYTE CODE TO EXECUTE.. IT WILL FIRST LOOK FOR MAIN FUNCTION TO EXECUTE. 
 Java is platform independent as this byte code can be executed on any platform. 
 JRE java runtime environment which wraps JVM and is responsible to running java code. will check byte code of all files, load classes and will run them on JVM. 
+
+Code is converted to byte code by jdk and then its run on jvm. JRE helps loading of multiple files/classes if required. 
 			
 there's a big box - JDK. 
 inside JDK we have JRE - java runtime environment and then inside JRE, we have JVM.  
@@ -16,7 +20,6 @@ Inside JVM, we have memory.
 	Heap will have address of that reference variable n in that address will have properties(instance variable  n methods) of that class.  
 NOTE: STACK IS CONNECTED TO HEAP VIA THE ADDRESS THAT THE REFERENCE VARIABLE POINTS TO. 
 
-
 Memory in application is called heap memory managed by JVM.  JVM calls out a subroutine (system.gc) to delete all the objects which it can't reach out from the main stack. 
 Whenever an object is created, entry is made in the heap and if we assign it as null after use, then it becomes eligible for garbage collection. 
 
@@ -28,62 +31,65 @@ println - method of PrintStream Class which type of out field.
 ---------literals-----------
 literals are source represenations of fixed values. used to repesent constant values in code. 
 
---------------ENCAPULATION------------
-binding the data(attributes or fields) and methods (functions or behaviors) that operate on the data into a single unit.
-basically we mark the variables inside a class as private so that it won't be accessible to anyone.  
-
-------------------------STATIC KEYWORD---------------------static is a single copy stored in static memory which belongs to the class. 
-ITS A SINGLE COPY OF VALUE FOR ALL THE OBJECTS. EVERY OBJECT WILL HAVE SAME VALUE.  (FOR VARIABLES)
-a class cannot be static unless its an inner class. static class can only contain static methods, static variables and nested classes. 
-STATIC METHOD  is a part of class rather instance of that class. we can directly called using className.staticMethodName()
-				it can directly access static variables using className. ONLY STATIC DATA CAN BE ACCESSED USING STATIC METHOD. STATIC METHODS CAN BE ACCESSED IN BOTH NON STATIC AND STATIC METHODS. 				
-		CAN REDECLARE SAME STATIC METHODS WHILE INHERITING, ITS NOT OVERRIDING, ITS CALLED REDECLARING - shadowing of the class functions. 
-	NOTE: TO BE ABLE TO ACCESS NON STATIC VARIABLES IN STATIC METHOD, 
-		WE CAN HAVE ARGUMENT AS CLASS OBJECT IN STATIC METHOD AND WHILE CALLING THIS METHOD PASS THE OBJECT REFERENCE VARIABLE. 
+----diff between pre increment and post---
+	works the same way except for when assigning for fetching the value to another variable. 
+		int num = 7
+		int res = ++num	// Here it will increment first with fetched number and then assign to res so res = 8.
 	
-STATIC VARIABLES - local variable cannot be static. only global/instance variable can be static. 
-			can be accessed using class, directly or using object. 
-
-STACK BELONGS TO METHOD, HEAP BELONGS TO OBJECTS WHILE EVERY METHODS HAVE ITS OWN STACK. 
-
---static block :  will be initialized only once. 
-	static {
-	name = "Hello"     
-	}
-
----STATIC BLOCKS ARE ALWAYS CALLED FIRST EVEN BEFORE CONSTRUCTOR AS STATIC BLOCKS BELONGS TO THE CLASS. FIRST THE CLASS IS LOADED AND THEN THE OBJECT ARE INSTANTIATED. 
-NOTE: IF WE DON'T INSTANTIATE THE OBJECT, THEN STATIC BLOCK WON'T BE CALLED.. TO LOAD THE CLASS MANUALLY WITHOUT INSTANTIATING, 
-WE CAN DO : 	Class.forName("Mobile")
-
----NOTE: ALWAYS define variables in constructor to initialize them at the time of object creation
-
------------------------ABSTRACT----------------------------------
-ABSTRACT CLASSES CAN HAVE ABSTRACT METHODS AS WELL AS NON ABSTRACT METHODS. 
-
------------------------INTERFACES-------------------------------
-blueprint of a class. Interfaces can have abstract as well as normal non abstract methods..
-cannot create object of interface but can reference interface with a object of class that implements it. 
-A CLASS CAN EXTEND ANOTHER CLASS AND IMPLEMENT ONE OR MORE INTERFACES. 
-a CLASS IMPLEMENTING AN INTERFACE MUST BE PUBLIC. BY DEFAULT METHODS IN INTERFACE ARE ABSTRACT AND PUBLIC. 
-
-----------------------WRAPPER CLASSES-------------------
+		int res = num++ // Here it will fetch num value first and then assign to res then increment 
+						// so actually will be assigning 7 to res. 			
+					
+----------------------DATA TYPES AND WRAPPER CLASSES-------------------
 	Data TYpes - primitives 
-	Primitives - 4 types : 
+	Primitives - 4 types : Integer, float, boolean, char
 		Integer - int, short, byte, long , Float- float, double , Character - char , Boolean - boolean 
+	Byte - 1 byte - 8 bits range - -2 raise to 7 to 2 raise to 7 - 1
+	Short - 2 bute - 16 bits range - -2 raise to 15 to 2 raise to 15 - 1
+	Int - 4 bytes - 32 bits range - -2 raise to 31 to 2 raise to 31 -1
+	long - 8 bytes - 64 bits range - -2 raise to 63 to 2 raise to 63 - 1
+		After every long variable number declaration we put l  to explicitly mention that this number is long. 
+	long num = 988880l
+	
+	float - 4 bytes - 32 bits range - -2 raise to 31 to 2 raise to 31 -1
+		by default data type supported is double so for the number to be float, we have to explicitly mention by putting f at the end.
+	float num = 993.88f
+		
+	double = 8 bytes - 64 bits range - -2 raise to 63 to 2 raise to 63 - 1
+		by default double is the data type assigned when performing operations specific to decimals as in float decimal precision taken into consideration is  less and in double its more. 
+	
+	char - usually in all langs char consumes 1 byte but in java it consumes 2 bytes as it doesn't ascii but follows unicode which supports more range of characters than ascii. 
+		for char we use single quote. for string, we use double quote. 
+		char flag = 'f'
+	
+	Boolean only as true and false and not 0 and 1. default value for boolean is false. 
+	
+	int g = 0bx1 -- to represent binary number
+	int g = 0x7E -- to represent hexadecimal number. 
+	
+	Literals - can assign 10_00_000 as an integer to represent 1000000 in a better way for code readability
+	
+----WRAPPER CLASSES - for every primitive types we have wrapper class. this is used to work with frameworks and collections. 
 WRAPPER CLASSES are used to encapsulate primitive data types.. such as byte (1 byte), short(2 byte), long(8 byte), int (Integer) (4 byte), float(4 byte), boolean 1bit,char (Character) (2 bytes), double(8 byte)..
 	Integer - byte, short, int, long.
 	float - double, float. 
 	used to create objects of primitive data types. to convert from one data type to another. 
 	ALSO USED IN COLLECTIONS. 
-Conversion of primitive to Wrapper class is called AUTOBOXING. All wrapper classes are subclasses of Number Class. 	
-1 byte = 8 bits so  for range - ( 2 raise to 7 ) - 1 
-char should be in single quotes.    char x = 'a'
-
------------------------Casting (explicit conversion) and Type conversion (implicit conversion)-----------
+Conversion of primitive to Wrapper class is called AUTOBOXING. Reverse of that is unboxing or autounboxing. All wrapper classes are subclasses of Number Class. 	
+	
+	Integer num = new Integer(8) or 8
+	int num = 8 
+	Integer num2 = num // autoboxing
+	
+	int num3 = num2 // auto unboxing. 
+	int num4 = num2.intValue() // unboxing manually. 
+	
+-----------------------Casting (explicit conversion) and Type conversion (implicit conversion) // TYPE PROMOTION-----------
 int a = 256 can't be converted directly into byte as its smaller. data loss is there. 
- so  b = (byte)a //  explicit - casting  while doing this it will apply 256 % 256 = 1 assign 1 
+ so  b = (byte)a //  EXPLICIT CONVERSION - casting  while doing this it will apply 256 % 256 = 1 assign 1 
 				256%256  as 127 + 127 (range of byte -127 to 127)
 	a = b // byte can be directly converted into int as its bigger -- implicit conversion.   
+
+	NOTE: If we are doing multiplication operation and the resulting variable is much bigger such that we can accomodate it to int.. then its called TYPE PROMOTION. 
 
 -----------------------enhanced FOR EACH LOOP-------------------
 for(int dat : data) {}  // for each loop
@@ -116,26 +122,132 @@ FOR 2D ARRAY , WE CAN HAVE DIFFERENT NUMBER OF ARRAY ELEMENTS.. FOR FIRST COLUMN
 	Student students[] = new Student[3]
 	students[0] = s1;   students[1] = s2; students[2] = s3; // this will array of objects. 
 	for(Student std: students){}
-	
+		
 ------------STRING---------------------
-we have string constant Pool in heap.
+we have string constant Pool in heap Where all distinct strings are saved and whenever we reference any variable to the same string existing in constant pool it is pointed towards this existing string in constant pool. 
 	String name1 = "Saurabh"
 	String name2 = "Saurabh" // THIS WILL CREATE A SINGLE OBJECT WHERE NAME2 WILL HAVE SAME REFERENCE AS OF name1. that's how java saves memory. 
 Strings are immutable. 
 	If we do :   name1 = name2 + "Patil" // it will create a new string object with new reference.. and not change the original one (maintaining its immutability).
+	
 
 -------------STRINGBUILDER AND STRINGBUFFER-----------------
 BOTH ARE MUTABLE STRINGS. 
-StringBuffer sb = new StringBuffer("Patil") // it assigns a buffer size of 16 bytes. 	
+StringBuffer sb = new StringBuffer("Patil") // it assigns a buffer size of 16 bytes. if we define 5 letters capacity will be 5+16.
 sb.append("saurabh") 
+	sb.capacity() // gives actual storage default is 16. 
+	sb.length() // gives actual length of string stored. 
 
 cannot convert stringbuffer to string but we will have to convert using tostring().
 sb.deleteCharAt(1)
 sb.insert(0, "Aps") // will add Aps at 0th index.
 
---NOTE: STRINGBUFFER IS THREAD SAFE AND STRINGBUILDER IS NOT. 
+--NOTE: ONLY DIFFERENCE IS STRINGBUFFER IS THREAD SAFE AND STRINGBUILDER IS NOT. 
 	stringBuffer methods are synchronized. only one thread can access it.  
+
+--------------STATIC KEYWORD---------------------static is a single copy stored in static memory which belongs to the class. 
+ITS A SINGLE COPY OF VALUE FOR ALL THE OBJECTS. EVERY OBJECT WILL HAVE SAME VALUE.  (FOR VARIABLES)
+a class cannot be static unless its an inner class. static class can only contain static methods, static variables and nested classes. 
+STATIC METHOD is a part of class rather instance of that class. we can directly called using className.staticMethodName()
+		it can directly access static variables using className. ONLY STATIC DATA CAN BE ACCESSED USING STATIC METHOD. STATIC METHODS CAN BE ACCESSED IN BOTH NON STATIC AND STATIC METHODS. 				
+		CAN REDECLARE SAME STATIC METHODS WHILE INHERITING, ITS NOT OVERRIDING, ITS CALLED REDECLARING - shadowing of the class functions. 
+	NOTE: WE CANNOT ACCESS NON STATIC VARIABLES INSIDE STATIC METHOD DIRECTLY. TO BE ABLE TO ACCESS NON STATIC VARIABLES IN STATIC METHOD, WE CAN HAVE ARGUMENT AS CLASS OBJECT IN STATIC METHOD AND WHILE CALLING THIS METHOD PASS THE OBJECT REFERENCE VARIABLE. WE NEED TO HAVE OBJECT REFERENCE OF THAT CLASS TO ACCESS ITS NON STATIC VARIABLE IN STATIC METHOD. 
 	
+--WHY IS MAIN METHOD - STATIC METHOD ?? 
+	main method is the starting point of execution. If We don't declare main method static, we would have to create object of the class having main method but then to create object we would want to have a starting point of execution. THIS IS A DEADLOCK SITUATION. SO WE DECLARE MAIN METHOD AS STATIC SO THAT JVM WON'T NEED TO CREATE OBJECT OF THE CLASS.  
+	
+STATIC VARIABLES - local variable cannot be static. only global/instance variable can be static. 
+			can be accessed using class, directly or using object. STATIC MEANS A SINGLE COPY. IF WE CREATE LOT OF OBJECTS OF A CLASS AND IT HAS A STATIC VARIABLE. THAT STATIC VARIABLE WILL BE COMMON FOR ALL OBJECTS CREATED IN PAST/FUTURE.  
+	CLASS A {
+		static int singleCopyVariable = 19
+		}
+	A a1 = new A()
+	A a2 = new A();
+	A.singleCopyVariable = 20
+	 console.log(singleCopyVariable)	// 19
+
+STACK BELONGS TO METHOD, HEAP BELONGS TO OBJECTS WHILE EVERY METHODS HAVE ITS OWN STACK. 
+--static block :  will be initialized only once no matter how many times we create object of this class as static is single copy. To initialize a static variable, we need static block. 	
+	static {
+	name = "Hello"     
+	}
+
+---STATIC BLOCKS ARE ALWAYS CALLED FIRST EVEN BEFORE CONSTRUCTOR AS STATIC BLOCKS BELONGS TO THE CLASS. FIRST THE CLASS IS LOADED AND THEN THE OBJECT ARE INSTANTIATED. 
+NOTE: IF WE DON'T INSTANTIATE THE OBJECT, THEN STATIC BLOCK WON'T BE CALLED.. TO LOAD THE CLASS MANUALLY WITHOUT INSTANTIATING, 
+WE CAN DO : 	Class.forName("Mobile")
+---NOTE: ALWAYS define variables in constructor to initialize them at the time of object creation
+
+--------------ENCAPULATION------------ bind the data and methods. 
+binding the data(attributes or fields) and methods (functions or behaviors) that operate on the data into a single unit.
+No one should be able access the variables directly by creating just objects. data should only be shared by accessing methods. 
+basically we mark the variables inside a class as private so that it won't be accessible to anyone.  
+	private int age = 11;
+	
+	public int getAge() {
+		return age
+		}
+	We generate getters and setters 
+
+--THIS--- to reference to the instance variable of class. 	
+
+--CONSTRUCTOR-- Special method which name same as that of class.	
+	public ClassName (int age, String name){ // parameterized constructor = we can initialize variables. 		
+		}		
+--Anonymous objects--
+	new A(); // not assigning this to any variable so only heap entry is created. 
+	
+---- Super()----
+ by default this method is called first in each constructor. this super() will call parent constructor first. If any argument is supplied in super, then that constructor having that specific argument will be called. 
+
+--NOTE: EVERY CLASS IN JAVA EXTENDS OBJECT CLASS BY DEFAULT EVEN IF WE DON'T MENTION IT..
+
+----this() ---- this() in a constructor of a class will call its original default constructor.  
+
+------ACCESS SPECIFIERS----
+	1. PUBLIC - variables/methods can be used even if outside package.
+	2. protected - cannot be used outside package. can be accessed within same package. 
+		TO ACCESS OUTSIDE PACKAGE, IT SHOULD EXTEND THAT CLASS OF THAT PACKAGE. 
+	3. default - can be accessed within same package. variables/methods cannot be used outside package. we will have to make them public.	NEVER KEEP DEFAULT. 
+	4. private - can only be used in same class. not same package and not anywhere
+	
+---POLYMORPHISM -- MANY BEHAVIORS ----
+ compile time polymorphism - method overloading and runtime polymorphism - method overriding.
+ 
+ class A {}  class B extends A {}
+ 
+ A a = new B()  // super class = sub class
+ a.show() // this call overrrided method. but will call show method of class B as we are creating object of B. 
+	ALL THIS IS DECIDED AT TIME OF RUNTIME SO RUNTIME POLYMORPHISM AND ALSO CALLED AS DYNAMIC METHOD DISPATCH. 
+	
+-------FINAL -------
+	can declare const variable as final. 
+	final class cannot be extended. 
+	final method cannot be overrided. 
+
+-----OBJECT CLASS ------ hashcode() and equals()
+	If we console.log any object, it basically prints output of object.toString() which returns class and a hashcode. 
+	two objects having same properties won't be equal as they have different hashcodes. 
+	We can override methods of object class - hashcode() and equals() to use our own logic of comparing objects. 
+		We can generate our own hashcode() and equals() method by clicking option to generate code. 
+		
+-----Upcasting and Downcasting----------
+	 class A {}  class B extends A {}
+	 A a = new B() // UPCASTING 
+	A a = (A) new B() // creating object of B but upcasting it to A. this is called as UPCASTING - converting to parent class.
+	
+	A obj = new B()
+	obj.show2() // cannot call function show2 of B as this is reference of A.. and A doesn't have B methods. 
+	so B obj2 = (B) obj // casting A obj to become object of B.. parent to child conversion -- Downcasting 
+	
+-----------------------ABSTRACT----------------------------------
+ABSTRACT CLASSES CAN HAVE ABSTRACT METHODS AS WELL AS NON ABSTRACT METHODS. 
+
+-----------------------INTERFACES-------------------------------
+blueprint of a class. Interfaces can have abstract as well as normal non abstract methods..
+cannot create object of interface but can reference interface with a object of class that implements it. 
+A CLASS CAN EXTEND ANOTHER CLASS AND IMPLEMENT ONE OR MORE INTERFACES. 
+a CLASS IMPLEMENTING AN INTERFACE MUST BE PUBLIC. BY DEFAULT METHODS IN INTERFACE ARE ABSTRACT AND PUBLIC. 
+
 
 ----------------------EXCEPTION HANDLING-----------------java.lang
 Throwable Class has 2 types - Error  and Exception.

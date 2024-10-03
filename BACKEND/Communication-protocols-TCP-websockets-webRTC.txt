@@ -115,7 +115,6 @@ WebRTC is P2P protocol. we directly send the media to other peer without need of
 NOTE: We need a central server for SIGNALLING & sometimes for SENDING MEDIA as well. 
 Note: its a bit insecure as we can directly see the IP from where the user is communicating as its P2P. 
 	
-
 --Signaling Server----
 Both browsers need to exchange their IP address before starting the real time communication. usually a websocket server but can be a http. this is before media communication, need to know location of both the peers.. where should the packets be sending between. 
 
@@ -171,7 +170,7 @@ THERE ARE OPEN SOURCE CODE FOR TURN SERVERS WHICH WE CAN JUST DEPLOY ON AN EC2 M
 	-- RTSP -  real time streaming network protocol that controls how streaming of media will happen between a server and a client. basically it describes what happens when we click play/stop when streaming a video. 
 	-- codec - coder-decoder - program,device/algorithm for encoding and decoding a data stream. 
 	
------TRICLE ICE-----------------
+-----TRICKLE ICE-----------------
 We are collecting ICE candidate from STUN of Peer 1 and then relay turn server of peer 1 and then sending offer and same thing is happening for peer 2 and then establishing connection between them but synchronously.. so instead of doing synchronously, we can Collect ICE CANDIDATES AND ESTABLISH CONNECTIONS CHECKS IN PARALLEL AS SOON AS WE GET THE LOCAL IP ADDRESS. as soon as we get more candidates we update the ICE candidates to establish the connection initially. THIS PROCESS IS CALLED AS TRICKLING ICE CANDIDATES AS WE ARE TRICKLING THE ICE CANDIDATES FROM THE BEGINNING OF THE SESSION UNTIL THE CONNECTION IS ESTABLISHED PROPERLY. 
 
 Encoding protocol -	Whenever video calling, we don't send data frame by frame. we send encoded data - audio, video which compresses this things. 
@@ -193,13 +192,21 @@ Step 2: Peer 2 also asks STUN server for his ICE candidates and then sends it to
 	3. Browser 1 set the local description to the offer. // offer.setLocalDescription()
 	4. Browser 1 send the offer to the signaling server which then sends it to the browser 2.
 	5. Browser 2 receives the offer. 		
-	6. It sets the remote description to the offer. 	// const p2 = new RTCPeerConnection();   const ans = await p2.createAnswer();
-	7. It creates an answer. 				// p2.setRemoteDescription(p1.localDescription) // offer from p1 is my remote
+	6. It sets the remote description to the offer. 	// const p2 = new RTCPeerConnection(); 
+				p2.setRemoteDescription(p1.localDescription) // offer from p1 is my remote
+	7. It creates an answer. 	//	const ans = await p2.createAnswer();		
 	8. It sets the local description to the answer.	// p2.setLocalDescription(answer) // my local is my answer from p2.					
 	9. It sends the answer to the other side via signaling server. 	
 	10. Broswer 1 receives the answer and set the remote description to the answer. // p1.setRemoteDescription(p2.localDescription) // received by p1.
 
---- just connection flow---
+---ON NEGOTIATION---
+Whenever video/audio is added, SDP changes.. as video/audio stream details also in SDP. Sender and receiver needs to send the SDP back and forth. to implement this we need to do. 
+
+	RTCPeerConnectionObj.onnegotiationneeded = async() => {
+		const offer = RTCPeerConnectionObj.createOffer()
+		offer.setLocalDescription(offer)
+		socket.send(JSON.stringify(type:"createOffer", data: offer))
+		}
 
 ===========TO ACTUALLY SEND THE MEDIA================
 1. Ask for mic/camera permissions.
@@ -207,6 +214,33 @@ Step 2: Peer 2 also asks STUN server for his ICE candidates and then sends it to
 3. call addTrack on the PC. this would trigger addTrack callback on the other side.  
 		pc1.AddStream(stream)
 		pc2.onTrack 
+
+----TO ASK FOR CAMERA/MIC PERMISSIONS - navigator.mediaDevices.getUserMedia({audio:true, video:true})
+	
+	  const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    if (senderVideoRef.current) {
+      console.log(" stream 2 ", stream);
+
+      senderVideoRef.current.srcObject = stream;
+      setHideButton(true);
+    }
+	
+	// TO ADD BOTH VIDEO AND AUDIO TO TRACK AND STREAM
+    for (const track of stream.getTracks()) {
+      peerConnection.addTrack(track, stream);
+    }
+
+
+----TO RECEIVE THE VIDEO-----------
+
+	   peerConnection.ontrack = async (event) => {
+      console.log(" coming here for setting src Object");
+      receiverVideoRef.current.srcObject = event.streams[0];
+      //senderVideoRef.current.srcObject = new MediaStream([event.track]);     
+    }
 
 ------------------------ABOVE WEBRTC ARCHITECTURE IS ONLY FOR PEER TO PEER COMMUNICATION. 
 ==================WE USE ANOTHER ARCHITECTURE FOR DOING GROUP CALLS. 
@@ -246,6 +280,8 @@ Step 2: Peer 2 also asks STUN server for his ICE candidates and then sends it to
 3. AddIceCandidates by browser 1 to browser 2 and viceversa.  AddIceCandidates will be used by both the browsers to send each other their own ice candidates. 
 
 =====2. Frontend - React + PeerConnectionObject=====
+
 		
 ------------HLS-----------------------10 second delay. 
 protocol for live streaming. http live streaming. bandwidth cost is lower. 
+	live video is sent to HLS server via RTMP - Real time messaging protocol. 

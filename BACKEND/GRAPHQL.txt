@@ -1,6 +1,7 @@
 Graphql -
 
 A query language for api which gives client a power to ask for what exactly they need. 
+its a layer between database and the client side queries. 
 benefits of Graphql  - 
 
 1. Prevents over fetching - 
@@ -24,11 +25,346 @@ benefits of Graphql  -
 			name }}}
 		
 Graphql is very very strictly typed. 		
+
+FLOW IN GRAPHQL: 
+A Graph - when we hit a graphql api, we hit graph which has connected different data types - posts, comments, likes.
+	We can just hit from above 3 data types to query data about anything. for example -
+		Query {
+			posts {
+				post_id, post_image_url, post_created
+				comment {
+					commenter_name, 
+					comment_id					
+					}
+				}
+			}
+	We will have to connect data resources and specify that each post has comment. And comment is a seperate resource. For this, we didn't have to make two requests - post and comment. we have combined both in single request.
+	
+	Query {
+		comments (id: "2") {
+			commenter_name, 
+			comment_detail
+			likes {
+				user_name
+				like_id
+			}
+		}
+	}
+	
+We need apollo server to create a graphql server. 
+two things - graphql and apollo-server 
+	graphql is library that implements core graphql parsing and execution algo. 
+	
+	const server = new ApolloServer ({
+	typeDefs , resolvers
+	})
+	rrr
+	const { url } = createStandAloneServer(
+	{	listen : {port : }		
+		)
 		
 GRAPHQL SERVERS - to create a graphql , we need two things --- TYPE DEFINITIONS AND RESOLVERS. 
-TYPE DEFINITIONS - SCHEMA - way that our query is going to look, data is going to look, the way our mutations are going to look. 
+
+---TYPE DEFINITIONS - describes how the data is going to be when exposing anything - post, likes and review (example) SCHEMA - way that our query is going to look, data is going to look, the way our mutations are going to look. 
+	and how our data is linked to each other. 
+	TypeDef schema looks similar to the DB schema. 
+	
+	5 basic scalar builtin types in graphql - int, float, string, boolean, ID 
+	ID is key graphql uses for data objects. they are serialized string. 
+	Can make our own types using this types. 
+	
+	export typeDef = `#graphql 
+	type User {
+		user_id: ID!,     ! - denotes it is required. 
+		name: string!, 
+		activity_assigned: [string!]! // [string] - denotes array of string. string!] - means string inside array cannot be	null.		
+	}
+	
+	type activity {
+		id: ID!,
+		activity_name: string!,	
+	}
+	
+	type Query {
+		users: [User] // this will specify to get list of users. also specifies that this is single entry point to get Users
+		activities: [Activity]				// 
+	}
+	
+	`
+
+	// type Query is needed to define the entry point to the graph and specify the return types of those entry points. 
+	// single entry point will only get list of Users and not link to single User or any other entity. so we need to map all entry points. 
+	// ABOVE CODE IS FOR GETTING LIST OF USERS AND LIST OF ACTIVITIES AND NOT FOR SINGLE USER/ACTIVITY. 
 
 for e.g :  fruits: [String]
 
-RESOLVERS - functions that return the data that conforms(obeys the rule) the way we have defined in the schema. 
+TypeDef is for structuring the graph and we make resolver functions to handle the query based on our schema. 
+
+RESOLVERS -  Resolvers are going to handle the client requests and return the data that client has requested. functions that return the data that conforms(obeys the rule) the way we have defined in the schema. 
 fruits : () => {return ["banana", "apple"]}
+
+	We first make resolver functions for the root query as its the entry point of the graphql api. In root query, we make resolver function for every field defined in the root. 
+			first define query which matches exact with the root query. and match the exact word inside query of typedef. 
+			we return all data from db.  Apollo will handle returning of specific data as per the client request. 
+			
+		const resolver = {
+			Query : {
+				users(){
+				return db.data // here we return all data from db.  Apollo will handle returning of specific data .
+				},
+				activities () {
+				return activities
+				}
+			}
+		}
+		
+	GraphQL Query Variables - to fetch all values we are using normal typedefs Query which we have mapped to array of our required entities. But to fetch a single value this won't work we need to use query variables. 
+	
+	In TypeDefs , 
+	
+		we will add mapping for single value fetching based on ID (or some other column that we want to fetch from). 
+		
+		const typeDef = `#graphql
+		type User {}
+		type Query {
+			users: [User] 
+			user(id: ID!): User // mentioned id is required and it accepts id as argument.
+			}`
+		
+	In resolver, 
+		we write a seperate resolver function to fetch a single value. It accepts 3 arguments
+	parent - this is mostly used for accessing related data nested data. 
+	args - used to access any query variable. 
+	context -  optional - used for supplying context values across all resolvers - such as authentication info. 
+	
+	const resolver = {
+		Query: {
+			games(){}
+			game(parent , args, context) {   
+				console.log(args.id) 
+				return db.games.find((review) => review.id === args.id)
+			}
+		}	
+	}
+		
+	In Apollo sandbox --- 
+		query gamesQuery ($id: ID!) {
+			review(id: $id)
+		}
+		
+	In Apollo client sandbox - click on variables 
+		and supply { id : "1" }
+		
+-------------RELATED DATA QUERY AND RESOLVERS-----------------
+	We have following dataset - 
+		export const users = [{
+    id: "1",
+    name: "Saurabh",
+    age: 27,
+    mobile_number: "28828383873",},  {
+    id: "2",
+    name: "Gaurav",
+    age: 23,
+    mobile_number: "82837373737",
+  },
+];
+
+export const activities = [
+  {
+    id: "1",
+    activity_name: "code",
+    activity_steps: ["reactjs", "nodejs", "db"],
+    user_id: "1",
+    document_id: "1",
+    completed: true,
+  },
+  {
+    id: "2",
+    activity_name: "study",
+    activity_steps: ["phy", "chem"],
+    user_id: "2",
+    document_id: "2",
+    completed: false,
+  },
+
+  {
+    id: "3",
+    activity_name: "interview prep",
+    activity_steps: ["DB", "java"],
+    user_id: "1",
+    document_id: "3",
+    completed: false,
+  },
+];
+
+export const activity_documents = [
+  {
+    id: "1",
+    activity_id: "2",
+    document_name: "master_SOP",
+    document_url: "https://google.com",
+  },
+  {
+    id: "2",
+    activity_id: "1",
+    document_name: "master_kubernetes",
+    document_url: "https://kubernetes.com",
+  },
+  {
+    id: "3",
+    activity_id: "3",
+    document_name: "master_docker",
+    document_url: "https://docker.com",
+  },
+];
+
+	User has many activities and activities has one user as well as Activity documents. And each activity can have one activity document and each Activity documents can have have many users. 
+	
+	In typeDefs. we can describe -
+		 type User {
+        id: ID!
+        name: String!
+        age: Int!
+        mobile_number: String! 
+        activities: [Activity!]        // each User has many activities
+    }
+    type Activity {
+        id: ID!
+        activity_name: String!
+        activity_steps: [String!]!
+        users: [User!] 					// Each Activity can have multiple users.
+        activity_document: Activity_Document!	// Each Activity can have a activity document. 
+        completed: Boolean! 
+    }
+    type Activity_Document {
+        id: ID!
+        activity_id: String!
+        users: [User!]!
+        document_name: String!
+        document_url: String! 
+    }
+
+	Now We don't have the mapping or the resolver function to handle this kind of nested structure or related data.. if Client asks Activities a user has in a single graphql request... 	
+		We would have to actually write a seperate resolver function for this outside of Query - 
+			NOTE: AS THIS IS REGARDING A USER OBJECT RETURNING LIST OF ACTIVITIES - WE WRITE IT OUTSIDE QUERY OBJECT AS IN QUERY WE HAVE ALREADY DEFINED THE QUERY IN TYPEDEFS.  
+			
+			Apollo server will first look into user query resolver to get data related to single User and then it will go for activities resolver function inside User Object to look for list of activities inside that single user. 
+			
+			const resolver = {
+				Query: {
+					users(){}
+					user(parent , args, context) {   
+						console.log(args.id) 
+						return db.games.find((review) => review.id === args.id)
+						
+							// THIS WILL BE PASSED TO USER OBJECT ACTIVITIES FUNCTION AS PARENT ARGUMENT. 
+					}
+				},
+			User {
+				activities(parent){ 
+					return db.activities.filter((ACTIVITY) => activity.user_id === parent.id)
+					
+							// in parent we will receiver whatever is being return by user query resolver
+							// USING FILTER AS THIS WILL RETURN LIST OF ACTIVITIES ASSIGNED TO A SPECIFIC USER - ONE TO MANY.
+				}
+			}		
+	}
+	
+	
+	
+----------------MUTATION---------------------
+	Adding and deleting data is done via mutation. 
+	
+	
+1. Deletion of Data---------------------------------	
+	In TypeDef, we define - 
+	
+		type Mutation {
+			deleteGame(id: ID!): [Game]   // id is compulsory for executing deletion of game and we also give return type  
+											// as array of Game as we want to return updated array of games after deletion.		
+		}
+		
+	In resolver function, 
+		Mutation: {
+			deleteGame(_, args){
+				db.games = games.filter((game) => game.id !==args.id)
+				return db.games
+			}
+		}
+		
+	and while doing query for the same, we write mutation instead of Query. 
+	
+	Mutation deleteMutation($id: ID!) {
+		deleteGame(id: $id){
+			id, title, platform
+			}
+		}
+		// IN VARIABLE WE PASS IN THE ID TO BE DELETED. 
+
+2.Addition of Data--------------------------
+
+In typeDef, we define inputs first as we will have to create an input type which is expected for this mutation. 
+
+input addUserInput {
+	name String!,
+	age Int!
+}	
+	
+and then we add this input into the Mutation typedef, 
+
+	type Mutation {
+		addUserInput(user: addUserInput) : Game  // we are defining user as argument of input type addUserInput.
+		}
+		
+	In RESOLVER FUNCTION ---
+	
+	Mutation : {
+		addUserInput(__, args) => {
+			let user = {
+				...args.user,
+				id: Math.round(Math.random * 10000)
+			}
+			db.users.push(user)
+			return db.users;
+		}
+	
+	}
+	
+3. Updating Data-------------------------
+	In typeDefs, 
+	
+	type Mutation {
+	updateUser(id: ID!, User:EditUserInput): User	// WE ARE ACCEPTING ID AND ANOTHER OBJECT - EditUserInput	
+	}
+	
+	we define edit User Input as such that we can update anything we want so we don't have to make any input necessary. 
+	
+	input EditUserInput {
+		name: String
+		mobile_number: String
+		age: Int	
+	}
+	
+	And in Resolvers, to make the mutation typeDef - updateUser 
+	
+		Mutation : {
+			updateUser(__, args) {
+				db.users = users.map((u) => {
+				if(u.id == args.id) {
+					return {...u, args.edits}
+					}
+					return u
+				})
+				users.find((u) => u.id === args.id)   	// TO FETCH THE UPDATED RECORD. 
+			}
+		}
+		
+	AND INput variables
+		
+		{
+		id: "1",
+		edits: {
+			name: "Saurabh"
+		}
+		}
+	

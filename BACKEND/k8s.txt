@@ -41,3 +41,7 @@ spec: 								// attribute to apply to the obj we want to create
 			 
 We don't usually use above pod yaml. Instead of creating each and every pod, we create deployment..Deployment is a kubernetes object that is used to handle set of pods. 
 If any pod crashes, deployment will automatically create that pod. Deployment can also create new version of pod running updated code. Once new pods are running, it will be used. Older pods will fade away.. 
+
+
+	kubectl config use-context context_name - to set current context in a kubeconfig file. 
+			kubectl config use-context la-production && autossh -v -M O -N -L
