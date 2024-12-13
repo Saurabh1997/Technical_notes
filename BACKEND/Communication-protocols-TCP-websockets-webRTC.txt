@@ -285,3 +285,9 @@ Whenever video/audio is added, SDP changes.. as video/audio stream details also 
 ------------HLS-----------------------10 second delay. 
 protocol for live streaming. http live streaming. bandwidth cost is lower. 
 	live video is sent to HLS server via RTMP - Real time messaging protocol. 
+	
+	
+	
+	
+	
+	

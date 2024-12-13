@@ -132,3 +132,22 @@ HTTP 429 - rate limiting error from backend.
 	event.stopImmediatePropagation(). 
 --event.preventDefault()  - this is to stop default behavior of an element. for example a tag or submit button tag behavior. 
 			
+----------------normal consoles-----------------------
+
+console.log(2 + "2") // 22
+console.log("2" + 2) // 22
+console.log(2+2+"3") // 43 
+console.log(2+2+"3" + true) // 43true
+console.log(2 + 2 + 3 + true + false) //// 8 
+console.log(2 + 2 + "3" + true + false +  +6) // 43truefalse
+
+
+
+----------------------------------MEMORY MANAGEMENT IN JAVASCRIPT----------------------------------------
+JS automatically allocates memory and frees it once they are not used. JS uses something called as mark and sweep algorithm for memory management  it frees the memory where the object is no longer needed and not reachable. JS starts from root (global object) and finds all objects referenced from roots n then all objects referenced from this.. those are reachable are kept and those unreachable are made free. 
+
+
+
+------------------Promise Chaining--------------------------------
+
+used to handle sequence of asynchronous functions in a  more readable way. When a then callback function returns another promise to handle the result of that function we need to chain another .then() to handle the result. this create a asynchronous operation.  

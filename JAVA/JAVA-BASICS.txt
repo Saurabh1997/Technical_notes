@@ -147,7 +147,7 @@ sb.insert(0, "Aps") // will add Aps at 0th index.
 
 --------------STATIC KEYWORD---------------------static is a single copy stored in static memory which belongs to the class. 
 ITS A SINGLE COPY OF VALUE FOR ALL THE OBJECTS. EVERY OBJECT WILL HAVE SAME VALUE.  (FOR VARIABLES)
-a class cannot be static unless its an inner class. static class can only contain static methods, static variables and nested classes. 
+a class cannot be static unless its an INNER CLASS. static class can only contain static methods, static variables and nested classes. 
 STATIC METHOD is a part of class rather instance of that class. we can directly called using className.staticMethodName()
 		it can directly access static variables using className. ONLY STATIC DATA CAN BE ACCESSED USING STATIC METHOD. STATIC METHODS CAN BE ACCESSED IN BOTH NON STATIC AND STATIC METHODS. 				
 		CAN REDECLARE SAME STATIC METHODS WHILE INHERITING, ITS NOT OVERRIDING, ITS CALLED REDECLARING - shadowing of the class functions. 
@@ -217,10 +217,11 @@ basically we mark the variables inside a class as private so that it won't be ac
  
  A a = new B()  // super class = sub class
  a.show() // this call overrrided method. but will call show method of class B as we are creating object of B. 
+	IT ALL DEPENDS ON WHAT CLASS OBJECT WE ARE MAKING. 
 	ALL THIS IS DECIDED AT TIME OF RUNTIME SO RUNTIME POLYMORPHISM AND ALSO CALLED AS DYNAMIC METHOD DISPATCH. 
 	
 -------FINAL -------
-	can declare const variable as final. 
+	can declare const variable as final. cannot modify.
 	final class cannot be extended. 
 	final method cannot be overrided. 
 
@@ -240,32 +241,42 @@ basically we mark the variables inside a class as private so that it won't be ac
 	so B obj2 = (B) obj // casting A obj to become object of B.. parent to child conversion -- Downcasting 
 	
 -----------------------ABSTRACT----------------------------------
-ABSTRACT CLASSES CAN HAVE ABSTRACT METHODS AS WELL AS NON ABSTRACT METHODS. 
+ABSTRACT CLASSES CAN HAVE ABSTRACT METHODS AS WELL AS NORMAL METHODS. 
+	 ABSTRACT METHODS NEED TO HAVE THEIR CLASS AS ABSTRACT. We cannot make an object of Abstract Class. CLASS EXTENDING ABSTRACT CLASS WILL NEED TO OVERRIDE AND IMPLEMENT ALL ITS ABSTRACT METHODS. 
+	If a class extending ABSTRACT CLASS is not able to override abstract method functionality then We have to mark THIS CHILD CLASS AS ABSTRACT. 
 
 -----------------------INTERFACES-------------------------------
-blueprint of a class. Interfaces can have abstract as well as normal non abstract methods..
+WHEN WE HAVE AN ABSTRACT CLASS WITH ONLY ABSTRACT METHODS, WE CAN IMPLEMENT THE SAME USING INTERFACE. HIERARCHY WISE WE IMPLEMENT INTERFACES . 
+blueprint of a class. Interfaces have by default abstract methods. no need to mention abstract keyword. 
 cannot create object of interface but can reference interface with a object of class that implements it. 
 A CLASS CAN EXTEND ANOTHER CLASS AND IMPLEMENT ONE OR MORE INTERFACES. 
 a CLASS IMPLEMENTING AN INTERFACE MUST BE PUBLIC. BY DEFAULT METHODS IN INTERFACE ARE ABSTRACT AND PUBLIC. 
 
+	--- WHY VARIABLES ARE FINAL AND STATIC IN INTERFACE. 
+--Variables declared in interface are by default final and static. No need to specify final and static. Can access variables directly on the interface name as its static. 
+-- We don't have heap memory for interfaces as we can't instantiate/create new object. So we have to have interface variable as STATIC to access it directly on the interface name. 
+-- We can only access methods and override this methods and not variables as we are only implementing and not extending. so we only get methods and not variables. so variables are final. 
 
-----------------------EXCEPTION HANDLING-----------------java.lang
-Throwable Class has 2 types - Error  and Exception.
-Error - Assertion n stack over flow Error. (unchecked exception)
-EXCEPTION -  IO exception, file not found - checked exception -- have to handle.  must write a catch block. 
-		NullPointer ex, NumberFormat ex, Arithmetic ex, ArrayIndexOutOfBound ex. 
-	NOTE: THERE SHOULDN'T BE ANY STATEMENT BETWEEN TRY AND CATCH N FINALLY BLOCK OTHERWISE CF. 
-	IRRESPECTIVE OF THE TRY N CATCH BLOCK EXECUTED, FINALLY WILL GET EXECUTED. 
-at compile time, see ref, at runtime see object.
+NOTE: INTERFACE REF VARIABLE WILL DECIDE WHICH METHODS THE OBJ REF VARIABLE CAN CALL AND NOT THE OBJECT THAT ITS REFERING TO. 
 
-NOTE: ALWAYS WARN OF EXCEPTIONS USING throws Exception.. Otherwise while compiling will get error as UNHANDLED EXCEPTION TYPE. 
+EXAMPLE :
 
-to warn of exception :    void function_name() throws exception1, exception2 {
-								}
-		to throw exception - throw new Exception()	
-		
-	to make self defined exceptions, class Exception1 extends Exception {}
-	
+interface A {
+	int age = 28 // by default final static
+	 void m1() // by default abstract
+}
+
+interface B {
+	 void m2() // by default abstract
+}
+class C implements A, B
+
+class implements A, B {
+	A a = new C() 
+	a.m2() // not allowed as B has the m2 method and not A. 
+}
+	INTERFACES IS USEFUL FOR ABSTRACTION. 
+
 ---------------------SUPER CLASS REFERENCE VARIABLE----------------
 to call a super class version of a overriden method, we can use super.method(). // super - a non static method n can't be accessed from static method. 
 
@@ -295,6 +306,203 @@ if inner class has same variable n method as of outer class, then outer class/va
 			}
 		}
 	to access, new A().m1()
+4. ANONYMOUS inner Class: 
+	class A {
+	void m1() {}
+	}
+class App {
+	A a = new A() {
+		void m1() {} // THIS IS JUST IF WE WANT TO THIS ONLY ONCE.. 
+		void m2() {} 
+		}
+	a.m1() // anonymous inner class overriding. 
+	a.m2() // CF won't allow. 	
+	} 
+
+5. Abstract anonymous inner class: We cannot instantiate Abstract class or interface but if we override the methods while instantiating anonymously, then it will work. 
+	abstract class A {
+		abstract void m1();
+	}
+	class App {
+		psvm(){
+		A a = new A(){
+			void m1() {
+			
+			}
+		}
+		}
+	}
+----------------------ENUMS--------------------------
+Enums are named constants. used to denote any named constant. For example, Status - pending, failed, success. or Gender - Male, Female
+
+enum Gender {			// this makes Gender class as in java everything is class. 
+	Male, Female, Transgender
+}
+
+to use this,    	Gender g = Gender.Male;  SOP(g) // will print Male
+								g.ordinal() // prints number based on the order of the values // 0 as its the first
+					Gender allgenders[] = Gender.values() // gives all values in array. 
+					
+	Enums have special use case for switch case.
+		Gender g = Gender.Male 
+		
+		// we can directly write values of enum Gender like below. 
+		switch(g) {
+			case Male:
+			sop()
+			break
+			case Female:
+			sop
+			break
+		}
+	Enums in java extends Enum class. We can create our own constructor and getters and setters as its also a class. 
+
+	enums Laptop {
+		Macbook(2000), Samsung(1300), Lenovo(2500)  // this are objects of Laptop class and we will have to make constructor to assign values in 
+		private int price											// in the bracket to some variable. 
+		
+		private Laptop(int price) {
+			this.price = price
+		}
+		
+		private int getPrice() {
+			return this.price
+		}		// CAN IMPLEMENT GETTER and SETTERS TO GET/SET PRICE OF EACH ENUM OBJECT
+	}
+	
+	// when using now,
+		Laptop l = Laptop.Macbook 
+		l.getPrice()
+				
+------------------------ANNOTATIONS---------------------------------
+	it is a supplement to the compiler or can call as metadata to supply extra information to the compiler. We can show our intentions to the compiler with the help of annotations. There are lot of inbuilt annotations. 
+		For example - @Override - write this where we are overriding..if there's an error we will get to know. 
+		@Deprecated - there's an alternative to this. You can use this but don't use this. 
+		
+------------------------TYPES OF INTERFACES--------------------------------
+3 types of interfaces - Normal, Functional (Also known as SAM - single abstract method) and Marker Interface.
+
+--1. Normal interface - its a normal interface with 2 or more abstract methods. 
+--2. Functional interface - also know as SAM. It contains only one abstract method.
+		To warn compiler that this interface is a SAM/Functional interface, we write  @FunctionalInterface annotation. this will give error if we define more then method. 
+		
+		@FunctionalInterface 
+		interface A { void run()}
+			
+			Either we can implement this interface with a class or we can anonymously override in a class like below.
+			
+			A a = new A() {
+				public void show() {}
+			}			
+
+--3. Marker interface - just a blank interface. 
+		
+		serialization - if we want to save any data in the hard drive, we save the data in hard drive and then we destroy this object. 
+						if we want to save current status of the game, we save it in hard drive and we destroy the object - serialization
+		deserialization - Now if we want to load current status of the game when we restart, we can load the status from this data on the hard drive.
+					this process is deserialization.
+		by default every object is not allowed to do this.. so we can give permission with the help of marker interfaces like serializable.
+	Whenever there is any interface which is blank, it is marker interface. 
+ 
+		
+----------------------LAMBDA EXPRESSIONS--------------------
+	Lambda expressions are mostly used for Functional Interface containing one abstract method. Its a syntactical/sugar coated way to reduce the repeated code of 
+		A a = new A() {
+				public void show() {}
+			}	  /// new A() to the function declaration part is repetitive. 
+		CAN WRITE THIS IN SHORT AS - 
+			A a = () -> SOP("shusdudh ")
+
+		if multiline, then A a = (int arg) -> SOP("sdhdus" + arg); 
+					or A a = (arg) ->  {	SOP("s " +arg) } // no need to mention argument data type as it will be in interface definition.
+					or A a = arg -> { SOP("ar" + arg)} // no need to wrap arg in paranthesis. 
+		or when we want to return something then, A a = (i,j) -> i + j // it will return i+j
+					
+----------------------EXCEPTION HANDLING-----------------java.lang---------------------------------
+Throwable Class has 2 types - Error  and Exception.
+--Error - Assertion n stack over flow Error. (unchecked exception).
+	3 Errors -
+		1. Compile time error - syntactical errors. 
+		2. Runtime error - usually happens when some specific thing is't happening. for example api calling fails or DB connection fails, 
+						This types of runtime errors are also known as exceptions. We have to handle exceptions. 
+						divide by 0 can give runtime errors. 
+		3. Logical error - logical bugs... output not what we expected. 
+
+----EXCEPTION -  
+	 2 statements - normal and critical statement. We usually do exception handling for critical statements. 
+		Critical would be like dividing an integer. calling api. 
+	IO exception, file not found - checked exception -- have to handle.  must write a catch block. 
+		NullPointer ex, NumberFormat ex, Arithmetic ex, ArrayIndexOutOfBound ex. 
+	
+	--NOTE : WE ALWAYS HANDLE SMALL EXCEPTIONS SUCH AS ArrayIndexOutOfBound, ArithmeticException before and then at the end ALWAYS HAVE PARENT EXCEPTION CATCH AS IT WILL ALWAYS HANDLE ALL UNCOVERED EXCEPTIONS IN THIS. PARENT EXCEPTION SHOULD ALWAYS BE AT THE END CATCH. 
+	OTHERWISE IT WILL THROW ERROR IF PARENT EXCEPTION IS AT THE TOP BECAUSE IT WILL CREATE UNREACHABLE CODE FOR BELOW SPECIFIC EXCEPTIONS. 
+		
+---Exception hierarchy: 
+		most of the names which starts with -able are interfaces. e.g serializable, cloneable  
+		Throwable (this is only exception as its class). It has two Error and Exception. Errors we can't handle. Exception we should and always handle. Error will directly stop the execution. 
+		
+	 Object ( everything is object oriented)  -> Throwable-> Error
+														  -> Exception-> RuntimeException, SQLException, IOException. 
+				RuntimeException -> ArithmeticException, ArrayIndexOutOfBound, NullPointerException. 
+			RuntimeExceptions are unchecked Exceptions and Other Exceptions like SQLException, IOException are checked Exceptions. 
+	--unChecked Exceptions (runtimeExceptions) - compiler will not force you to handle this exception. its our choice whether we want to handle or not. 
+	--CheckedExceptions (SQLException) - compiler will force us to handle this checked exceptions. 
+
+	NOTE: THERE SHOULDN'T BE ANY STATEMENT BETWEEN TRY AND CATCH N FINALLY BLOCK OTHERWISE CF. 
+	IRRESPECTIVE OF THE TRY N CATCH BLOCK EXECUTED, FINALLY WILL GET EXECUTED. 
+at compile time, see ref, at runtime see object.
+
+  ---to throw exception - throw new Exception()	. 
+		if(condition) {
+			throw new ArithmeticException("some random that you want to send")  // to send specific exception message.
+		}
+		catch(ArithmeticException e) {
+				SOP("aisdbs ", e)   // ArithmeticException: some random that you want to send
+			}
+		
+----------to make self defined exceptions-----------
+		class Exception1 extends Exception {
+			public Exception1(String msg) {
+				super(msg)
+				}
+			}
+		// WE DEFINE NEW CONSTRUCTOR WITH STRING PARAMETER AS WE CAN PASS ANY SPECIFIC EXCEPTION MESSAGE THAT WE WANT. 
+		// AND WE CALL SUPER() AND PASS MSG AS EXCEPTION PARENT CLASS HAS IMPLMENTED THE CONSTRUCTOR ON ITS OWN AND WE HAVE TO MAINTAIN THE SAME. 
+		
+---------THROWS-----------------used FOR DUCKING EXCEPTION USING THROWS. 
+If child methods doesn't handle the exception it can duck the exception using throws keyword. BUT THEN THE PARENT METHOD WHICH IS CALLING THIS CHILD WILL HAVE TO HANDLE THIS EXCEPTION USING TRY CATCH BLOCK. 
+		
+NOTE: ALWAYS WARN OF EXCEPTIONS USING throws Exception.. Otherwise while compiling will get error as UNHANDLED EXCEPTION TYPE. 
+
+to warn of exception :    void show() throws exception1, exception2 {
+								}
+
+
+			psvm() {
+				try{
+				show()
+				}
+				catch(e) {
+				}
+			}
+	WARNING : NEVER USE THROWS IN MAIN FUNCTION() BECAUSE JVM CAN'T HANDLE THIS EXCEPTION. 		
+	
+-------------finally--------------------------
+No matter if the exception is handled or not, we need to execute something even if an exception is thrown. so we write code in finally block. mostly used to close connections, resources after its work is done. 
+
+-------------try with resource-------------------
+Instead of manually closing resources in finally. We can use try with the resource in its block . It will automatically close thr resources which is in () block.
+
+	for e.g : 
+			try(BufferedReader bR = new BufferedReader) {
+				
+				}
+	
+------------------------------BufferedReader and Scanner---------------------------------------------
+BufferedReader can be used to read data from multiple sources like file, InputStream. It's a resource as it gets data from multiple sources. so its important to close resources after use. 
+
+	BufferedReader br = new BufferedReader(InputStreamReaderObject)
+
 ---------------------------------Annonymous overrriding-------------------------
 class A {
 	void m1() {}
@@ -313,27 +521,84 @@ class App {
 	i.m();
 	
 ------------------------------------------------------MULTITHREADING--------------------------------------------
-thread is a light weight process in java which runs concurrently with other threads. Threads are independent of each other & can run simulaneously. 
+In the same process, same task, we can divide everything into multiple subprocess and tasks into smallest unit to execute them together with the help of threads. This is called multi-threading. Thread is a light weight process in java which runs concurrently with other threads. Threads are independent of each other & can run simultaneously. 
+Threads can be more used for doing CPU intensive tasks or concurrently executing two small processes at the same time. CPU intensive as in full utilizing multi cores of the system. Unlike nodejs which has asynchronous nature and single threaded and can handle IO operations more efficiently. 
+
+In OS, we have scheduler who can manage multiple threads at the same time. it allows a thread to execute.  
+NOTE: WE CANNOT CONTROL THE SCHEDULER TO SCHEDULE ONE THREAD AFTER ANOTHER. 
+
+-- TO ASSIGN PRIORITY TO THREAD -- 
+	priority range goes from 1 to 10. 1 is least priority. 10 is highest. 5 - default priority. 
+
+	Class A extends Thread{
+		public void run() {} 
+	}
+	
+	A obj = new A()
+	obj.setPriority(10) or obj.setPriority(Thread.MAX_PRIORITY) // MAX_PRIORITY - CONSTANT IN THREAD.
+	obj.start()
+
 -----Ways to do multi-threading : 
 	1. Define a class which extends thread class and override a run() method and define your process. 
-	When calling  A a = new A()
-				a.start() // to start the thread.
+	When calling  
+		class A extends Thread {
+			public void run () { 	// this method we have to override so that when we call start method, thread will run this method. 
+			
+			}
+		}
+		class B extends Thread {
+			public void run() {
+			
+			}
+			}
+		
+			A a = new A()
+			B b = new B()
+			a.start() // to start the thread 1.	
+			b.start() // to start thread 2
+			
+	EXAMPLE : RACE COURSE, YOU ARE IN A LANE.. but you can't run unless and until the referee says start.. he says start and you will run. 
+				
 	2. Creating Thread object directly:
+		class A implements Thread{
+		 public void run() {
+		 }
+		}
+	
+	class Main {
 		Thread t1 = new Thread(new A(), "name of thread") // A has also extended thread class and overrided run() method
 		t1.start() // never override start method. 
+		}
 	3. Implementing Runnable interface : 
+		Why runnable interface because we might have to extend another class instead of thread..and to implement thread in child class, we can't do because multi level inheritance isn't possible in java. so Thread class implements Runnable interface so we can use this directly. 
+		
+		NOTE: IN RUNNABLE INTERFACE, WE DON'T HAVE START METHOD. 
+	
 		class A implements Runnable {
 			public void run() {}
 		}
-		same way to start the thread t1.start()
+		
+		Thread t1 = new Thread(new A(), "name of thread") // A has also implemented Runnable interface and overrided run() method
+		t1.start() // never override start method. 
+		}
+		
+
 	4. Overriding run by anonymously by runnable interface:
 		Runnable r = new Runnable () {
-		 public void main() {}
+		 public void run() {}
 		}
+			// by lambda expression 
+			
+			Runnable r = ()-> {
+				// run method		 
+			}
 		
 		Thread t1 = new thread(r, "threadName") {
 		public void run() {}
 		}
+		
+		
+		
 	5. Annonymous Thread overriding : 
 		Thread t1 = new Thread (new A(), "ThreadName") {
 		public void run() {
@@ -346,23 +611,259 @@ thread is a light weight process in java which runs concurrently with other thre
 			
 				}
 			}, "threadName").start();
---------thread.sleep() // for pausing a thread. as soon as thread is paused.
+--------Thread.sleep(1) // for pausing a thread to be given in milliseconds. as soon as thread is paused.
 --------t1.join() -- for sequencing thread. t1 will start after main thread. 
--------synchronizing threads--------------
+
+--------------Synchronizing threads--------------
+NOTE: Thread Safe - only one thread is allowed to use. 
+	1 counter variable is there. and in 2 threads we are increment this variable by 100.. so 2 100s. so end counter value should be 200 ideally. but the two threads are conflicting each other so might not get 200 but less than 200 random values.. as it won't be synchronized.. 2 value can be incremented to 3 by both threads at the same time.. 
+	
+
 	If 2 threads are sharing the same resource, there might be data inconsistencies between them. 
 	2 ways to lock on that resource, synchronized methods and synchronized statements. 
 	1. we can mark our method as synchronized.. it will put locks objects of its class by default. 
+			// this will allow only one thread to execute this increment. 
+		public synchronized void increment() {
+		}
+		
 	2. Synchorization block : 
 		Synchronized (ref/obj) {
-			
 			}
 		need to pass reference to ensure synchronized behavior over that reference.	
 
 ----thread.wait() and .notify() -- used to prevent deadlocks.
 	When a thread calls .wait, that thread will go to waiting state. then to call back the previous thread to resume, we do .notify(). 
-	
------------------COMPARATOR VS COMPARABLE---------------------
-comparator is an interface in which we will have to implement compare method. 
-WILL HAVE TO DO ANONYMOUS OVERRIDING OF COMPARE METHOD--
 
-can also implement comparable 
+-----THREAD STATES -----
+1. New State - When creating a thread. //  thread t1 = new Thread()
+2. Runnable State	// t1.start() it goes into runnable state. 
+3. Running State // when it is actually running.. with the help of run state. 
+4. Waiting/Blocking State.  // thread.sleep(), thread.wait() - to go to waiting state. come back with thread.notify to go to runnable state. 
+							//when OS scheduler runs then running state. 
+5. Dead State. 	 // after thread execution is done. stop() method to stop the thread. 
+
+-------------------Collection API-----------------------------------
+Collection API -  set of classes & interface, methods (comparator & comparable interface) used for storing & managing data 
+COllection  - interface - Root interface extended by other interfaces like set, map, list.
+collections - Class that has multiple method to operate on collections. sort, binarySearch. 
+
+	Collection interface --- List, queue, SET
+		list - arraylist, linkedlist, 
+		queue - dequeue
+		set - hashset, linkedHashset
+		
+-----Arraylist---------------	
+		Collection c = new ArrayList<Integer>()
+		c.add(2)
+		c.add(4)
+		
+		/// IF WE WANT TO HAVE METHODS OF LIST.
+		List l = new ArrayList<Integer>()
+				l.get(0) // 0th element. 
+				indexOf()
+				
+		Array.asList converts array into a list. 		
+		
+--------Set---------------------- No duplicates
+Set<Integer> nums = new HashSet<>() 
+
+nums.add(9)
+nums.add(8)
+
+There's one more linkedHashset.  We can't insert repeated values. Even if if we try, it will only insert it once. 
+ALSO FOR HASHSET, SEQUENCE OF INSERTION IS NOT FOLLOWED. Values are inserted randomly. Also can't get values via index. 
+
+TREE SET IS SORTED. ELEMENTS GET SORTED WHEN STORED IN TREE SET. 
+
+--ITERATOR INTERFACE -- Collection has iterator interface that contains iterator method which can be used to iterate over collections - for list, arraylist and set. 
+
+	Iterator<Integer> values = nums.iterator().
+	
+	while(values.hasNext()) {
+		sop(values.next()) // will print next value.
+	}
+	
+	
+-----Map---------pair of key value pair
+Map<String, Integer> students = new Map<>()
+
+students.put('saurabh', 27)
+students.keyset() // will give array of keys. 
+students.get('saurabh') // will give key of saurabh. 
+
+Hashmap doesn't allow sequence or any order. Keys in Map should be unique, else it will override the duplicate ones with latest value. 
+HASHTABLE IS SIMILAR TO HASHMAP.. BUT THE DIFFERENCE IS HASHTABLE IS SYNCHRONIZED. 
+
+
+-----------------COMPARATOR VS COMPARABLE---------------------
+Collection.sort will sort in ascending order mostly. We can our own sorting logic inside compare method. 
+comparator is an interface in which we will have to implement compare method. 
+
+--------COMPARATOR-------------
+can DO ANONYMOUS OVERRIDING OF COMPARE METHOD--
+Comparator<Integer> comparatorObject = new Comparator<>() {
+	public int compare(Integer i, Integer j) {
+		RETURN 1 // IT WILL SWAP
+		RETURN -1 // IT WON'T SWAP. 
+	}
+}
+
+Collection.sort(numsOrObjectsToBeSorted, comparatorObject)
+
+Can implement compare method in another class and call it. Integer class has implemented comparator interface so it sorts when called collection.sort is called on it. So to have a natural sorting algo, we need to have comparable. 
+
+--------COMPARABLE---------------------
+can also implement comparable. 
+	Class Student implements Comparable<Student> {
+		int compareTo(Student comingObjectFromClassCallingCollectionsort) {
+				comingObjectFromClassCallingCollectionsort.age > this.age ? -1: 1
+		}
+	}
+	
+	can use comparator if we want to specify which logic to implement for sorting. 
+	If we want to give power of implementing sorting logic with its own class object, then comparable is way to go. 
+	
+------------------------FOREACH----------- came in 1.8 -----------------------
+	Consumer exists in java.util.function.consumer. 
+
+	nums.ForEach(n ->  SOP(" n --- ", n)) // forEach is used call each thing inside of its block for each list element. forEach is part of list interface. 
+	
+	Foreach method takes in parameter of consumer interface object - Consumer interface is a functional interface. 
+	To make object of consumer interface, we have to specify type as well which will be our own implementation consumer for that type. 
+	
+	Consumer<Integer> cons = new Consumer(){
+		public void accept(Integer n) {		// accept method - we have to implement from consumer interface.
+			SOP(n)							// accept method takes input as one parameter/element at a time from array.
+			}								
+	}
+	
+	nums.foreach(cons)
+	
+	using lambda function :
+	
+	Consumer<Integer> cons = (n) -> {
+		SOP(n)
+	}
+
+-------------------------------------STREAM API----------------------------------------
+	Stream API is used to process collections of objects. stream is sequence of objects that supports various methods can be pipelined to produce desired results.
+	
+	It has methods like - filter(), map(), reduce(). 
+	
+	List<Integer> nums = new Arraylist()
+	Stream<Integer> s1 = nums.stream() // returns object of Stream. 
+		
+		can also do Stream<Integer> s2 = s1.forEach(n -> { SOP(n)}) // For each expects an object of Consumer. 
+	
+	Stream<Integer> s3 = s1.filter(s -> s%2==0) // to check even number
+							// filter expects an object of Predicate(java.util.function.Predicate) Functional Interface in 
+							which we have to implement test method which will check if a condition supplied is true or not & it returns a boolean value.
+							
+					
+	Stream<Integer> s4 = s3.map(s -> s*2)
+	Stream<Integer> s5 = s4.reduce(0, (c,e) -> c+e)
+				
+	
+	NOTE: Using stream won't modify the original list. Stream can only be used once. If we do s1.foreach twice, it will throw exception in runtime as "stream has already been used upon or closed."
+		
+	
+	--- Instead of doing above approach, 
+		we can try pipelining all methods together like below -
+		
+	int result = nums.stream()
+					 .filter(s -> s%2==0)
+					 .map(s -> s*2)
+					 .reduce(0, (c,e) -> c+e)
+					 
+	.filter() method expects an object of Interface Predicate which has to override test method which should return a boolean type. 
+		Predicate<Integer> p = n -> n%2==0
+		
+		let s2 = s1.filter(p)
+
+	.map() - expects a object of Function (functional interface) which has to override apply method. Also expects 2 types to be specified - input & output. 
+	
+		Function<Integer, Integer> n = s -> s * 2
+		
+		
+	
+	
+	
+
+
+
+----------------REST API FROM SCRATCH WITH SPRING BOOT-------------------------
+
+spring - framework built in java. has modules for everything. modules for jdbc connections, JMS, websockets, aop, 
+
+spring boot - used to create microservices. simplify bootstrap & dev of spring application. built on top of spring. 
+		autoconfiguration for everything. embedded server to run application without need of external server. 
+		spring boot starters 
+		
+		libraries:
+		spring mvc - to build web apps & rest APIs. by default its in spring boot. 
+		spring data JPA - to interact with your database - java persistence API. useful for performing CRUD
+		Lombok -  helps to minimize lot of boiler plate code (getters,setters, equals, hashcode ). makes code cleaner. 
+		Database - can add corresponding database dependency 		
+				H2 database library
+		
+		Dependency management tool - Maven and Gradle - to manage application dependencies. 
+		
+		
+		
+--REST PRINICIPLES --
+
+STATELESS 
+CLIENT SERVER
+CACHEABLE - data should be cacheable
+UNIFORM IMTERFACE
+LAYERED SYSTEM - 
+
+
+
+1. spring initializer -
+	gradle groovy 
+	java
+	spring boot 3.3.5 
+	
+	group com.deloitte.
+	artifact - name of project - restApi
+	name - restApi
+	package name
+	packaging - jar - java app, war - web app
+	
+	add dependencies - spring web app, Spring JPA, H2 Database - in memory db that supports jdbc, lombok.
+	
+	
+	build.gradle downloads all the dependencies required. 
+	
+	application.properties - 
+		
+		server.port -- port app 
+		
+		
+	RestApplication.java - starting file in our app. 
+	
+	
+-------------Data models and Basic JPA CRUD-------------
+
+-----JPA Entity------------
+Regular java object that has been annotated with specific java objects which maps to database 
+
+@Entity belongs to jakarta.persistence and jakarta belongs to JPA which is mapping data to table.  
+
+@Data annotation from lombok which holds Data. 
+
+
+CrudRepository in Spring provides the actual implement to do everything in crud.  
+
+
+Controller advice in Spring Boot -- to catch exceptions - request interceptor 
+
+
+
+@Operation - annotation is for swagger 
+
+Spring Actuator - subproject of Spring boot. it provides built in endpoints that we can use to monitor & interact with our application
+	this endpoints offer deep insights into the internal working and metrics of application such as health, metrics, info, dump, env. 
+	
+	

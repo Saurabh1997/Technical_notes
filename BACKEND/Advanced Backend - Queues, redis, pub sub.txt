@@ -71,3 +71,5 @@ For Queues, we push data into queues and it gets picked up by another service. m
 For PUB-SUB, Messages are published on a topic instead of being sent to a queue and the services which have subscribed to that topic will get the published message. ONE TO MANY OR MANY TO MANY COMMUNICATION. FOR BROADCASTING REAL TIME UPDATES, NOTIFICATION.
 	USECASE: Live updates, news feed. 
 		client.publish(channel,message) // client.subscribe(channel , (callbackFn) => {})
+		
+		

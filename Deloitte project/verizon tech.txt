@@ -1,0 +1,66 @@
+--------------verizon graphql api packages-----------------
+
+graphql - api packages used :
+
+app-root-path : to determines app's root path. 
+
+graphql-constraint-directive : modifies graphql schema converts basic scalar type(int, float, string) to custom scalars. 
+					
+				for example we give basic scalar type as int or string. with this package, we can mention constraint as "email" type.
+			
+		type User {
+			email: String! @constraint(length:10, format: email)			
+		}		
+		 
+		In the file where we are supplying schema typedef to Apollo server.
+		
+		let schema = makeExecutableSchema({
+			typeDef: [constraintDirectiveTypeDef, typeDefs]
+			})
+		schema = constraintDirective()(schema)
+
+		new ApolloServer({schema})
+			
+graphql-tools/schema - gives makeExecutableSchema which combines schema and the resolvers in one object.
+
+	const schema = makeExecutableSchema({typeDef, resolvers})
+	
+			const schema = makeExecutableSchema({
+		  typeDefs,
+		  resolvers: [barsResolver, foosResolver]
+		})
+
+
+graphql-tools/merge - merges objects related to graphql for example resolvers and typedefs spread across multiple files can be deep merged..
+
+	mergeResolvers, mergeTypeDefs
+		
+graphql-middleware - splits graphql resolvers in middleware functions.  It lets specific function/piece of code to run before and after resolvers function. 
+	Order of the middleware functions array is important. follows onion principle. first resolver func gets executed first and last. Second resolver will execute second and second last.  
+	
+	applyMiddleware()
+	
+graphql-base64 - encode and decode a type name and ID in base64. 
+
+arr-pluck --- gets specific value from a single property from all elements of collection (array of objects). 
+			for e.g objs = [{ id: 1, age: 4}, {id: 2, age: 3}]
+				pluck(objs, "id") // returns array with [1,2]
+
+object-to-map -- converts an object to map. const map = objectToMap(obj)
+												map.get(propertyName)
+
+array-each - loop over each item in an array and call the given function on each array element. 
+				
+					
+normalify --- to normalize different values into their value types - for e.g '1' becomes 1. 'true' becomes true
+			normalize({ a: '1',b : 'true' })  // { a: 1, b: true} 
+
+case - used to flip convert flip and convert strings to lower, upper case, camel case, pascal case.  
+		case.snake('Foot bar') // Foot_bar
+		
+		
+		
+--apollo/client/react/hoc
+
+
+

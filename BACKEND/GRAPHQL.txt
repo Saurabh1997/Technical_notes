@@ -2,8 +2,12 @@ Graphql -
 
 A query language for api which gives client a power to ask for what exactly they need. 
 its a layer between database and the client side queries. 
-benefits of Graphql  - 
 
+npm i @apollo/server graphql 
+
+	graphql is for core graphql and apollo lets us expose graphql API over http. 
+
+------benefits of Graphql----------- 
 1. Prevents over fetching - 
 		we define the structure of data that we want through a query. We define the structure pf data that we want. 
 				query {
@@ -24,9 +28,22 @@ benefits of Graphql  -
 			image
 			name }}}
 		
-Graphql is very very strictly typed. 		
+Graphql is very very strictly typed. 	
 
-FLOW IN GRAPHQL: 
+When we hit query type, it will hit query in the type definition. Whatever we define in the query type, it will find what to return in resolver function for that particular query. 
+WHICH VALUE WILL BE RETURNED IS DETERMINED BY RESOLVER FUNCTION. 
+
+By default, all graphql APIs are post request. 
+
+----------------two approaches for making graphql apis----------
+
+1. schema first approach ---
+	this is what we are doing so far. define schema first in the typedefs and then mapping to resolvers.
+
+2. code first approach ---
+	we can use graphql-nexus. 
+
+----------FLOW IN GRAPHQL: 
 A Graph - when we hit a graphql api, we hit graph which has connected different data types - posts, comments, likes.
 	We can just hit from above 3 data types to query data about anything. for example -
 		Query {
@@ -65,7 +82,7 @@ two things - graphql and apollo-server
 		
 GRAPHQL SERVERS - to create a graphql , we need two things --- TYPE DEFINITIONS AND RESOLVERS. 
 
----TYPE DEFINITIONS - describes how the data is going to be when exposing anything - post, likes and review (example) SCHEMA - way that our query is going to look, data is going to look, the way our mutations are going to look. 
+-------------TYPE DEFINITIONS - describes how the data is going to be when exposing anything - post, likes and review (example) SCHEMA - way that our query is going to look, data is going to look, the way our mutations are going to look. 
 	and how our data is linked to each other. 
 	TypeDef schema looks similar to the DB schema. 
 	
@@ -100,7 +117,7 @@ for e.g :  fruits: [String]
 
 TypeDef is for structuring the graph and we make resolver functions to handle the query based on our schema. 
 
-RESOLVERS -  Resolvers are going to handle the client requests and return the data that client has requested. functions that return the data that conforms(obeys the rule) the way we have defined in the schema. 
+-----------------------RESOLVERS -  Resolvers are going to handle the client requests and return the data that client has requested. functions that return the data that conforms(obeys the rule) the way we have defined in the schema. 
 fruits : () => {return ["banana", "apple"]}
 
 	We first make resolver functions for the root query as its the entry point of the graphql api. In root query, we make resolver function for every field defined in the root. 
@@ -359,7 +376,7 @@ and then we add this input into the Mutation typedef,
 			}
 		}
 		
-	AND INput variables
+	AND Input variables
 		
 		{
 		id: "1",
@@ -368,3 +385,8 @@ and then we add this input into the Mutation typedef,
 		}
 		}
 	
+-----STANDARDS---------------------------------------------
+
+1. Can use apollo server with express as we need to authenticate graphql apis as well. 
+
+2. Can put typedef in a seperate .graphql file, it tells that this is a GraphQL schema definition language file. 
