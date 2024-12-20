@@ -1,0 +1,23 @@
+-------------------------------MAVEN-----------------------------------------
+Maven is a project management tool. 
+When we are working on a project, we need to compile, run, test, package and deploy our project. This is done by IDE.
+Sometimes We need external libraries like DBMS library. for postgres we need postgres driver. We need libraries of hibernate, we need multiple JAR files, get this all into our project. Hibernate is also dependent on other JAR files.. we need this as well.. this are transitive dependencies..Also we need to upgrade this dependencies from time to time.. Spring will work with hibernate..We need to download JAR files and test everytime.. WE also need multiple person working on the same project to have the same DEPENDENCIES.. 
+THIS ALL CAN BE DONE EASILY USING MAVEN. WE ALSO HAVE GRADLE, IVY - OPTIONS. MAVEN IS BEGINNER FRIENDLY. GRADLE IS GOOD.
+
+We can just ask for hibernate dependency of 6.2 version and it will directly given to us by maven.
+
+STEPS : 
+We create a new project and select maven as the build system. We have life cycle methods in maven where we can just click on clean, deploy, build to do respective things and we can also achieve the same using CLI. We also have plugins. 
+
+----archetypes in maven---
+archetypes in maven are nothing but a template, some are open source and made by someone else. we can even create our own archetype which can have our own configuration and use it in a new project. 
+
+Traditionally, we just used to search for jar dependencies via their site and we had to manually configure the version numbers. But we have also mvnrepository now where we get maven xml dependencies to insert that into pom.xml. 
+
+---GAV - EVERY JAR library will have a GAV - Group ID, Artefact ID, and a Version. 
+		Group ID  should be unique in the world. artifact ID is the project name and there is version number.
+		
+	Put the code of dependencies tag inside pom.xml just after project GAV and clicking on refresh or reload will download all the external libraries. 
+We can right click on pom.xml and show effective pom which is the actual pom which contains all the plugins and mvn repo urls. 
+All Maven projects inherit default pom configurations from a super pom. 
+

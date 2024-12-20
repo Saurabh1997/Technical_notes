@@ -1,0 +1,19 @@
+-----------steps ---------------------------
+
+aws configure sso - to configure sso settings
+
+
+
+aws s3 ls --profile learning-album
+
+
+----------------Bastion host------------------------------
+it is a secure server that acts as a gateway to a private netwowrk from an untrusted network like the internet. It provides a secure entry point and has controlled traffic. 
+
+
+
+
+------------------------------AWS PARAMETER STORE----------------
+
+WE STORE ALL OUR configurations INSIDE AWS PARAMETER STORE. 
+

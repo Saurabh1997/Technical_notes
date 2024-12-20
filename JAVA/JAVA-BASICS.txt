@@ -395,7 +395,7 @@ to use this,    	Gender g = Gender.Male;  SOP(g) // will print Male
 				public void show() {}
 			}			
 
---3. Marker interface - just a blank interface. 
+--3. Marker interface - just a blank interface with no methods and constants. it actually gives us additional information or metadata about a class which has implemented this particular interface. 
 		
 		serialization - if we want to save any data in the hard drive, we save the data in hard drive and then we destroy this object. 
 						if we want to save current status of the game, we save it in hard drive and we destroy the object - serialization
@@ -770,7 +770,7 @@ can also implement comparable.
 	--- Instead of doing above approach, 
 		we can try pipelining all methods together like below -
 		
-	int result = nums.stream()
+	int result = nums.stream()					
 					 .filter(s -> s%2==0)
 					 .map(s -> s*2)
 					 .reduce(0, (c,e) -> c+e)
@@ -782,15 +782,154 @@ can also implement comparable.
 
 	.map() - expects a object of Function (functional interface) which has to override apply method. Also expects 2 types to be specified - input & output. 
 	
-		Function<Integer, Integer> n = s -> s * 2
+		Function<Integer, Integer> n = s -> s * 2  // returns a stream. 
 		
 		
+	.reduce() =  we give initial value first, and then accumulator. reduce function returns an int. 
 	
+------SORTED()------------------ it will return a sorted stream. 
+	Stream<Integer> s = nums.stream().filter().sorted() // returns sorted stream...
+			then can use .foreach to access each element in the stream.
 	
+------parallelStream()-----------------------
+	If we want to work with multiple threads at the same time to do things faster, instead of nums.stream() can do nums.parallelStream().
+	If want to filter faster, can use this to filter multiple elements at the same time. whereas sorting won't be faster as we need all elements at once to sort.
 	
+----mapToInt()----------------- alternative for reduce function but this returns object of - intStream Object
+	THIS CAN BE USED IF WE WANT TO CONVERT AN ARRAY AND PERFORM ANY OPERATION ON INTEGERS.. 
+	
+	maptoInt() method - RETURNS OBJECT OF INTSTREAM. There are lot of methods to perform basic operations on int. 
+		sum() - add all the values. this internally uses reduce(). sum is only applicable when we perform operation on intStream and not normal stream.
+		
+		int sum1 = nums.stream().map(i -> i*2).reduce(0, (c,e) -> c+e) 
+		
+		ALTERNATIVELY, 
+		int sum1 = nums.stream().map(i -> i*2).maptoInt(i -> i).sum() // returns the sum. 
+
+		can do using parallelStream also. BUT PARALLELSTREAM CREATES THREADS ALSO WHICH TAKES SOME TIME. this depends on the system if our system is fast enough to create more threads faster, then parallelStream version will be faster else Sequential Stream will be faster. 
+		NOTE: BUT FOR TASKS CAUSING DELAYS, PARALLELSTREAM WILL ALWAYS BE FASTER..BUT WE CAN DO THIS ONLY WHEN VALUES ARE INDEPENDENT and not dependent on other values.. 
+		
+--------------------------------OPTIONAL CLASS IN JAVA------------------------------------------------		
+	This is majorly used to prevent NullPointerException. A value can be there or can be null so can use Optional class. 
+		For example - 
+			List<String> names = Arrays.asList("Saurabh", "Laxmi", "naveen", "Gaurav")
+			String str = names.stream().filter(name -> name.contains("x")).findFirst() // Now this find first returns first string.. 
+																			///   what if we don't find x in any string.. it will give NullPointerException
+												// findFirst returns OPtional class object							
+				SO we will have to assign the same.. 
+			
+			Optional<String> str = 	names.stream().filter(name -> name.contains("x")).findFirst()
+			
+			SOP(str.get()) // to get the value. IF NO VALUE WE WILL GET NOSUCHELEMENTEXCEPTION.. 
+ALTERNATIVELY, 		 SOP(str.orElse("Not found")) // IF NO VALUE FOUND, WE WILL GET NOT FOUND. 
+
+	Or we can directly do above in one line using String str = names.stream().filter(name -> name.contains("x")).findFirst().orElse("Not found")
+
+--------------------------------------Method Reference--------------------------------------------------------
+	Method references can enable us to convert a lambda expression to a method reference. It enables us to integrate functional programming in java. we can pass a method as an argument...WE JUST NEED TO SPECIFY WHICH CLASS/OBJECT THE METHOD BELONGS TO. 
+	
+	For example, 
+		List<String> names = Arrays.asList("Saurabh", "Laxmi", "naveen", "Gaurav")
+		names.forEach(name -> SOP("name"+name))
+	ALTERNATIVELY, CAN DO - names.forEach(System.out::println())  // println is the method name we are passing and it belongs to System.out.
+		
+		names.stream().map(name -> name.toUpperCase()).toList() // toList converts the string stream into string list which is immutable.
+		
+		Instead of name.toUpperCase(), 
+		
+		names.stream().map(String::toUpperCase).toList() // toUpperCase belongs to String. 
+	
+----------------------------------------Constructor Reference---------------------------------------------
+	Similar to Method reference, we can also use constructor reference. We just have to specify the Class name followed by the ::new keyword
+	
+	If we want to make a list of Students Object (Students is a class)
+		List<String> names = Arrays.asList("Saurabh", "Gaurav", "Swapnil")
+		List<Student> student = new ArrayList<>()
+		
+		for(name :names) {
+		student.add(names.stream().map(name -> new Student(name))).toList() // this is calling constructor to initialize with name of each name in names array 
+		}
+				
+		ALTERNATIVELY, 
+		for(name: names) {
+		student.add(name.stream().map(Student::new)).toList() // this will create list of student objects..
+		}
+
+----------TYPICAL WEB APP FLOW-----------------------
+There is Controller Layer - taking request from client, Service layer - for doing business logic, Repository Layer - for connecting with the database
+
+------------------INVERSION OF CONTROL----------------------------
+	Controller layer - to handle a particular route we may need to hit business layer and to get some data from the DB, from business layer, we may need to hit repository layer.. to hit another layer, we will have to make its object. 
+	
+	THIS CREATION OF A NEW OBJECT IS A BIG DEAL.. AS ITS NOT JUST ABOUT CREATING AN OBJECT. ITS ABOUT MANAGING ENTIRE LIFE CYCLE OF OBJECT - CREATION, DESTRUCTION
+	This process of creation of new object which can be taken care by someone else.. and we just focus on the business Logic. THIS PATTERN IS CALLED AS INVERSION OF CONTROL
+	
+	Basically We have the control of creating our OWN OBJECT..BUT WE ARE giving the control of creating an object to someone.. SO INVERTING THE CONTROL.. INVERSION OF CONTROL. 
+	
+	IOC is just a principle. DEPENDENCY injection is the actual implementation of IOC. WE IMPLEMENT IOC WITH THE HELP OF DEPENDENCY INJECTION. DI is a design pattern. 
 
 
+Now, If we need that particular object, We won't create the object. we will just ask Spring framework and it will inject the dependency for us. WE JUST MENTION THE REFERENCE. 
 
+3 types to do DEPENDENCY injection: 
+
+1. Constructor Injection - 
+		
+	What we do is - we make a constructor of our Controller.. and in that constructor we pass the service and assign it our controller service.. and now it will inject the object. 
+	
+	class Service {
+		public void doSomething() {}
+	}
+	
+	class Controller {
+		private Service service;
+		public Controller(Service service) {
+			this.service = service
+			}
+		
+		public void handleRequest(){
+			service.doSomething() // doSomething is method of service class. 
+		}
+	}
+
+2. Setter injection: we create a setter method for the injection.. we replace constructor with setterServiceInjection.
+	public void setService(Service service) {
+		this.service = service
+	}
+
+3. Field Injection: We achieve loose coupling using this. we just use annotation as "@Autowired" before declaring the class object.
+	
+	public class Injection {
+		@Autowired
+		private Service service
+		}
+		
+-------------------------DEPENDENCY INJECTION--------------------------------------------
+Loose coupling - one obj is not totally dependent upon another object.
+
+EXAMPLE - WE HAVE A CAR CLASS WHICH HAS LOT OF PARTS ITS GETTING FROM ANOTHER COMPANIES.. We can't directly get that part and integrate that into Car class. We Need some sort of abstraction logic which should be easier to change if we decide to get that part from another company. 
+	We Need someone else give us that dependency. So we have to inject that dependency in our car class. SO TO DO THIS WE HAVE A SERVICE - DEPENDENCY INJECTION CONTAINERS - to create that object for us and they will be injecting in our Car Class. On Top of that Class, We JUST ADD " @Component " to show it as a Component
+
+	So Instead of  
+		Laptop {
+			HardDisks HDD1 = new Sandisk()
+		}
+	
+We can do 
+		@Component
+		class Hitachi implements HardDisks{
+			
+		}
+		
+		And in the Laptop Class, 
+		
+		class Laptop {
+		
+			@Autowired 
+			HardDisks obj1;
+		}
+		// AUTOWIRED ANNOTATIONS WILL AUTOMATICALLY CONNECT HARDDISK OBJ1 TO HITACHI.. AND WILL AUTOMATICALLY INJECT ITS DEPENDENCY. 		
+	
 ----------------REST API FROM SCRATCH WITH SPRING BOOT-------------------------
 
 spring - framework built in java. has modules for everything. modules for jdbc connections, JMS, websockets, aop, 

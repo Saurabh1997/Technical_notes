@@ -45,3 +45,10 @@ If any pod crashes, deployment will automatically create that pod. Deployment ca
 
 	kubectl config use-context context_name - to set current context in a kubeconfig file. 
 			kubectl config use-context la-production && autossh -v -M O -N -L
+			
+	
+	kubectl exec -it "deploy/service-name" -n"qa" -- sh
+	
+	env | grep -i "data_to_search"
+	
+	
