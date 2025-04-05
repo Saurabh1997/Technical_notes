@@ -1,0 +1,5 @@
+SIDECAR CONTAINERS - container that run alongside the main container. 
+It extends & enhances the functionality of the main container. 
+If we want to add some main container functionality without affect the main container, we add a sidecar container in same pod. 
+
+there are other kubernetes container patterns as well. 

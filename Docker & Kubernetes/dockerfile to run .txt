@@ -1,0 +1,23 @@
+Dockerfile:
+FROM node:12-alpine      
+RUN mkdir -p /home/node_application
+WORKDIR /home/node_application
+RUN adduser -S app
+COPY SERVER/ .
+RUN npm install
+RUN chown -R app /home/node_application
+USER app
+EXPOSE 4001
+CMD [ "npm","run","pm" ]
+
+FROM - tells which base image to use. RUN - executes command inside container
+WORKDIR - changes active directory. 
+USER - changes current user for the directory
+EXPOSE -  TELLS DOCKER WHICH PORT TO BE MAPPED OUTSIDE CONTAINER
+CMD - defines command to run when container starts
+
+
+docker build -t appname  .   --- to build the container . to specify current directory from which dockerfile should be taken
+docker run -d -p 4001:4001 addressbook  -- to run the container
+
+

@@ -1,0 +1,46 @@
+Docker allows to package and run applications anywhere as containers. (similar like vm).
+DOcker lets map a port number to a process running in a docker. 
+Container is like an isolated process running on shared OS and offer a light weight alternative to VM.
+In VM, each machine gets a full OS, so becomes resource heavy. IN DOCKER, base layer of an image can be reused.
+
+image - template for creating the environment. snapshot of the system.  docker pull imagename
+Container - running instance of an image.  docker run imagename:tag
+
+docker vs vm - docker is light-weight. in vm each VM will have full OS n its resource heavy. 
+VM, each vm will have a Guest OS which runs on top of hypervisor(software that runs on hardware to make hardware calls) so it is heavy.
+in docker, will have only OS specific file container.
+
+containers - abstraction at app layer with its dependencies and code. multiple containers can share same base layer which runs on same machine. each will be a seperate process. 
+
+benefit - less disk space & memory.faster to run. don't need a full OS.
+
+first step to creating container is creating image for the application.
+Image contains application code, libraries, config files, environment variables, & runtime. images are cached as layers and can be reused for other containers.
+
+docker run -d -e "POSTGRES_HOST_AUTH_METHOD=trust" -p 5432:5432 postgres.
+
+-- WE GO FROM HOST TO CONTAINER.. 8080 OF HOST TO 80 OF CONTAINER.
+
+Using this, we can run a single docker container.. But as each docker container gets their own network stack, we won't be able to connect db running in different docker container. for that will have to use docker network and will use docker compose to multi-manage different containers.
+
+docker run -d nginx:latest - will run in detached mode
+DOCKER RUN -d -p 8080:80 nginx:latest
+
+
+
+
+docker build -t appname  .   --- to build the container . to specify current directory from which dockerfile should be taken
+docker run -d -p 4001:4001 addressbook  -- to run the container
+	-- AS CONTAINER IS RUNNING INSIDE A DOCKER, TO HAVE ACCESS FROM THE HOST OS TO THE CONTAINER INSIDE DOCKER, WE NEED TO EXPOSE THE PORT OUTSIDE TO THE HOST. PORT 8080 FROM THE HOST SHOULD BE MAPPED ON PORT NUMBER OF CONTAINER.
+
+------TO MAP MULTIPLE PORTS
+docker run -d -p 3000:80 -p 8080:80 nginx:latest
+
+docker ps - running containers. 
+docker ps -a    --- list of containers
+docker images - all images
+docker start/stop container_id/name
+docker rm container_id/name  or -f option to forcefully remove container
+docker rm $(docker ps -aq) or docker container prune - will delete all containers that are stopped. 
+
+docker ps --format="ID\t{{.ID}}\nNAME\t{{.Names}}\nPORT\t{{.Ports}}\n" -- to format the output in a format. \t - tab, \n = new line

@@ -1,0 +1,19 @@
+docker volumes - allows to share files and folder between hosts and container and also between containers. 
+under file system, we have docker area. Through container and file system we create a volume.
+
+-- nginx container - we create a volume and then volume will allow data between host and container. if add inside host, it'll also appear on volume.
+
+
+docker run -v source:destination:ro -d -p 8080:80 nginx:latest
+ro - read only 
+
+>docker run --name website1 -v $(pwd) -d -p 8080:80
+
+----docker run --name website1 -v D:\projects\website:/usr/share/nginx/html:ro -d -p 8080:80 nginx -- to map website folder of host os to nginx container 
+
+docker exec -it website1 bash -- to get into bash 
+
+---TRANSFER FILE FROM DOCKER CONTAINER TO OUR HOST VOLUME.
+ro - won't be able to write into that file. to have permission remove it. 
+then we can just go into bash and touch filename.html. 
+it'll directly transfer file to our host source volume. 

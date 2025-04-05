@@ -1,0 +1,63 @@
+--basically open source container orchestration tool/framework developed by google. can manage 1000 of containers automatically can be docker or some other tech in different development environments on-premise, physical machines, vm or cloud environments or even hybrid.
+--it is used to orchestrate multiple containers that talk to each other, used to manage containers which might have issues service issue automatically and fix it. 
+
+--microservices can be contained and managed by kubernetes. 
+-- High availability, scalability and high performance, disaster recovery.
+
+--basic Architecture -
+HAS A CLUSTER
+one master node connects with couple of worker nodes. each node having a kubelet process (primary node agent) running on it.
+
+KUBELET - KUBELET IS KUBERNETES PROCESS THAT MAKES IT POSSIBLE FOR CLUSTER TO TALK TO EACH OTHER AND EXECUTE TASK ON NODES. LIKE RUNNING APP PROCESSES. 
+EACH WORKER HAS DOCKER CONTAINER OF DIFFERENT APPS DEPLOYED ON IT DEPENDING UPON HOW WORKLOAD IS DISTRIBUTED. 
+ON WORKER NODES, OUR APP WILL RUN. 
+
+MASTER NODE - important k8(kubernetes) processes run which are necessary for managing a cluster.
+
+one imp service is - 
+
+1. api server - also a container and an entry point to k8s cluster. all UIs, apis, CLI will talk to the api server. 
+2. controller manager - keeps of track of what's happening in cluster. whether something should be repaired or a container died. 
+3. scheduler - scheduling containers on different nodes based on workload n available server resource on each node. next nodes to be scheduled. ensures pod placement
+4. etcd key value storage - holds current state of kubernetes cluster. configuration data.all status data of each worker node. 
+backups and restoring are made from etcd snapshots
+5. virtual network - enables worker nodes and communication between worker and master. it turns all worker nodes into one powerful machine. 
+
+master node is very important for doing important operations. must have 2-3 masters in production
+
+--COMPONENTS OF KUBERNETES - there are tons of components. 
+
+node/worker node - actual docker containers run. 
+1 --POD -  smallest component/unit of k8s is a pod. it is an abstraction of a container. it's a abstract layer above container. 
+as we don't have to deal with docker/any other container tech, we interact with kubernetes layer... so we have an application pod. 
+----usually we run 1 app per pod. can even run multiple apps per pod. 
+
+-- K8S provides each pods has its own IP address. its own virtual network just like a docker container. 2 pods can communicate by using ip address
+
+pods can die very easily. can die due to resource load, app crash. a new pod will be created in its place and then it'll get new ip address.
+So instead of manually configuring those IPs, another component - SERVICE IS USED.
+
+2 SERVICE - static/permanent IP address attached to each pod. app will have its own service and database will have own service. lifecycle of app & db not connected.
+
+3. INGRESS - 
+--- APP SHOULD BE accessible through browser. can create external service that opens communication from external src and also internal service.. can specify while creating ONE. 
+--- for doing all this, url to be safe secured protocol, ingress is used. 
+
+-- ingress - api object that manages external access to the services in a cluster typically http, https. exposes http/https routes from outside the cluster to services within the cluster. it is load-balanced & traffic routing is controlled by the rules defined on ingress resource. 
+
+-- In order for the ingress resource to work, ingress controller must be running.  now there are lot of third party/additional 
+REQUEST GOES FROM INGRESS GATEWAY (OF CONTROLLER) - THEN THE ACTUAL SERVICE TO DB SERVICE 
+4. Ingress controller - that provide functionality required by kubernetes.  
+FOR EXAMPLE - ISTIO INGRESS CONTROLLER  
+
+
+5. -- CONFIG MAP & SECRETS -
+    ConfigMap : DATABASE URL/ENDPOINTS ARE STORED IN CONFIG MAP COMPONENTS OF K8S. external configurations.so we dont have to rebuild the image. 
+	
+    Secret - component to store secret data. stores in base64 format. certificates. 
+	we
+kubectl - k8s client to create objects.
+
+Namespaces = provides a scope for kubernetes resources. can have a set of kubernetes deployments resources under one namespace
+ which can be equivalent to a project. basically a namespace(project) under which multiple microservices will be deployed. 
+ 

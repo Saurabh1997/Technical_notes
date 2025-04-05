@@ -1,0 +1,30 @@
+
+namespace to be same in all files which the api is connected to
+
+
+deployment ---
+api-config in deployment yaml... in deployment file, version latest  or actual version number to be used. 
+
+we have installed istio (service mesh) on kubernetes as we are using virtual services, destination rule
+
+
+virtual services - we mention routable entries/ api endpoints we will use and a service name.. 
+
+virtual service - node port service ---  label svc should be same
+
+destination rule - we mention what happens to the traffic.. can mention oracle entry.
+
+service entry - to send traffic to the service ( DB or API URL) as if it was a service in your mesh
+we have different file for different service ... for oracle database and for external api calling.
+ 
+one more will be for alpine linux entry we are using as our base layer..
+
+
+service - we mention port number of our api... api info, svc name should be same as in virtual service
+
+app api name should be same in node port service as in every app name
+
+hpa --- horizontal pod autoscaler
+
+
+efs - pv --- elastic file system & persistent volumes 

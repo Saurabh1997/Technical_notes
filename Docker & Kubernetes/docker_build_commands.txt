@@ -1,0 +1,75 @@
+latest docker image
+
+ERRROR COMING IN VALIDATE OTP
+upstream connect error or disconnect/reset before headers. reset reason: connection failure
+
+--LOGIN 
+docker build -t acct-login-api:1.2 .
+docker tag acct-login-api:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/acct-login-api:1.0
+
+--GET OTP
+docker build -t get-otp:1.0 .
+docker tag get-otp:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/get-otp:1.0
+docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/get-otp:1.0
+
+
+--VALIDATE OTP
+ docker build -t validate-otp:1.0 .
+ docker tag validate-otp:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/validate-otp:1.0
+ docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/validate-otp:1.0
+
+--final otp gen
+ docker build -t final-otp-gen:1.0 .
+  docker tag final-otp-gen:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/final-otp-gen:1.0
+  docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/final-otp-gen:1.0
+
+ ---final otp val
+ docker build -t final-otp-val:1.0 .
+  docker tag final-otp-val:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/final-otp-val:1.0
+  docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/final-otp-val:1.0 
+
+--fetch-prefill-data
+docker build -t fetch-prefill-data:1.11 .
+docker tag fetch-prefill-data:1.11 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/fetch-prefill-data:1.11
+docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/fetch-prefill-data:1.11
+
+  
+--update online kyc   
+ docker build -t update-online-kyc-det:1.0 .
+  docker tag update-online-kyc-det:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/update-online-kyc-det:1.0
+  docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/update-online-kyc-det:1.0   
+  
+-- cc onboarding 
+  
+  docker build -t update-credt-card-onboard:1.0 .
+  docker tag update-credt-card-onboard:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/update-credt-card-onboard:1.0
+    docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/update-credt-card-onboard:1.0
+
+--- RBL account opening api 
+ docker build -t acct-opening-api:1.0 .
+docker tag acct-opening-api:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/acct-opening-api:1.0
+docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/acct-opening-api:1.0
+
+-- push api 
+ docker build -t secure-card-push-api:1.0 .
+docker tag secure-card-push-api:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/secure-card-push-api:1.0
+docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/secure-card-push-api:1.0
+
+--- fetch fetch-card-det 
+docker build -t fetch-card-det:1.0 .
+docker tag fetch-card-det:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/fetch-card-det:1.0
+docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/fetch-card-det:1.0
+
+--update card detail
+docker build -t update-card-det:1.0 .
+docker tag update-card-det:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/update-card-det:1.0
+docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/update-card-det:1.0
+
+--update personal details
+docker build -t update-personal-det:1.0 .
+docker tag update-personal-det:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/update-personal-det:1.0
+docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/update-personal-det:1.0
+
+
+ERROR --- 
+upstream connect error or disconnect/reset before headers. reset reason: connection failure

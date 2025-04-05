@@ -1,0 +1,27 @@
+--istio  is service mesh implementation relying on kubernetes. 
+--istio enables organization to secure, connect & monitor kubernetes. it runs on top of kubernetes and manages secure communication between individual service. 
+service 2 service communication in cluster. automatic load-balancing. 
+
+--istio has 2 components - control plane and data plane.
+data plane - communication between 2 service. An envoy is deployed with each service that we start in our cluster. service mesh uses proxy to intercept all network traffic.
+
+control plane - takes desired configuration & dynamically programs the proxy servers. 
+
+
+----NETWORK TRAFFIC MANAGMENT
+
+--to direct traffic within your mesh, we install istio on kubernetes, then istio automatically detects service & endpoints in that cluster & using this service registry envoy proxy can direct traffic to that particular service in a load balancing way. 
+
+--by default, envoy proxies distributes traffic across each service's load balancing pool in a round-robin approach.
+
+--TRAFFIC MANAGEMENT RESOURCES of istio
+
+1. VirtualService - alongwith DestinationRule - building block of traffic routing functionality. it lets us configure how requests are routed to a service within a service inside mesh.  
+can define routing rules that are evaluated in order, letting istio match each request to the virtual service to a destination within the mesh. (to the db or an api inside the mesh)
+
+USECASE - send traffic to different versions of a service. envoy routes 20% traffic to the new version and 80% to different version. can do CANARY DEPLOYMENT using istio -- BASICALLY AUTOSCALED DEPLOYMENTS BY FIRST TESTING NEW CHANGES ON SMALL TRAFFIC & IF IT GOES WELL, GRADUALLY INCREASING THE TRAFFIC TO THE NEW VERSION. IF IT DOESN'T ROLLBACK TO PREVIOUS ONE. 
+
+-- can configure virtual service to handle all services in a specific namespace.
+
+basically for routing, we use this
+ 

@@ -1,0 +1,71 @@
+VIRTUAL SERVICE - HOW TO ROUTE TRAFFIC TO DESTINATION URL
+virtual service sample file: 
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+  - reviews
+  http:
+  - match:
+    - headers:
+        end-user:
+          exact: jason
+    route:
+    - destination:
+        host: reviews
+        subset: v2
+  - route:
+    - destination:
+        host: reviews
+        subset: v3
+
+virtual service hostname can be IP addr, dns name or kubernetes short service name. 
+hosts --- lets you model traffic for virtual hosts that don't have routable entries inside mesh
+
+http -- routing rules describing match conditions & actions, destination of where we want traffic to go. 
+match -- matching condition of header having end-user as jason
+destination -- actual destination for traffic that matches this condition. destination host must be real destination that exists in istio's service registry otherwise envoy won't send the request. 
+
+CAN DEFINE WEIGHTS TO DO CANARY ROLLOUTS.. TO DISTRIBUTE WEIGHT FOR NEW VERSION
+
+
+2. DESTINATION RULE - WHAT HAPPENS TO THE TRAFFIC FOR THAT DESTINATION.. (FROM VIRTUAL SERVICE TO DESTINATION RULE)
+concerns policies that apply to traffic after routing has occured.
+
+3. gateway - can define which services can or should access external network. 
+
+4. service entry (ISTIO)- to add an entry to the service registry. to add an endpoint to db or an internal api firing inside our api. envoy proxy will send traffic to the service as if it is in our mesh. redirect/forward traffic to the external apis. specify external resource using "hosts" field. 
+
+5. service file (KUBERNETES)- service in kubernetes is like a pod or rest object. we mention our actual api, api port number. 
+
+6. HPA FILE (K8S)--- HORIZONTAL POD AUTOSCALER . AUTOMATICALLY SCALES THE NUMBER OF PODS.  controls scale of deployment & its replica set. 
+	
+
+7. EFS - PV  - ELASTIC FILE SYSTEM. persistent volumes. 
+	2 api resources for managing storage. persistant volumes - piece of storage in cluster provisioned by admins
+
+8. deployment.yaml file - specs about containers image which is going to be deployed on kubernertes.. port number of the container on which node api service will run. folder mounts to use.. for db client library, logs folder to store and config map yaml metadata name.
+persistent vlume claim
+
+
+kubernetes has many level of storage and can be mixed within a pod. 
+1. PERSISTENT VOLUME - low level of storage vol. PHYSICAL STORAGE DEVICE ATTACHED TO CLUSTER.provisioned by admin 
+	pv is independent of lifecycle of a pod. it is available to all namespaces. PV is managed by kubernetes and can be provisioned by pvc. 
+	for examples - EBS elastic block store, EFS - elastic file storage, azure file
+there are access mode for this volume,  depending upon how many nodes can read/write to this volume. 
+for example, RWM - read write by many nodes. RWO - read write by one node. 
+
+2. PERSISTENT VOL CLAIM - binding between pod & persistent volume. PVC requests the volume from pv. kubernetes looks for the pv that meets criteria defined in PVC. must be in same namespace as of pod. 
+
+3. STORAGE CLASS - DYNAMIC PROVISION OF PV. it provisions PV dynamically when PVC claims it. 
+NOTE : EASIEST WAY TO CREATE PV-PVC PAIR FOR A POD, CREATE STORAGE CLASS OBJECT. and then map storage class Name in both pv and pvc. 
+
+in Service file, if we specify type as ClusterIP - it installs iptable rules, which capture traffic to the service's clusterIp & port which redirects traffic to the service's backend sets. 
+ 
+
+
+
+

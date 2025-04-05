@@ -1,0 +1,6 @@
+3 probes for health check of pod = liveness, readiness and startup probes. 
+
+1. READINESS probe = indicating that container is ready to serve traffic. however, a load balancer will not send traffic to container unless its readiness probe succeeds
+2. LIVENESS PROBE - recovers a pod when there is any deadlock & stuck being useless. probe - is responsible for restarting a container. liveness check starts after a delay of 3 seconds, and tries a path, if check fails, container is killed by kubelet and keeps on restarting unless the probe succeeds
+Startup probes
+

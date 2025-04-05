@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-deployment
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: nodongo
+        image: zarakmughal/nodejs-starter:1.0
+        ports:
+        - containerPort: 3000
+
+
+yaml file is used in kubernetes to create an object. 
+api version, kind of object we're creating - deployment/virtual service. 	
+metdata used to organize the file. can be namespace of kubernetes in which we're deploying our api.
+spec - specification - like what is host, uri of api, gateway, container - to run, image registry from which we pull our image
+
+label - mechanism to create k8 object, 
+
+---DOCKER TO KUBERNETES
+
+1. build a docker image and push it to docker registry
+
+2. create yaml file to create object n specs about kubernetes cluster and api which we are deploying in kubernetes. 
+
+kubernetes create -f file.yaml
+
+minikube - local kubernetes.
+
+3. can expose this deployment to the internet using minikube. 
+kubectl expose command. create load balancer which will expose deployment to internet.
+
+4. metalLB - for load balancing purpose. minikube ip - will give an external ip to our cluster. 
+
+5. then create a config map yaml for the external ipaddress.
+
+
+

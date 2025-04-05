@@ -1,0 +1,51 @@
+for kubernetes file structure
+http://munmvs0905.ratnakarbank.in/svn/Enterprise_Services_Development/branches/NodeJsProjects/BBPS_BILL_PAYMENT/K8_UAT
+
+1.--building docker image
+docker build -t acct-login-api:1.2 .
+087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/acct-login-api:1.2
+
+2.--docker image tagging 
+docker tag acct-login-api:1.0 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/acct-login-api:1.0
+
+3. try this if auth fails, sudo su 
+--docker image pushing to ECR (elastic container registry) - repository
+docker push 087203045977.dkr.ecr.ap-south-1.amazonaws.com/acct-opn-api/acct-login-api:1.0
+
+-- for logging into AWS ECR 
+ECR Login Command:
+aws ecr get-login-password --region ap-south-1 | sudo docker login --username AWS --password-stdin 087203045977.dkr.ecr.ap-south-1.amazonaws.com
+
+to check if istio is enabled for our namespace
+
+kubectl get namespace -L istio-injection
+
+kubectl label namespace ns-acct-opn-api istio-injection=enabled
+
+kubectl apply -f filename.yaml 
+
+start with efs-pv 
+configmap
+service
+service entry, 
+virtual service
+destination, hpa 
+at last we deploy deployment.. 
+
+to get pod details --
+
+ kubectl get pod -n ns-acct-opn-api
+ 
+ --- to get logs
+ kubectl logs acct-login-api-696f9bf96-xq4vj -n ns-acct-opn-api
+
+ ---to see persistent claim volume
+  kubectl get pv -n ns-acct-opn-api
+  
+  
+ --- to restart a kubernetes pod 
+ kubectl rollout restart deployment get-otp -n ns-acct-opn-api
+ 
+--to delete a pod deployment without restart
+kubectl delete -n ns-acct-opn-api deployment validate-otp
+
