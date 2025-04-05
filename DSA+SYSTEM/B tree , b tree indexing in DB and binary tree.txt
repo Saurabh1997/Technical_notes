@@ -1,0 +1,43 @@
+------------------------------B tree and Binary tree-----------------------------
+B tree is generalization of binary tree. Unlike binary tree, where we have only 2 child nodes, its a m-way(multi-way) tree where there one node can have more than 2 child nodes. 
+
+Features : 
+-   B-tree is specialized m-way tree to optimize data access especially in disk oriented storage system. 
+-   B - tree of m can have m children and m-1 keys - allowing to manage large datasets. 
+	one of the Special feature of B tree is each node can have multiple keys including large data sets. it reduce the tree's height.
+- it allows faster data retrival and updates. 
+
+-- properties - 
+	- All the leaf nodes of a b tree are at the same level i.e they have the same depth (same height). Key of each node of b tree are in ascending order.  
+	- Each node can have more than one keys and each key has 2 or more references to another 2 or more child nodes. 
+	- If a single node has m keys and it can have m+1 child nodes. 
+	
+	Search in b tree is similar to binary search tree. 
+	
+
+-----------------WHY B TREE INDEXING IS NECESSARY IN DATABASE--------------------
+In Binary tree, we sort the elements in ascending order and while searching any element, we can traverse starting from middle element. if value to search less than middle element, we can search from 0 to middle and do the same steps. if more than middle element, then can search from middle element to end of the array. 
+
+Similarly, B tree instead of having single entry in single node, b tree uses array of entries in a single node and has references to child node for each of these entries. 
+
+B+ tree-----------------------
+There is one more tree same as b-tree - B+ tree. B+ tree is  similar to b-tree only difference is that it stores data on leaf nodes. ALL NON-LEAF NODE VALUES ARE DUPLICATED IN LEAF NODES AGAIN. 
+All the records are in sorted order. 
+
+------------------HOW B+ TREE IS USED IN INDEXING in database----------------------
+
+THE KEY IS ACTUALLY A REFERENCE TO THE ACTUAL DATA STORED FOR THE ROW - actual data record. 
+First, the Database creates a random index (on primary key) - for each of the record which is converted into byte stream. THEN IT STORES THE RANDOM INDEXES IN B+ TREE. 
+ALSO KEY + BYTE STREAM DATA = PAYLOAD. THE RANDOM INDEXES ARE SORTED IN B+ TREE. 
+
+
+	
+	
+-------Binary search tree-----------------------------
+values on the left subtree are smaller than value of root node. Values on the right subtree are bigger than value of root node. 
+
+Traversal tree methods - Inorder, Preorder and PostOrder. 
+In order - we traverse from left subtree to root node and then to the right subtree.
+Pre order - we traverse from root node to left subtree and then to right subtree. 
+Post order - We traverse from left subtree to right subtree and then root node. 
+

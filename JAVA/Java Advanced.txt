@@ -17,7 +17,23 @@ Traditionally, we just used to search for jar dependencies via their site and we
 ---GAV - EVERY JAR library will have a GAV - Group ID, Artefact ID, and a Version. 
 		Group ID  should be unique in the world. artifact ID is the project name and there is version number.
 		
-	Put the code of dependencies tag inside pom.xml just after project GAV and clicking on refresh or reload will download all the external libraries. 
+Put the code of dependencies tag inside pom.xml just after project GAV and clicking on refresh or reload will download all the external libraries. 
 We can right click on pom.xml and show effective pom which is the actual pom which contains all the plugins and mvn repo urls. 
 All Maven projects inherit default pom configurations from a super pom. 
 
+There are 2 archetypes - internal archetypes , external which can be taken from central maven option. Maven central fetches archetypes from internet.
+
+-------NEW MAVEN ARCHETYPE-----
+When Creating a maven archetype, we can use internal/external archetype and it will automatically download all the dependencies automatically. 
+	for example, spring boot jersey archetype will give h2 dependency, jdbc, spring boot starter, lombok, log4j
+	
+------WORKING OF MAVEN-----------------
+If you need any dependency, maven first searches in your local machine and then it will look online. Every machine will have .m2/repository folder - hidden folder. Every time we ask for a dependency, maven will create a copy in your local machine. But this dependencies might have vulneribilities and which are not well tested.
+
+So most of the companies have a second layer, there will be a company wide repository which will only have those libraries which are well tested
+
+
+
+
+
+	

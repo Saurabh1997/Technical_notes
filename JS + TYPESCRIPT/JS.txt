@@ -147,6 +147,42 @@ console.log(2 + 2 + "3" + true + false +  +6) // 43truefalse
 JS automatically allocates memory and frees it once they are not used. JS uses something called as mark and sweep algorithm for memory management  it frees the memory where the object is no longer needed and not reachable. JS starts from root (global object) and finds all objects referenced from roots n then all objects referenced from this.. those are reachable are kept and those unreachable are made free. 
 
 
+---------------------------MEMORY LEAKS IN JAVASCRIPT---------------------------------------------------------
+Memory leaks happens when application holds onto the objects in memory that are no longer needed preventing the garbage collector to reclaim it and make it free. 
+Causes of memory leak - 
+unintentional global variable without using var, let and const. NEVER USE GLOBAL VARIABLES. 
+	FOR EXAMPLE,
+		WINDOW.CALC = FUNCTION() = {}
+	
+Closures can retain reference to variables, causing memory leaks 
+Timers and intervals if not cleared can cause memory leaks as they can keep access to ref to objects in memory.
+		let node
+		let tmpTimeout = setTimeout(()=> {
+						node = {}
+						}, 10000)
+		and using node here will always keep the reference to that object here
+	To avoid this, 					
+	Always use clearTimeout() to clear the timeout which will also clear the references inside it. 
+
+Circular references - when 2 or more objects reference each other, they can't be garbage collected. 
+
+---Garbage collector in JS------
+3 steps it does.
+1. Find the root node in code and recusrively go through every child. in JS, windows obj is root and in nodejs, it is global 
+2. mark every child as active or inactive. active meaning its still in reference and inactive means its not in reference.
+3. Now Delete all inactive references from the memory. 
+
+---How to detect memory leaks-
+use memory tab in chrome devtools to analyze heaps snapshots, track memory allocations & detached DOM nodes. 
+		In chrome devtools, in performance, we can do profiling to see the graph for JS Heap if its gradually increasing. 
+	In Memory tab, we can take heap snapshot for 2-3 times and see distance - distance from the root node. 
+		can check for retain size or size delta column to check which component is taking more heap size. 
+		CAN CHECK COMPARISONS BETWEEN MULTIPLE SNAPSHOTS. 
+	Can start profiling for Allocation instrumentation on timeline - Record Stack traces of allocations. 
+	Go to Allocation instead of summary - and sort by sizes - will be able to see Function. 
+		
+use node-heapdump to generate heap dumps and analyze them with chrome devtools.  
+
 
 ------------------Promise Chaining--------------------------------
 

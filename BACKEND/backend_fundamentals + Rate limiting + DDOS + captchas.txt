@@ -29,11 +29,8 @@ whatever we don't store on databases, like images, media files..we store them as
 AWS HAS S3 - SIMPLE STORAGE SERVICE
 direct access to files url from S3 is a bad practice. 
 
-
-
 PREFLIGHT REQUEST  is a CORS MECHANISM OF BROWSER - HTTP REQUEST made by browser to check if its safe to send the actual request. TO DETERMINE IF THE REQUEST (METHOD - GET, POST, PUT, DELETE) IS allowed by server or not. 
 	checks whether this request is allowed is not.. its usually cached to make it faster. 
-
 
 BACKEND ENGINEERING FUNDAMENTALS ---
 
@@ -139,6 +136,11 @@ NOTE: Rate limiting isn't AFFECTIVE FOR DDOS ATTACKS as it comes from multiple s
 		app.use(limiter)	// to apply rate limiter to all apis.
 		
 		app.get("/verifyOTP", limiter, (req,res))  	// to apply rate limiter for one api only. 
+		
+-----Rate limiting algorithms-----
+Token bucket - A bucket is used to create a fixed number of tokens. As one request is made, one token is removed from the bucket. If buckets is empty, request is rejected. Similarly, tokens are added to the bucket at a fixed rate. Rate of Adding of token can be used to control the number of requests allowed. This is memory efficient approach as it uses fixed number of token.  
+
+Leaky bucket -  
 		
 ----------------------DDOS-------------------------------distributed denial of service
 after rate limiting also, backend is vulnerable to DDOS attacks as its distributed. its to deny service to original users by oberloading with loads of requests. 

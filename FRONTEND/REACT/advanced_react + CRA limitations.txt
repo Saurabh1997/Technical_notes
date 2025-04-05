@@ -1,0 +1,160 @@
+reactjs advanced
+
+tilde(~) vs caret(^) in npm package-lock.json. it is okay to upgrade to minor version but no major versions. 
+	caret (^) - 3.*.* --- which minor and patch releases. between 3.8.0 and 4.0.0 it will automatically upgrade to minor upgrades only.. 
+	tilde (~) - 3.8.* --- allows only patch releases between 3.8.0 and 3.9.0. automatically upgrade to major versions. 
+	
+npm ERR!   @azure/msal-browser@"~2.30.0 @azure/msal-react@^1.0.2" from the root project
+npm ERR!
+npm ERR! Could not resolve dependency:
+npm ERR! peer @azure/msal-browser@"^2.35.0" from @azure/msal-react@1.5.5
+
+~2.30.0 -- is only looking for patch releases and that includes 2.3 whereas msal-react@^1.5.5 looks for minor as well as patch releases.  	
+	
+	
+ npx create-react-app DemoApp --template typescript -- to generate typescipt template. 	
+
+Memoization - optimization technique to make application efficient & faster. it does this by storing computations results in cache & retrieving the same cache next time. Caches the output of a function & making the function check if each required computation is in the cache before computing it again. 
+
+concept of memoization - 
+1. closures - combination of function & lexical env within which function is declared.
+2. higher order function - functional programming. that take function as an argument. 
+
+we can optimize our application by avoiding unnecessary component re-render using memoization. 
+we cache to avoid unnecessary re-renders. 
+
+REACT COMPONENT IS CONSIDERED PURE IF IT RENDERS SAME OUTPUT FOR THE SAME STATE & PROPS. 
+number of props passing to component should be equal to prop rendering.. even if we add random number to prop, it will be impure.
+
+useMemo() - returns a memoized value. memoization is technique where we don't need to recompute the function with given argument next time as it returns the cached result. 
+like caching a value so it doesn't need to be recalculated. used for improving performance. 
+
+pass a function and array of dependencies. This optimization helps to avoid expensive calcalations. this function runs during rendering. 
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+// if no array, a new value will be computed on every render. 
+
+For class pure components , to implement memoization react provides PureComponent base class. it has performance improvements & render optimizations. this is because React implements shouldComponentUpdate() method for them with shallow comparison for props & state. 
+
+two options for functional components -- Memo higher order component and two hooks. 
+
+export default React.memo(function Child(name){
+})
+NOTE: MEMO DOESN'T WORK IF THE PROP BEING PASSED TO THE COMPONENT IS A FUNCTION. this is because a new function is being created on every parent component re-render. so if a new function is being created, we have a new prop and that means our child component should re-render as well. 
+TO DEAL WITH THIS PROBLEM, WE USE USECALLBACK(). 
+
+useCallback() -- it returns a memoized function. whereas useMemo() returns a memoized value. it holds on to the value of the function despite parent re-rendering. so child prop will remain the same. 
+
+// PASS USECALLBACK AS A PROP TO THE PURE COMPONENT.
+             <Child name={ useCallback(() => {  setStateFunctin() }, [useStateVariable])  } />
+
+const testingTheUnit = useCallback(()=> {}, [a,b,c]) // returns a memoized callback. 
+
+ if we want to pass an array of dependencies & an inline callback. it will return a memoized version of the callback that only changes if one of the dependencies 
+ NOTE: EVERY VALUE REFERENCED IN THE USECALLBACK SHOULD ALSO BE IN THE DEPENDENCY ARRAY. 
+ 
+useMemo() -- similar to useCallback. but instead of caching a function. useMemo will return value of a function. 
+
+while useCallback will cache ()=> num + 1 (a function). useMemo will cache the value returned by function ()=> num+1.
+const answer = useMemo(()=> num+1, [num])
+useMemo caches a value returned between renders. useMemo will only recompute if one of the dependencies changes. 
+NOTE: IF NO DEPENDENCY IS PASSED, A NEW VALUE WILL BE COMPUTED ON EVERY RENDER.
+
+useRef() - is like a box that can hold a mutable value in its .current properly. 
+
+Custom Hook - js function whose name starts with "use" & may call other Hooks. THIS IS RULE COVENTION OF REACT HOOKS. 
+
+for example, want to subscribe to a friends online status. we take friendId and returns if the friend is online. 
+GOAL IS TO REMOVE DUPLICATED LOGIC FROM FRIENDSTATUS. 
+
+function useFriendStatus(friendId){
+const [isOnline, setIsOnline] = useState(null);
+
+// LOGIC
+return isOnline;
+}
+
+now to use,
+
+const isOnline = useFriendStatus(props.friend.id)
+
+NOTE: TWO COMPONENTS USING THE SAME HOOK DONT SHARE THE STATE. each call to a hook gets isolated state. 
+
+DEBOUNCING - for improving performance. only call api when there is delay of 300 ms between 2 key presses. 
+-- Debouncing & throttling is used to limit the rate of executing function.
+DEBOUNCING is calling function when there is delay of some time between 2 key strokes.  
+Programming pattern to restrict calling of time consuming function by delaying execution of function until a specified time is passed to avoid unnecessary CPU cycles. 
+ 
+keyup = {onChangeHandler}
+
+const callAPIFunc = function(fn,d){
+let timer;
+return function() {
+	clearTimeout(timer) // to avoid recalling the timer. 
+	setTimeout(()=> {
+	callAPI()
+	}, d)
+	}
+}
+
+const onChangeHandler = callAPIFunc(apiFunctionTocall, 300 )
+EXPLANATION: so first time key pressed, debounce function is called and timer is cleared out.. and then it waits for the function to finish timer.. but then another key pressed and again timer is cleared out using clearTimeout.. this happens unless and until keys are pressed within 300 ms.. but 300 ms is passed, then callAPi will finally happen. 
+
+
+THROTTLING - used to call function after some interval..for example, calling a function after every 300 ms. 
+It depends on the scenario where debouncing or throttling can be used. 
+scenario 1: to call api on search.. debouncing is better
+scenario 2: shooting game - say machine gun firing event on click..then on the click to change the rate of executing fire function we use throttling.. for delaying of 100 ms while calling fire event. while for a pistol the delay can be more.. 
+
+
+Lazy loading - to load specific components only when they are needed instead of bundling the entire application at once, loading everything including the entire web pages, images, content which might result in a slow load time & overall poor performance.. 
+
+		React.lazy() -  to render dynamic imports.. to import a component just before it renders on screen. 
+		React.suspense() - to specify the fallback prop which takes in a placeholder content that can be used as a loader. 
+		
+	const AboutUs = React.lazy(() => import("./AboutUs")
+		
+	while rendering, 	
+			<React.Suspense fallback={<div>...Loading</div>}>
+			<AboutUs>
+			</React.Suspense>
+			
+	In case of implementing React Router, 
+	<BrowserRouter>
+	<React.Suspense fallback={<div>...Loading</div>}>
+		<Routes>
+	</React.Suspense>
+	</BrowserRouter>
+	
+	
+Intersection Observer API -  asynchronously observe changes in the intersection of target element and the ancestor element. 
+can be used for : lazy loading of images while scrolling a page - kind of instagram.
+Implementing infinite scrolling.  
+
+
+----------------------------------------------CREATE REACT APP LIMITATIONS------------------------------------------------------
+CRA has some limitations which makes it difficult to develop a high performant production apps. As per docs, have suggested using a framework to create a react app. 
+CRA misses the setup to build a production app as it is very basic and allows basic features like jsx, linting and bundling. We need solution like data fetching, code splitting and routing. 
+1. For routing - We can use react-router. but using this library adds complexity to the app.. CRA doesn't include anything in its setup for this. 
+
+2. Data fetching - We usually do data fetching in useEffect() - which is usually done after component is rendered - can cause network waterfalls - 
+	NETWORK WATERFALLS ARE CAUSED BY FETCHING DATA WHEN APP IS RENDERS INSTEAD OF FETCHING IT IN PARALLEL while code is downloading.
+	Fetching in an useEffect means user has to wait for the content much longer to see the content - EVEN THOUGH DATA COULD HAVE BEEN FETCHED MUCH BEFORE WHILE DOWNLOADING THE CODE. = can use data fetching library like React Query, SWR, Apollo, Relay.
+		
+	ROUTING LOADER PATTERN - WHEN A ROUTE IS MATCHED, a route loading function is called. the function is passed an object which has all the property needed for loading data.. can call an api there. the loader displays a loader...or other indicator while data is being fetched. 
+	ON iNITIAL LOADS, THIS TYPE OF LIBRARIES CAN FETCH THE DATA BEFORE ROUTE IS RENDERED. both code and data can be fetched at the same time but this configurations requires to be configured correctly.. 
+
+3. Code splitting - CRA doesn't include any code splitting solution in its setup. In CRA, our app is shipped as a single bundle which might require some time to load the app.. For a Ideal performance, can do lazy loading with React.lazy. 
+	But here code won't be fetched, until that component renders.. which means there can be network waterfalls here.. as code will be fetched and then render and then api calling for fetching data on that component. 
+	-- OPTIMAL SOLUTION - use router feature that fetches and downloads the code in parallel. 
+		const router = createBrowserRouter([
+			{path: "/", lazy: ()=> import('./home')}
+			{path: "/data", lazy: ()=> import("./data")}
+			])
+	
+4. Error handling - again have to implement our own - react boundary..
+5. Authentication
+6. Asset loading
+7. streaming. 
+
+A proper framework of React that integrates all this things - rendering, routing, data fetching & code splitting would be better choice instead of CRA. 
+

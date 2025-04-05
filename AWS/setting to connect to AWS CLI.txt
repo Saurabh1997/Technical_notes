@@ -17,3 +17,9 @@ it is a secure server that acts as a gateway to a private netwowrk from an untru
 
 WE STORE ALL OUR configurations INSIDE AWS PARAMETER STORE. 
 
+
+
+---------------------debugging things-----------------------
+
+
+aws tail /aws/codebuild/deploy    --follow 

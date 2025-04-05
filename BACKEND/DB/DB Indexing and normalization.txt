@@ -1,0 +1,124 @@
+------------------DB INDEXING-------------------
+
+EXPLAIN ANALYSE SELECT * FROM POSTS WHERE user_id=2 LIMIT 5;
+Whenever there is no indexing, and we do any normal select query based on any column, SQL query does a SEQUENTIAL SCAN on the table and the execution time also goes up. 
+ALWAYS FOCUS ON THE EXECUTION TIME WHILE QUERYING FOR SOMETHING. 
+
+Index - 
+CREATE INDEX idx_user_id ON posts (user_id);
+
+------- HOW INDEXING WORKS -  When we create index on a column, a B tree data structure is created. it creates an index column and a pointer to the location of each row - whichmaps it to a particular location where it refers to a particular record... and it kinda caches this record. 
+The index colum created is kind of a sorted list. 
+Now WHENEVER We ask for a record - Select * from posts where user_id = 1;
+		AS THE INDEX column - user_id IS sorted, we can binary search on it to find the post and get the location of the row and directly fetch the record. 
+			
+	NOTE: WE DON'T NEED TO DO A LINEAR SEARCH TILL MILLION ROWS - WE CAN JUST DO INDEXING WHICH RETURNS A ROW IN O(LOG N)
+Mostly this makes write a little slower but mostly all application are read heavy instead of rwrite heavy. 
+
+Complex Indexes - We can have indexes on more than 	one column for more complex queries. 
+
+CREATE INDEX idx_posts_user_id_title ON posts (description, title)
+
+IN PRISMA - WE DO @@index([userId]) // column name of userId
+
+
+-------------------------------DB NORMALIZATION--------------------------------------------
+Normalization is the process of removing redundancy in our application. 
+
+If we have a users table and posts table like below schema - 
+	posts - userId, postId, post, title
+	users - userId, name, email
+	
+	We don't need to create another table - usersAndPosts - this will add redundancy in our application. as each user will have lot of posts and if there's row entry for each userPost - users column will be redundant in every row. 
+	
+	We basically break down into multiple into smaller table - they have to be normalized. 
+	
+	4 types of relationships - 
+	1. 1 to 1.  // user can have one library card.
+	2. one to many. // user can have many posts.
+	3. many to one 	// Single book can have multiple authors. 
+	4. many to many. // multiple user can write multiple posts.. a single post can have multiple users. and single user can have multiple posts. 
+	
+----Normalizing database---
+its the process of decomposing tables to eliminate data redundancy through several normal forms. 
+ Process goes through each normal form each building on last. Can identify which form it is by looking at schema. 
+ 
+1. 1NF
+
+	Rule number 1 : If multiple values are in a single cell, its said to be in 1NF. 
+	A single column-row/cell must not contain more than a single data value (atomicity). 
+	Because then we would have to do a complex query using  --- "LIKE OPERATOR". Multiple values should be distributed into multiple rows
+	For e.g - a user might have lot of hobbies or phone numbers. 
+	it can be split into multiple rows into seperate table which can have details like:
+	
+		user_name activities
+		saurabh			soccer, basketball
+					
+		can be converted into:
+		saurabh soccer
+		saurabh basketball
+	
+	Rule number 2 : There must be a primary key for identification to identify each row uniquely. 
+	3: No Duplicated row - each row should be unique
+	4. Each column must have only one value for each row in the table. Break down the data of single column into multiple columns. 
+		Before 1NF
+		name     	contactinfo
+		saurabh   p@gmail.com, 82892839
+	
+		After 1NF 
+		
+		name email mobile_number
+2. 2NF - 
+	1NF gets rid of repeating rows. 2NF gets rid of redundancy. 
+	Table is said to be in 2NF if - 1. its in 1NF. 2. has partial dependency. 
+	PARTIAL DEPENDENCY OCCURS WHEN A NON-PRIMARY KEY IS DEPENDENT ON PART OF A COMPOSITE PRIMARY KEY. 
+	
+	FOR BELOW TABLE -- WE CAN CONSIDER PRIMARY KEY AS COMBINATION OF STUDENTiD AND COURSE_ID BUT PARTIAL DEPENDENCY OCCURS WHEN A NON PRIMARY COLUMN - course_name , Instructor_name are dependent only on part of a composite primary key -- meaning only on of either StudentId or CourseId. 
+	
+	Composite key - combination of 2 unique keys. 
+	
+	Before 2NF fix, 
+		there's a table - student enrollment
+		coolumns
+		studentId, course_id, Instructor_name, course_name, grade // it will be better if we remove course_name from here and put it in course table. 
+												// HERE HISTORY IS GETTING REPEATED - SO WE CAN AVOID THIS REDUNDANCY BY JUST HAVING COURSE_ID HERE 
+												// AND COURSE_NAME IN COURSES TABLE. 
+		1			2			history
+		1			2			history
+	AFTER 2NF - 
+		STUDENT ENROLLMENT table 
+		COLUMNS -
+			studentId, courseId, grade
+		
+		COURSE table
+			COLUMNS - courseId, Instructor_name, courseName
+	
+		This can improve data integrity while updating -- if course name changes, we just have to update in course table. 
+	NOTE: ABOVE IF YOU SEE AFTER 2NF -- GRADE IS NOT PARTIALLY DEPENDENT ON EITHER STUDENTID AND COURSEID.. IT IS FULLY DEPENDENT ON BOTH OF THE COLUMNS SO WE CAN SAY THIS IS 2NF NORMALIZED. 		
+	
+3. 3NF - 
+	When a table is in 2NF, it eliminates repeating groups and redundancy, but it doesn't eliminate transitive dependency. 
+	FOR A TABLE TO BE IN 3NF, IT SHOULD BE IN 2NF AND HAVE NO TRANSITIVE DEPENDENCY. 
+	
+	TRANSITIVE DEPENDENCY IS AS FOLLOWS - 
+		transitive dependency occurs when ONE NON-KEY COLUMN (INSTRUCTOR_NAME) INDIRECTLY depends on the PRIMARY KEY THROUGH ANOTHER NON-KEY ATTRIBUTE.
+		BASICALLY IN BELOW EXAMPLE, INSTRUCTOR_NAME IS DEPENDENT ON Instructor_id AND Instructor_id IS DEPENDENT ON COURSE_ID. 
+		
+		COURSE TABLE 
+			COLUMNS -  courseId  course_name course_code instructor_id instructor_name  age   YOE
+		
+		here in this table, courseId is primary key and course_name and course_code are dependent on course_id.. but same instructor_name and age and YOE will be repeated if one instructor can teach 2-3 courses. this will have some TRANSITIVE redundancy AND ITS STILL IN 2NF AS THERE IS NO PARTIAL DEPENDENCY ON COMPOSITE KEY.. IN THIS SCENARIO THERE IS NO COMPOSITE KEY. 
+	
+	AFTER 3NF FIX, 
+		course table 
+			columns  - courseId, courseName, instructorId
+			
+		INSTRUCTOR TABLE 
+			COLUMNS - Instructor_id, instructor_name, age, YOE 
+	
+4. BCNF
+5. 4NF
+6. 5NF
+
+Best practise is to reach 3NF/BCNF.. because the lower we go, the more number of joins we have to form. 
+BECAUSE JOINS ARE VERY EXPENSIVE. 

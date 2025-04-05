@@ -858,6 +858,47 @@ ALTERNATIVELY, 		 SOP(str.orElse("Not found")) // IF NO VALUE FOUND, WE WILL GET
 ----------TYPICAL WEB APP FLOW-----------------------
 There is Controller Layer - taking request from client, Service layer - for doing business logic, Repository Layer - for connecting with the database
 
+-------------Modularity in java--------------------------------
+Modularity in java provides an additional layer of encapsulation to our programs to specify which packages can be used by modules and which modules might have entry to them. 
+Modules are nothing but collection of java packages & code. Modules are bought in to not increase the size of JDK as new updates come in. To avoid increasing of size of JDK, Java 9 has split the JDK into set of modules, so that we can use the required modules in our application. 
+-- We also option in javac & java to specify the module path & location of the module. 
+
+-- Module can be described using module-descriptor which is named by module-info.java. & it describes 3 things - name of module, what does the module exports & what does the module requires. 
+-- Main purpose of using module is to control what we need code we need to export for the external users to use it. - can control what is visible to the outside world and what not. When we add external JAR file, we can use all the things inside it.. but we want to restrict some internal things to not be used.. to fix this, we can use Modularity. 
+-- We get errors directly on compile time instead of runtime if we miss any external library. 
+-- NOTE : ALL THE PACKAGES INSIDE A MODULE ARE BY DEFAULT PRIVATE. WE HAVE TO EXPORT IT FROM INSIDE ITS MODULE-INFO.JAVA FILE. 
+		WE EXPORT PACKAGES AND WE REQUIRE MODULE INSIDE OUR PROJECT. 
+		// IN THE MODULE WHICH WE WANT TO EXPORT. 
+		module DomainName {
+			exports telusko.util;
+		
+		}
+
+		// IN THE MODULE WHICH WE WANT THAT PARTICULAR MODULE 
+		
+		module DomainName {
+			requires telusko.util;
+		}
+
+---Steps to create a module in java:
+1. Create a directory structure - com.domainName 
+	- there will be module-descriptor file - module-info.java
+	- module descriptor file - module moduleName {} // moduleName should match with the directory name. com.domainName
+	
+	module-info.java 
+	
+	two keywords we can use - requires & exports. 
+	
+	module moduleName {
+			exports telusko.util;
+	}
+	
+2. Create a source code file - 
+	src/com.domainName/com/domainName
+	
+3. We need to build the module by right clicking - Build module "module name" - after making the changes 
+	
+
 ------------------INVERSION OF CONTROL----------------------------
 	Controller layer - to handle a particular route we may need to hit business layer and to get some data from the DB, from business layer, we may need to hit repository layer.. to hit another layer, we will have to make its object. 
 	
@@ -929,6 +970,20 @@ We can do
 			HardDisks obj1;
 		}
 		// AUTOWIRED ANNOTATIONS WILL AUTOMATICALLY CONNECT HARDDISK OBJ1 TO HITACHI.. AND WILL AUTOMATICALLY INJECT ITS DEPENDENCY. 		
+		
+=========================JDBC - JAVA DATABASE CONNECTIVITY=================================================
+JDBC gives us an API to connect with database. If we want to work with any database, we have JDBC, but that database will provide us with jar classes (implementation to work with JDBC). 
+
+----STEPS TO CONNECT----- (SHORT FOR -  I LOOK REALLY COOL CAN EX CALL)
+1. import packages. java.sql package - sim is inserted into the device
+2. load Drivers - driver for each DB. exmple - sim is loaded into the device  
+3. register driver -  we have to register that driver to be able to connect to that DB. same as registering a sim into a devide
+4. Create connection  - create connection object. connecting to call via sim network.
+5. create statement - Create a statement 
+6. execute statement - whatever response we get, we have to process it. 
+7. Close the connection to avoid leaking the memory. 
+	
+	from JDBC 4.0, WE ONLY NEED TO WORK FROM STEP 4. importing packages, loading, registering the driver is already taken care of. 
 	
 ----------------REST API FROM SCRATCH WITH SPRING BOOT-------------------------
 

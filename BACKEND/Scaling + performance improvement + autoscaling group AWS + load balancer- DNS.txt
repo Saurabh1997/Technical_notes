@@ -1,0 +1,144 @@
+Vertical scaling - increasing the size of machine to support more load. nodejs won't be able to fully utilize vertical scaling as compared to a Multi-threaded language like java, Golang, Rust.  
+	In Rust we spawn threads to fully utilize vertical scaling. in Go, we have subroutine. in Java we have threads. 
+	In Nodejs we can use cluster module to spawn more nodejs app to fully utilize our CPU. but this spawning is not much light weight as much as a goroutine. 
+	
+	for loop till os.cpus().length, 
+		can do cluster.fork().
+
+Horizontal scaling - we are increasing number of machines. Implement AutoScaling group. 
+
+--TO DO SCALING, WE HAVE TO DO CAPACITY ESTIMATION---
+	-- paper math depending upon the number of requests per second, number of users using our applicaiton. 
+	number of requests one single application running on one single server can handle. 
+	-- Questions - How to scale our application, How to handle spikes, How to manage SLA support for given traffic.
+			basically SLA is service level agreement between a vendor (AWS) and service (EC2) that our application is integrating of that vendor to use that service - basically that service uptime agreement - For 99.5% of the time in a month, the service will be up but for 0.5% of the time the service might be down and they won't charge money for that but we WILL HAVE TO HANDLE THIS SCENARIO (TRAFFIC) AT THAT TIME. We don't have to have a downtime of more than 30 mins. For this, we can use all different types of cloud services to support any downtime because a single provider cannot have enough bandwidth of networks for every location. 
+		-- When IPL/World cup matches happen once a year, we will have to specifically monitor all services every 2-3 min, if there's any spike in number of requests, then can scale our services. 
+	--ESTIMATION--
+		1. Estimation of req per seconds - number of requests in a day/number of seconds in a day
+			number of users in a day (10,000) * number of requests a users send in a day (10 req)/3600 (60 * 60) * 24 
+			Now we get 1000000/ 3600* 24 requests per second. 
+				Let's say 100 req per second our application is getting.
+				If we have one nodejs application running in one ec2 which can handle 10 requests per second.
+				so we will have to have 10 * 10 ec2 instances to handle 100 requests per second. 
+					Every 2 minutes, we can track in aggregator service which can keep track of requests per second and the CPU usage %, can configure if our CPU usage % goes more than 80%, then autoscale the machine to 10. if not, then downscale the machine to 3. 
+			--Can configure all this in AutoScaling groups of 3 ec2 instances which will increase as per our configuration.
+		2. In a chess like application, we need to have certain amount of fixed persistent connections that our application should handle. If one server can handle 10k persistent connections at a time, we can implement a aggregator service to keep track of number of persistent connections. If they go above 10k, can autoscale via autoscaling group. 
+	
+----3 more scenarios --
+	1. Video transcoder of youtube - takes 2 hours.. it transcodes our video into 360p, 720p and 1080p
+	2. Replit like site  - sometimes we have to give user access to compute machine and takes 2 hours 
+	3. leetcode takes 2 second 
+	
+	How to scale this type of applications where we need to compute for a long time. 
+		1. As soon as user base keeps increasing, we can keep a pool of 10-20 machines warm(ready to compute). 
+		2. Can push transcoding to a queue which can be picked by other microservices to do transcoding in each pixel format. 
+ 				If queue gets big, then can autoscale this microservices. 
+				If queue gets small, then can downscale the number of servers.
+		
+---------------------------------AUTOSCALING GROUP IN AWS-----------------------------------------------------------
+
+	AS THE LOAD(CPU utilization) INCREASES ABOVE 50%, WE WILL ADD ANOTHER MACHINE. 
+	Creating AUTOSCALING scaling group is not the cleanest way of autscaling. Cleanest way would to do autoscaling via increasing kubernetes containers as they are more light weight and Ec2 machines take around 20 to 30 seconds to start as they are a bit heavy. We can autoscaling via kubernetes container.
+
+-- 	AMI -  We create AMI (amazon machine image) which is snapshot of the machine through which we caN CREATE MORE MACHINES. WE GIVE THIS AMIs to autoscaling group so that it will create more instances of our machine. 
+-- LOAD BALANCER - ITS A FULLY MANAGED SERVICE BY AWS. AWS MAKES IT HIGHLY AVAILABLE. can always use LOAD BALANCER OF AWS. 
+-- TARGET GROUP - basically after request hits load balancer, we tell that our EC2 SERVERS ARE PART OF THIS TARGET GROUP AND WE HAVE TO ATTACH ALL OUR EC2 			INSTANCES TO OUR TARGET GROUP SO THAT LOAD BALANCER CAN ROUTE THE REQUEST TO THE EC2 SERVERS IN OUR TARGET. 
+-- LAUNCH TEMPLATES - template to start new machines  - configuration/ pre built things to do  like this is the image we want to start as a container, SECURITY GROUP FOR THE MACHINES, STARTER code - pm2 start.js 
+
+
+-------------SSH-------
+
+ssh -i pemFileForOurEC2 url_instance_to_connect
+
+
+----------------------------------STEPS FOR CREATING AUTOSCALING GROUP-----------------------------------------
+
+1. Instead of creating an EC2 instance manually. We can create an autoscaling group with minimum and maximum desired capacity -   
+	min - number of instances that should be running always no matter what the load is. max - when load hits, maximum no of instances.
+
+ALTERNATE APPROACH -- we create snapshot from one ec2 instance and then assign it for autoscaling group. 
+2. Create a new EC2 instance - t1.micro. CREATE A NEW KEY PAIR. DOWNLOAD .PEM file. change permission - chmod 700 file.pem. 
+		ssh -i file.pem url_of_instance
+3. install nodejs on ec2 instance using nvm. 
+4. clone some node repo and npm i .  npm start. 
+5. then go to ec2 instance - security tab and edit inbound rules - add new inbound - add nodejs port number - allow from anywhere. 
+6. hit url:port number
+7. select the ec2 instance n then create image .
+8. create security-group - add 2 inbound rule - port 22 & 3000.
+9. LAUNCH TEMPLATE -	
+		there's one approach - 
+			we can launch instances from AMI. but then we would have to specify everything from storagte, key-pair, to security group. 
+		INSTEAD OF THAT, WE HAVE OPTION TO DIRECTLY LAUNCH TEMPLATE BASED ON AMI. 
+		WE JUST HAVE TO SPECIFY WHICH AMI AND IT WILL COPY ALL SETTINGS FROM THAT AMI.  
+	SELECT - MY AMIS - SELECT OUR IMAGE THAT WE create from our ec2 instance. we just select all things that we have created. 
+	
+	USER DATA - where we put starter scripts - starter scripts as in - First thing that will run when our instance starts.
+		usually where we will install nvm/node and set it to the path and npm i and start the project. 
+		
+		export PATH = $PATH:/home/path/to/node/binfolder // this binfolder contains npm, node npx and core packages of npm. 
+		echo "starting"
+		npm i -g pm2 
+		cd /projectDir/
+		pm2 start index.js
+		pm2 save 
+		pm2 startup
+		
+	can create multiple versions of the Launch templates.	
+		
+10. AutoScaling groups - Create AutoScaling group - choose our created Launch template. Select appropriate version. can modify autoscaling groupd to update the version of launch template. 
+	choose instance type - t2.micro. Always choose on demand as over spot instances as they are unreliable usually as they are cheaper and hosted over available aws servers. 
+	Select Availability zones - multiple AZs. can go for only 1 AZ for some usecases because it will try to balance no of instances between multiple AZs if you select more than 1. 
+	
+11. Attach to a new Load Balancer: 
+		TARGET GROUP CONTAINS A LOAD BALANCER AS WELL. 
+		Application load balancer. scheme - internet facing/internal. 
+		create a target group
+		
+		NOTE : WE USUALLY ATTACH LOAD BALANCERS TO A TARGET GROUP. TARGET GROUPS ARE ATTACHED TO ALL THE INSTANCES OF AUTOSCALING GROUP. WE HAVE TO ATTACH ALL INSTANCES TO TARGET GROUP. 
+		
+can automate this process using terraforms. 
+
+
+CAN USE ELASTIC BEANSTALK GIVES SOME BENEFIT WITHOUT NEED OF DEVELOPER HAVING TO CREATE ALL THIS. 
+
+------connecting load balancer-----
+Load Balancer DNS URL is where we will hit requests. 
+Add Port - 80 & 443 number for allowing traffic from load balancer security group. 
+
+	If we are not able to hit Load balancer URL - means its giving error maybe for errors. Analyze why - go to load balancer or target Group - check if all instances are healthy. 
+NOTE : If the instances are unhealthy inside target group we can delete and Can create a new target group - it should have protocol port as the port number for our application. 
+GO TO AutoScaling GROUP - EDIT - CHANGE LOAD BALANCING TARGET GROUP TO CURRENTLY CREATED. 
+NOTE: ALSO UPDATE LOAD BALANCER SETTING TO CHANGE ITS TARGET GROUP. 
+
+-----------------------ATTACHING DOMAIN NAME TO LOAD BALANCER--------------
+
+Go to Load balancer - Add listener for https 443. Forward the request to target group - Select target group - our own certificate.
+
+Add get certificate from ACM - give your own domain name 
+
+AFTER GENERATING CERTIFICATE - CLICK ON IT - COPY THE CNAME AND CVALUE - TO PROVE THAT WE OWN THIS DOMAIN NAME. 
+GO TO DOMAINS site - where we are managing our own domain name. 
+
+	1. Click on DNS. Manage custom records. 
+	2. Paste CNAME - type - CNAME and Add CVALUE to the right. 
+	3. Add One more entry in Google Domain DNS - name of host - as site.domain.com    TYPE - CNAME - VALUES (DATA ) = VALUE as in DNS info of AWS load balancer. 
+	
+---------------------CREATING DYNAMIC AUTOSCALING POLICY--------------------------
+1. click on our ASG - autoscaling group --> AutoScaling policy - Create dynamic autoscaling policy --->
+	Metric type - on which this is depending - Average CPU utilization - target value - 50. if CPU utilization more than 50, it will autscale else it will decrease.
+2. We can autoscale using aws sdk provided in various languages. 
+	We usually create a new user with minimum security policy required for autoscaling and imports that user's access id and secret key. 
+
+
+------------------------------------AWS CERTIFICATE MANAGEMENT-----------------
+CAN GET CERTIFICATE FROM CERTBOT - WE NEED TO KEEP RENEWING CERTIFICATES FROM TIME TO TIME. 
+or we can use AWS CERTIFICATE - ACM. IT RENEWS AUTOMATICALLY. 
+
+---------------------------------CLEANING UP-----------------------------------------------------------
+AUTO SCALING GROUP - make desired/minimum capacity as 0. 
+Delete autoscaling groups completely. 
+Delete Load balancers as they get expensive. 
+Delete target groups
+Delete launch template
+Delete AMIs
+Stop the EC2 instance - terminate 
