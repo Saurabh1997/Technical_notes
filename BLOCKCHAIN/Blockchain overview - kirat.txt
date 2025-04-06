@@ -1,0 +1,18 @@
+blockchain has 3 types now ----
+Layer 0 blockchain - Polkadot, cosmos. lets us build own blockchain. 
+layer 1 blockchain - bitcoin, Solana, ethereum. where we can do crypto transactions.. build dapps on top of it.
+layer 2 blockchain - polygon, optimism, arbitium. took different approach to scale blockchain. they are like smaller blockchains of their own. side roads of the main blockchain. related to ethereum. 
+
+Usecases of blockchain - 
+1. Wallet App. 
+	Solana - phantom and backpack - multichain wallet. 
+	Ethereum - Metamask & wallet connect. 
+2. Decentralized exchange, decentralized orderbooks - swapping fees. which actually does the swapping. 
+	Solana - Orca, meteora, jupiter. can build own frontends to do swapping. 
+3. NFTs 
+4. centralized exchanges - binance, coindcx, coinbase, wazirx. 
+
+Roadmap - 
+70% - bash/ terminal, MERN, RPC, deploying to prod. 
+30% - smart contracst. 	Eth - solidy, solana - rust. 
+	

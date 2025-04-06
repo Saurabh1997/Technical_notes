@@ -1,0 +1,36 @@
+POLKADOT BLOCKCHAIN
+
+can operate blockchain on top of which other blockchains can be operated. 
+Polkadots are designed to operate two types of blockchains - 
+
+1.relaychains - a permanent blockchain where transactions are going to be permanent.
+2. Parachains - user created blockchain network.Parachains can be customized for any number of users and fed into relaychain. So parachain can have the same security as that of relaychain.
+
+First stage - DApps or parachains 
+Second stage - validators will validate blocks that parachains are providing and will put on the relay chain (main chain) to finalize. 
+Relay chain - main polkadot blockchain where transactions are finalized.
+
+TO ACHIEVE SPEED - RELAY CHAIN SEPERATES THE ADDING OF NEW TRANSACTIONS (FROM PARACHAIN) from the act of VALIDATING TRANSACTIONS ( DONE BY VALIDATORS)
+
+PARACHAINS - CUSTOM BLOCKCHAIN CREATED BY US. we will use relay chains computation resource to compute those and put them in an accurate manner onto relaychain.
+Bridges - way to interact with outer world/other blockchain 
+
+To keep its network in agreement about the state of the blockchain, polkadot relaychain uses nominated proof of stake consensus algorithm.
+
+This system allows anyone who stakes dot by locking cryptocurrency in a special contract to PERFORM VARIOUS OPERATIONS.
+
+On-Chain roles -
+Validators - validates data on parachains. also participate in consensus voting.
+Nominators - part of nominated POS. secure the relay chain by selecting trustworthy validators.
+Collators - nodes that store full history for each parachain and aggregate parachain transactions into a block for adding into main chain
+Fishermen - security police of the complex. reports if there is any malicious validator so they will inform other validators.
+
+ANyone who purchases dot tokens can use theirs dots to propose changes to the council. Elected by dot holders. 
+Technical committe - actively building polkadot. voted by polkadot holders.
+
+can do more parallel transactions than ethereum as there is seperation of tasks.
+
+polkadot is developed in RUST.  System-level programming
+
+Substrate is framework for building blockchain. used to make code modular. Polkadot will give the codebase to create own blockchain. 
+
