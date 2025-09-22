@@ -78,8 +78,12 @@ SERVICES - to access other services inside a kubernetes cluster.. for e.g an ora
 				
 
 
-
+--------------------------------------------------------------CIRCUIT BREAKER PATTERN---------------------------------------------------------------
+	Circuit Breaker pattern is like a safety switch for our microservices. Ideally if we have a store connected to payment service and if that has failed for like 3-4 times now - Instead of store contacting the service again and again - the circuit trips and stops further attempts for sometime. 
 	
-		
+	-- When payment service fails 3 times in a row. Circuit breaks open and enters "OPEN" STATE. Now when anyone tries to contact payment service, it immediately gets an error response instead of trying to connect again. 
+	-- After a set time, circuit changes to HALF-OPEN STATE - AND TRIES FEW TEST PAYMENTS TO CONTACT PAYMENT SERVICE, IF THOSE SUCCEEDS, circuit breaker resets to "CLOSED" - everything goes back to normal state. IF IT FAILS, IT WILL AGAIN BE OPEN FOR LONGER TIME - giving more time to payment service to recover. 
+	- Circuit Breaker monitors health of the services by analyzing metrics such as response time, error rates or timeout. IF ANY OF predetermined THRESHOLD is breached, it signals that service is broken n it transitions to the Open state. 
+	
 	
 	

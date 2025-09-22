@@ -21,6 +21,21 @@ CREATE INDEX idx_posts_user_id_title ON posts (description, title)
 
 IN PRISMA - WE DO @@index([userId]) // column name of userId
 
+--------------------------------------------COMPOSITE KEY------------------------------------------------------------------
+	Composite key is a primary key which consists of two or more columns - Instead of using only one column to uniquely identify each row, a composite key uses combination of values from multiple columns. 
+	
+	CREATE TABLE Enrollments (
+    StudentID INT NOT NULL,
+    CourseID INT NOT NULL,
+    EnrollmentDate DATE,
+    PRIMARY KEY (StudentID, CourseID)
+);
+
+--------------------------------------------composite indexing-----------------------------------------------------------------------------
+Index created on multiple columns of a DB table. This type of index can be used to improve performances of queries which involve filter,sorting based on multiple columns. 
+
+CREATE INDEX idx_customer_name ON customers (last_name, first_name);
+
 
 -------------------------------DB NORMALIZATION--------------------------------------------
 Normalization is the process of removing redundancy in our application. 

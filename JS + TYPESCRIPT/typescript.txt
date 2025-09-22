@@ -10,10 +10,13 @@ tsc -b - to compile into js.
 
 -- Basic types in typescript - null, undefined, string, number, boolean. 
 
----Assigning return type to function - 
+-----------------------Assigning return type to function--------------------------------------------------- 
 	const funcSum = (name: string, age: number) : number => { return number }
+	
+----------------------type inference in typescript---------------------------------------------
+	is the ability of  a compiler to identify the data type of the variable or function value without explicit type annotations. 
 
----explicit and implicit assigning------------------------- 
+---------------------------------------------explicit and implicit assigning--------------------------------------------------------- 
 let firstName: string = 'saurabh' // explicit - writing out the type
 
 let firstName = "saurabh" // typescript will guess the type based on assigned value. 
@@ -21,13 +24,13 @@ Having typescript guess the type of a value is called infer. Implicit assignment
 
 for explicit, it will throw error for mismatching. but for implicit, it won't throw error. 
 
------------------TYPESCRIPT SPECIAL TYPES - 
+------------------------------------------------------------TYPESCRIPT SPECIAL TYPES---------------------------------------------------------------------------
 any - disables type checking. but it won't provide any type checking. SHOULD BE AVOIDED AT ANY COST. 
-unknown - similar to any but safer. it will prevent unknown types from being used. 
+unknown - similar to any but safer. it will prevent unknown types from being used. will have to do typeof/instanceof check before performing any operation. 
 never - let x : never = true // throws error whenever it is defined. 
+			THIS TYPE REPRESENTS A VALUE THAT WILL NEVER OCCUR. used in scenarios where a function never returns anything. 
 
------------------interface in typescript 
-
+-------------------------------------INTERFACES in typescript----------------------------------------------------
 interface PersonInterface {
 id : number,
 name: string,
@@ -51,36 +54,103 @@ this.position  = position
 }
 
 
------------------------typecasting with <>
+-----------------------------------------------------TYPECASTING with AS/<> OR TYPESCRIPT CASTING------------------------------------------------------------------
+CASTING - IS OVERRIDING THE EXISTING TYPE. 
+TO EXPLICITLY TELL THE TYPESCRIPT COMPILER THE SPECIFIC TYPE OF A VALUE EVEN WHEN COMPILER'S AUTOMATIC TYPE INFERENCE MIGHT NOT BE ACCURATE. IT IS COMPILE TIME CONSTRUCT 
+	------ when to use 
+		- working with dynamic data - when any data is coming from external sources - API. 
+		- When we have more knowledge of data than what compiler can infer. 
+		- interacting with JS legacy code. 
+	
+	------ HOW TO USE -----
+		- let someString: any = "Hello"
+		- let len : number = (someString as string).length
+	
+		--- OLDER SYNTAX <>
+			let x : unknown = "hello"  
+			console.log((<string>x).length)  or console.log((x as string).length); // this won't change type of data within variable. 
+			
+SNIPPETS : 
+		let x: unknown = 4;
+		console.log((x as string).length); 
+			OUTPUT - ------------ // prints undefined since numbers don't have a length
+		
+------------------------------------------------------------
+		TYPESCRIPT WILL ATTEMPT TO TYPECHECK CASTS TO PREVENT CASTS THAT DON'T SEEM CORRECT. 
+		
+		console.log((4 as string).length); 
+		
+		// Error: Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+---------------------------------------------------------------
+let x: unknown = 'hello';
+console.log((<string>x).length);  // THIS WILL WORK. 
 
-let x : unknown = "hello"  
-console.log((<string>x).length)  or console.log((x as string).length); // this won't change type of data within variable. 
 
------------------------GENERICS - FOR TYPECASTING A FUNCTION --- dynamically typecast.. work with any data type. 
+---------------------------------------------------FORCE CASTING-------------------------------------------------------------------------
+// to override type errors, WE CAN TYPE CAST TO UNKNOWN AND THEN TRY TO FORCE CAST IT TO ANOTHER TYPE THAT WE WANT. 
 
-function getArray(items : any[]): any[] {
-return new Array().concat(items)
-}
+let x = 'hello';
+console.log(((x as unknown) as number).length); // x is not actually a number so this will return undefined
 
-let numArray = getArray([1,2,3,4,5])
-let strArray = getArray(["hello","snsns"]) 	// IT WILL ALSO ACCEPT THIS AS WE ARE ACCEPTING ANY ARRAY. 
+---------------------------GENERICS - FOR TYPECASTING A FUNCTION --- dynamically typecast.. work with any data type----------------------------------
+Used for creating a type variable which can be used for creating classes, functions & types aliases that we don't need to explicitly use 
+- can write reusable code. 
 
-strArray.push(6,7) // SAME GOES FOR THIS.
+	- Generics When working with functions can help make more generalized which can accurately represent the data types it requires and returns. 
+	
 
-FOR TYPECASTING,  
+		function getArray(items : any[]): any[] {
+		return new Array().concat(items)
+		}
 
-function getArray<T>(items : T[]): T[] {
-return new Array().concat(items)
-}
+		let numArray = getArray([1,2,3,4,5])
+		let strArray = getArray(["hello","snsns"]) 	// IT WILL ALSO ACCEPT THIS AS WE ARE ACCEPTING ANY ARRAY. 
 
-let numArray = getArray<number>([1,2,3,4,5]) // THIS WILL PASS NUMBER AS T AND WILL MAINTAIN THIS DATATYPE FOR NUMARRAY. 
-let strArray = getArray<string>(["hello","snsns"]) 	// THIS WILL PASS STRING AS T AND WILL MAINTAIN THIS DATATYPE FOR strArray.
+		strArray.push(6,7) // SAME GOES FOR THIS.
 
-strArray.push(6,7) // WILL GIVE ERROR AS WE ARE PASSING STRING AS THE TYPECASTING VARIABLE. 
+		FOR TYPECASTING,  
+
+		function getArray<T>(items : T[]): T[] {
+		return new Array().concat(items)
+		}
+
+		let numArray = getArray<number>([1,2,3,4,5]) // THIS WILL PASS NUMBER AS T AND WILL MAINTAIN THIS DATATYPE FOR NUMARRAY. 
+		let strArray = getArray<string>(["hello","snsns"]) 	// THIS WILL PASS STRING AS T AND WILL MAINTAIN THIS DATATYPE FOR strArray.
+
+		strArray.push(6,7) // WILL GIVE ERROR AS WE ARE PASSING STRING AS THE TYPECASTING VARIABLE.
+
+---------------------classes----------------
+		class NamedValue<T> 
+		
+		let value = new NamedValue<number>('myNumber');
+----------------------interface-------------------------
+interface Wrapped<T> 
+
+---------------------type aliases--------------------------
+		type Wrapped<T> = { value: T };
+		const wrappedValue: Wrapped<number> = { value: 10 };
+
+
+---------------------Default Value---------------------------
+class NamedValue<T = string> // if no value is inferred or provided we can define default values. 
+
+---------------------------can be used to extend capabilities-----------------------
+Here S is union of string and number... T can be string and number. 
+
+function createLoggedPair<S extends string | number, T extends string | number>(v1: S, v2: T): [S, T]
+
 
 FOR GENERATING REACT JS PROJECT FOR TYPESCRIPT - npx create-react-app . --template typescript 
 
-UTILITY TYPES - 
+----------------------------------------------------------------CLASSES-------------------------------------------------------------------------------------
+Typescript adds types and visibility modifiers to JS classes. 
+Class members can be given additional visibility modifiers - 
+	public (default) - allows access to class member from anywhere.
+	private - only allows access from within the class 
+	protected - allows access from within the class and the classes which inherit it. 
+
+---------------------------------------------------------------UTILITY TYPES----------------------------------------------------------------------------------
+- predefined generic types - that provides transformation and operations on existing types - allowing for creation of new types, based on modification and extraction of properties and reusing existing types. 
 Partial - changes all properties in an object to be optional.
 Required - changes all properties to be required. 
 Record - shortcut to defining an object type with specific jet type and value type. 
@@ -90,7 +160,7 @@ Exclude - removes types from a union.
 ReturnType - extracts return type of a function. 
 Parameter - extracts the parameter types of function as an array. 
 
-----------------------INTERFACES - TO ASSIGN TYPES TO AN OBJECT.
+----------------------INTERFACES - TO ASSIGN TYPES TO AN OBJECT-----------------------------------------------------------------------
 interface is implemented by a class. 
 interface Point {
 x:number
@@ -125,7 +195,7 @@ const point: Parameters<PointPrinter>[0] = {
 };
 
 
----------------------------TYPES --------------------------------------
+---------------------------------------------------------------TYPES ------------------------------------------------------
 similar to interfaces but advanced can aggregate data two types together. 
 
 Union --- |  ---  string | number
@@ -219,6 +289,14 @@ When you want to have multiple types, but want to exclude few types..
 type Event = 'click' | 'scroll' | 'mousemove'
 type ExcludeEvent = Exclude<Event, 'scroll'>  // can assign this type it will exclude scroll and will take type of click and mousemove.
 
---------------------
+----------------------------------------------------keyof---------------------------------------------------------------------------------
+used to extract key type from an object type. 
 
+interface User {
+name: string;
+key
+}
 
+let userObj : keyof User
+
+---------------------------------------

@@ -73,3 +73,37 @@ For PUB-SUB, Messages are published on a topic instead of being sent to a queue 
 		client.publish(channel,message) // client.subscribe(channel , (callbackFn) => {})
 		
 		
+
+---------------------------------------------APPLICATION MONITORING SYSTEM-------------------------------------------------------------------------------
+application monitoring system - 
+
+observability of an application. 3 pillars - logs, monitoring & traces. 
+
+
+For setting up logging system , 3 tools we can use -
+
+1. winston - logging library with multiple logging levels for multiple transports. it will generate log files.
+
+2. Promtail - agent which ships the contents of a local logs to private Grafana loki instance or Grafana cloud. basically service reading log file & uploading all logs to grafana instance. 
+
+3. Grafana Cloud -  observability platform. integrating metrics, traces n logs with grafana.
+
+Prometheus - open source systems monitoring & alerting toolkit. prometheus collects and stores its metrics as time series data. metrics info is stored with the timestamp. changes are recorded over time. 
+Express-prometheus-Middleware - middleware for prometheus that expose metrics for prometheus. Metrics exposed allows to calculate common RED (Request, Error rate, Duration of requests) n USE (utilization, saturation, n error rate). 
+
+
+------------------------------------------------------------RABBITMQ--------------------------------------------------------------------
+- messaging and streaming broker 
+- IT SUPPORTS 3 TYPES OF EXCHANGES - DIRECT, TOPIC, AND FANOUT. 
+		- Direct - sends messages to queue with matching routing key - to one specific. for e.g - a chat room between 2 users. only they will be notified of each others' msg
+		- Topic - uses patterns like wildcards to send to one or more matching queues.  Queue  listening for sports event will publish events in sports.europe channel.  
+		- fanout - broadcasts messages to all queues bound to it. weather alert system. to send alerts 
+		
+- bindings - rabbitmq uses something called as bindings to route the message to specific queue based on binding - delivery rules. PRODUCERS WON'T KNOW WHICH QUEUE ITS SENDING THE MESSAGE - They just send it to exchange. RabbitMQ uses bindings to handle the routing. 
+
+
+Step 1 : producer sends the msg
+Step 2: Messages enters an exchange  before going into queue to which queue should receive 
+3: Bindings connect Exchanges and queues. 
+4. Messages lands in queues - its like a waiting room. Messages wait there until consumer picks them up. They decouple services. Even if service fails, messages are not lost. MAKES FAULT - TOLERANT.  
+5. Consumers process messages 

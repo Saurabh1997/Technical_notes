@@ -1,0 +1,43 @@
+----------Started with HTML----------------------
+
+Semantics in HTML 
+
+----------------CSS-------------------
+
+box model
+display block and inline 
+web responsive
+
+
+----------------JS----------------------------
+arrow and normal functions (this context)
+
+closures
+
+deep copy & shallow copy - how to clone an object 
+
+call, apply and bind 
+
+Set and Maps 
+
+Difference between object and Maps 
+
+how to loop through each key in object - object.keys and object.entries 
+
+
+---------------NodeJS---------------------------
+
+
+promise.all
+promise.allSettled
+promise.raise
+
+-------------ReactJS---------------------------------
+
+hooks
+useEffect
+make a custom hook
+
+-------------------------CODING QUESTION---------------------------------------
+
+SECOND GREATER NUMBER THAN A NUMBER. 

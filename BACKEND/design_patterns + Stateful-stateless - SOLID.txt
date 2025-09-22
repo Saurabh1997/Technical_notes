@@ -1,71 +1,51 @@
 Design Patterns in NodeJS
 
 1. Factory Method pattern - 
-acts as a tool to clean up the code. centralize the logic of creating objects in a single place and then reuse whenever required. 
+	`acts as a tool to clean up the code. centralize the logic of creating objects in a single place and then reuse whenever required. 
 
-We define base class and entity classes which are reusing the same base class and a function inside the entity class will return that particular data. All objects will share same set of interfaces.
+	We define base class and entity classes which are reusing the same base class and a function inside the entity class will return that particular data. All objects will share same set of interfaces.
 
-for example - 
+	for example - 
 
-	 let factory = new MyEmployeeFactory()
-     employees.push(factory.createEmployee({type: "contractor"})    )}
+		let factory = new MyEmployeeFactory()
+		employees.push(factory.createEmployee({type: "contractor"})    )}
 
-class Employee {
-speak(){
-return "Hi" 
-}}
+	class Employee {
+	speak(){
+	return "Hi" 
+	}}
 
-class ContractEmployee extends Employee {
-constructor(data){
-super()
-this.type = "contractor"
-}}
+	class ContractEmployee extends Employee {
+	constructor(data){
+	super()
+	this.type = "contractor"
+	}}
 
-class MyEmployeeFactory extends Employee {
-createEmployee(data){
-if(data.type === "contractor"){
-return new ContractEmployee(data)
-}}}
+	class MyEmployeeFactory extends Employee {
+	createEmployee(data){
+	if(data.type === "contractor"){
+	return new ContractEmployee(data)
+	}}}
+`
+	USECASE IN NODEJS - if we want to configure error messages, response messages in a single object, we can do using factory method. creating Errorfactory class and instantiating everytime we want to return error message.
+	if(err){
+	res.json(Errorfactory.getError(err))
+	}
 
-USECASE IN NODEJS - if we want to configure error messages, response messages in a single object, we can do using factory method. creating Errorfactory class and instantiating everytime we want to return error message.
-if(err){
-res.json(Errorfactory.getError(err))
-}
+2. Strategy design pattern - 
+should be able to add new functionality to existing code without changing existing code base much.
 
-2. Singleton pattern: this pattern is implemented by using a single static property where they store the instance once it exists (in most programming languages).
-but in JS, we dont have access to static variable.
+FOR EXAMPLE - 
+client - where main functionality is called. 
+strategyTemplate - strategy template will be there (interface) 
+chooseStrategy - where strategy will be chosen
+strategyAlgorithm - where actual strategies will be coded with the help of strategyTemplate.
 
-let instance = null
-
-class SingletonClass {
-
-    constructor() {
-     this.value = Math.random(100)
-    }
-
-    printValue() {
-     console.log(this.value)
-    }
-
-    static getInstance() {
-     if(!instance) {
-         instance = new SingletonClass()
-     }
-
-     return instance
-    }
-}
-
-	module.exports = SingletonClass
-And you could use it like this:
-	const Singleton = require(“./singleton”)
-
-	const obj = Singleton.getInstance()
-	const obj2 = Singleton.getInstance()   
-
-
-Observer Pattern - publisher - subscriber pattern,
-
+-- 3. Observer pattern - publisher - subscriber pattern. Kafka, RabbitMQ, Amazon SNS, NATS. 
+Redux is also implementation of observer pattern. 
+Event driven architecture.  
+	Observer design pattern in Java : 
+		Is a behavioral design pattern - it establishes one to many relationship between objects. When one object (Observable) state changes, all its dependents (Observers) are notified and updated.  
 
 ------------------STATEFUL VS STATELESS PATTERN---------
 Backend should always be stateless to make it as light weight as possible. We can use stateful backend (having in memory cache) but its not a good design practice. We can use firebase and not need a backend but we need certain restrictions on who can directly access DB. so we usually have a backend to connect to the DB to query. 
@@ -152,4 +132,94 @@ In Some scenarios, we need to make our backend stateful. For EXAMPLE -
 			
 ---Strategy Design Pattern--------------
 	It allows behavior/strategy to be selected at runtime. If we have a payment mechanism, we will have a class PaymentStrategy in which we will have switchStrategy method which when passed a strategy name can interchange its mechanism for e.g Razorpay, stripe
+	
+----------------------------------------------SOLID------------------------------------------------
+Single Responsiblity principle
+Open closed
+Liskov substitution
+Interface segregation
+Dependency inversion principle
+
+ref - https://www.freecodecamp.org/news/solid-principles-for-programming-and-software-design/
+
+Single responsbility principle - a class or function should only have one responsbility. IT SHOULD HAVE ONE TASK/RESPONSIBILITY. 
+	for example - if we have function of calculating salary and generating report in one function, it should have 
+	
+Open closed principle - IT states that software entities (modules,classes ) should be open for extension but closed for modification. 
+	for example - we have a processPayment().. how can we extend this behavior to proccess payment with Paypal without modifying the existing code.
+					processPaymentWithPayPal().
+
+Liskov substitution - OBJECT OF SUPERCLASS should be replaceable by objects of sub class without affecting the correctness of the program. 
+	
+	EXAMPLE - if we have a function to make Payment and we have a different error handler objects.. they should be able to be used interchangeably without causing error. 
+		const makePayment(gateway, errorHandler) {
+			fetch(url)
+				.then(response => response.json)
+				.catch(error => errorHandler.handle(error))
+		}
+	
+		const externalErrorHandler = function(error) {
+			sendErrorToExternalHandler(error)
+		}
+
+		const otherExternalErrorHandler = function(error) {
+			sendErrorToOtherExternalHandler(error)
+		}
+		
+		makePayment(url, externalErrorHandler)
+		externalErrorHandler(url, otherExternalErrorHandler)
+
+Interface seggregation principle - NO CLASS SHOULD BE FORCED TO IMPLEMENT INTERFACES OR METHODS ITS NOT GONNA USE. 
+		class Product {
+			constructor() {}
+			saveToDB() {}
+		}
+	
+		class AmazonProduct extends Product {
+			// saveToDB() is not necessary but still extended
+		}
+		
+		
+----- REFACTORING ---
+	 
+		saveToDB can be implemented in child classes where its actually needed. 
+		
+
+Dependency inversion principle - MODULES THAT CONTAIN HIGH LEVEL CODE OR DIRECTIVES SHOULD NOT BE DEPENDENT UPON LOW LEVEL MODULES. BOTH HIGH LEVEL AND LOW LEVEL MODULES SHOULD BE DEPENDENT ON ABSTRACTION
+	
+	if two DB connections are there. 
+		class MySQLConnection {}
+		class PostgresConnection {}
+		
+		class PasswordReminder {
+			constructor() {
+				this.dbConnection = new MySQLConnection()
+			}
+		}
+		
+		CAN BE REFACTORED TO 
+		
+		class MySQLConnection {
+			constructor() {}
+			connect() {}
+		}
+		
+		class PostgresConnection {
+			constructor() {}
+			connect() {}
+		}
+		
+		class PasswordReminder {
+			constructor(connection) {
+				this.dbConnection = connection  // PasswordReminder WILL RECEIVE INSTANCE OF DATABASE BASED ON WHAT WE PASS WHEN CREATING OBJECT. 
+			} 
+		}
+		
+		
+
+	3 types of DI -
+	
+	1. constructor injection - dependencies are passed through a class constructor
+	2. setter injection - client exposes a setter method that injector uses to inject dependency.
+	3. interface injection - 
 	

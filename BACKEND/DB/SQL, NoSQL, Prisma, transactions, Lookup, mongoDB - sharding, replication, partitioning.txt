@@ -173,3 +173,30 @@ for prisma query we can do .. prisma.todo.FindMany({where : {} , select : {
 
 We put Database URL in .env file. and prisma accelerate API KEY in WRANGLER.TOML
  
+ 
+------------------------------------------------lookup - to join 2 collections---------------------------------------------------------
+To Query data from one collection based on data in another we can use ${lookup} in aggregation framework. 
+	db.categories.aggregate([{ }]) or can use a view to join two collections. 
+	
+	
+	
+------------------------------------------------Replication--------------------------------------------------
+Replication is process of copying same data across multiple servers at different physical locations. THE SET OF SERVERS MAINTAINING THE COPIES ARE CALLED THE REPLICAS DONE TO INCREASE REDUNDANCY AND AVAILABILITIY. 
+	AT ANY given point in time, one member of the replica can act as the primary node and other replicas as the secondary nodes. 
+	
+	BENEFITS:
+	- PRIMARY NODE USUALLY HANDLES THE WRITE THE OPERATIONS WHILE READS ARE SPREAD ACROSS MULTIPLE SECONDARY NODES FOR IMPROVING READ PERFORMANCE.. 
+	if primary node goes down, secondary node can act as the primary node. 
+	
+------------------------------------------------SHARDING--------------------------------------------------------------
+SHARDING IS A FORM OF HORIZONTAL SCALING BY DISTRIBUTING DATA INTO SHARDS (basically small chunks) on multiple servers to distribute the workload and achieve high throughput. 
+	SHARDED COLLECTION is divided into chunks based on SHARD KEYS. EACH CHUNKS IS STORED ON A DIFFERENT SHARD. 
+
+	problem: sometimes working with large datasets can be challenging for a single server. mongoDB provides a horizontal type of scaling where we can distribute the load across multiple servers through sharding. 
+	
+	mongos - serves as a query router between the client app and the sharded clusters. IT WILL DETERMINE WHICH SHARDS CONTAIN THE DATA RELEVANT TO THE QUERY. 
+	
+	
+	
+--------------------------------------------------NOSQL DB---------------------------------------------------------
+When we need more scalability and performance like millions of transactions per second. but we might compromise consistency.   

@@ -1,0 +1,71 @@
+Start with something as simple as this - users -> load balancer -> service -> database. Talk about the functionalities and problem statement and then gradually add components as needed.
+
+Here's a few very generic examples:-
+Need async communication between services? Add queues.
+Need faster read response times from DB? Think of replicas.
+Need search functionality? Introduce ElasticSearch.
+Need analytics? Push to Amplitude.
+
+
+------------------------------------HOW TO HANDLE CONCURRENCY ISSUES IN TICKET BOOKING SYSTEMS---------------------------------------------------
+CRITICAL SECTION - the PLACE WHERE WE ARE TRYING TO ACCESS THE SHARED RESOURCE IS CALLED A CRITICAL SECTION. 
+
+Same event can come from lot of different clients to book the same seat in a bus/show. 
+
+3 ways to solve this issue ON HIGH LEVEL:
+
+1. DB Transaction - as soon as client request hits the backend - backend can start executing all DB operations as part of a single transaction and this transaction will keep that particular seat in a particular lock - and as soon as its booked will notify or if any of the process fail - it will rollback entire transaction. 
+	ONLY ONE BOOKING IS ACCEPTED FOR AN OVERLAPPING SEAT. 
+	But this model is very slow. 
+
+2. Ordered timestamps like vector clocks - which ensures that requests are processed sequentially. ITS DRAWBACK IS IT WAITS FOR ALL REQUESTS TO COME BEFORE IT CAN START PROCESSING. 
+
+3. Queues - requests are strictly ordered based on their causality meaning all requests coming for same event are sent to same server. All requests of same event are sent to the same server to avoid overbooking of same seat. 
+
+
+-- DB SOLUTIONS ------------------ 
+
+1. Synchronized Block - can be used to handle locking on the shared resource. ONE PROCESS = MULTIPLE THREADS. If there are multiple threads, then synchronized will work. But if multiple process/systems are accessing same resource then this won't work. IF DISTRIBUTED REQUESTS ARE COMING, THEN DIFFERENT PROCESSES WILL COME AND THIS SYNCHRNOIZED WHICH IS ONLY USEFUL WHEN WORKING WITH MULTIPLE THREADS - will fail. 
+
+2. Distributed Concurrency control - OCC - Optimistic concurrency control ; PCC - pessimistic. 
+
+--- TRANSACTIONS - HELPS to achieve integrity. used to avoid inconsistency in DB. 
+
+--- DB Locking - it ensure no other transaction update the locked rows. 
+		2 types of Locks are there - 
+		-- Shared Locks denoted by S - known as read lock. Only read can happen. If a transaction with shared lock is accessing, then another transaction won't be able to access it unless its also with shared lock. Exclusive Lock transaction cannot read it - only shared. 
+		-- Exclusive locks denoted by X known as write lock.  If T1 transaction has exclusive lock on it, t2 transaction with shared or exclusive lock cannot even read or cannot write. 
+
+--- Isolation level presence - How much level of concurrency is allowed. Isolation in transaction is such that each transaction can be run in parallel but they are completely isolated. 
+		-- Isolation levels are divided by what problems it can solve .
+		
+		1. Dirty Read: If transaction t1 is reading data which transaction t2 is writing but not committed. If transaction t2 fails, then its transaction is rolled back and data read by t1 is dirty. 
+		
+		2. NON-REPEATABLE READ - If transaction reads a same row data several times and there's a change that it reads a different value. 
+		3. Phantom read - If a transaction t1 executing same query several times n there's a change that rows returned are different. 
+
+	Isolation Levels - 
+		READ UNCOMMITTED - no read/write lock required. used when only read is to be done. HIGH CONCURRENCY 
+		READ COMMITTED - READ: Shared lock acquired n released as soon as read is done. WRITE: Exclusive lock acquired n keep till end of transaction. It solves dirty read prob. 
+		REPEATABLE READ - SOLVES dirty read and non repeatable read. READ: SHARED LOCK ACQUIRED and RELEASED AT END OF TRANSACTION.  
+								WRITE : EXCLUSIVE Lock acquired and Released only at end of transaction. 
+		SERIALIZABLE - same as repeatable read locking strategy + RANGE LOCK (PUT LOCK ON ALL MULTIPLE ROWS SATIFYING CONDITION ALSO NEARBY ROWS)
+		
+		
+	-----ISOLATION LEVEL CAN BE SET BEFORE BEGINNING OF THE TRANSACTION-----------------------------------
+	
+		SET TRANSACTION ISOLATION LEVEL REPEATABLE READ; // WE DON'T WRITE THIS IT WILL TAKE SOME DEFAULT BASED ON DB. 
+		
+		
+		-- OPTIMISTIC CONCURRENCY LEVEL - it allows us to use read uncommitted / read committed ISOLATION level. Transaction T1 will first read the value and will ALSO MAINTAIN THE VERSION NUMBER FOR EACH ROW. FOR READING, WILL HAVE SHARED LOCK AND THEN FOR WRITE, WILL ADD EXCLUSIVE LOCK. Before updating, it will always do VERSION VALIDATION to check for the same version number IT WAS WHEN READING AT FIRST. When updating, it will increment the version number by 1. It will commit this. and then exclusive lock will be released. 
+		WHILE ANOTHER TRANSACTION - IF BEFORE UPDATING, VERSION NUMBER VALIDATION FAILS, IT WILL ROLLBACK AND TRY AGAIN AND START AT READING.. 
+			THIS CONTROLS EVERYTHING VIA VERSIONING. 
+			- It has higher concurrency. No chance of Deadlock. 
+		
+		-- PESSIMISTIC CONCURRENCY LEVEL - it allows us to use REPEATABLE READ or SERIALIZABLE. DON'T RELEASE THE LOCK ONLY. Shared lock will be possible and will be released till the end of transaction. WHILE UPDATING, WILL PUT AN EXCLUSIVE LOCK and will released at the end of transaction only.  
+			NOTE: EVERYTHING WILL BE IN SEQUENCE ONLY.. NO PARALLEL TRANSACTION FOR SAME ROWS. THIS USECASE CAN CAUSE DEADLOCK - IF T1 WANTS TO WRITE ON SOMETHING WHICH HAS SHARED LOCK BY T2.. THEN IT WILL HAVE TO WAIT TILL IT RELEASES THE LOCK. 
+			- Less concurrency. Chance of deadlock can get transaction to roll back or can have timeout issues if long running transaction is there. 
+			
+			
+
+		

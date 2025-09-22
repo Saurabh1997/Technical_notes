@@ -1,60 +1,417 @@
+JS basics 
+
+---------------STRING AND ARRAY METHODS--------------------------
+-- String are immutable , array is mutable.
+	SHIFT AND POP REMOVES AT BEGINNING AND END WHILE UNSHIFT AND PUSH ADD ONE OR MORE ELEMENTS AT BEGINNING N END. 
+array.push pushes at end of array, pop removes and returns last element, shift() - remove first element 
+unshift - add as first element. 
+
+-- SPLICE(next_INDEX_FROMWHICHTODELETE, NUMOF_ELEM_TODELETE) - TO REMOVE MORE THAN ONE ELEMENT. OR TO REPLACE THE ELEMENTS - PASS ANOTHER ARGUMENT TO REPLACE. it changes original array.
+SPLICE(next_INDEX_FROMWHICHTODELETE, NUMOF_ELEM_TODELETE, NUM_TO_ADD)
+
+-- SLICE(INDEX_TOEXTRACT,index_OF_ELEM_TO_stop) - RATHER THAN MODIFY, IT SLICES/EXTRACTS/COPIES A GIVEN NUMBER OF ELEMENTS TO A NEW ARRAY
+
+-- delete obj.prop - to delete a property
+
+myObj.hasOwnProperty("top");    to check if myObj object has a property top	
+can also use 'propname' in objname
+	obj['id'] - to access property id of obj.  
+    object[id][prop] = value where object , id , prop are dynamic
+
+Math.floor(Math.random() * highest no) - to get random no upto that number
+Math.floor(Math.random() * (max - min +1) * min ) - to get random no in a range
+
+contacts[i][prop]- to access ith contacts with prop property or nested object contacts.id.prop dynamically
+parseInt(number, radix) - radix is the base of number from 2 to 36 - to convert from binary. radix - 2
+
+-- const variable name should be in caps. CAN REASSIGN CONST VARIABLE. 
+
+-- Objects, array, functions created using const are still mutable. Properties and elements can be modified. const just prevents the reassignment.
+
+-- Object.freeze() to prevent object mutation. provides highest level of immutability. prevents modifying, adding, deleting properties. 
+				IT WILL ONLY FREEZE TOP LEVEL PROPERTIES and not NESTED PROPERTIES. 
+-- Object.seal() prevents adding/deleting properties but allows modifying of existing properties. 
+
+--------------------REST VS SPREAD OPERATION--------------------------------------------------
+-- REST parameter - allows function to accept n number of arguments in an array .collecting elements into array
+function sum(...args) = called as rest parameter to accept any number of arguments. where number of args will go into args array.
+then we can use filter(), reduce() and map() to interact with args array. 
+can also be used to destructuring Array and Objects. 
+allows function to accept n number of arguments in an array .collecting elements into array
+function sum(...args) = called as rest parameter to accept any number of arguments. where number of args will go into args array.
+then we can use filter(), reduce() and map() to interact with args array. 
+can also be used to destructuring Array and Objects. 
+
+	const [first, ...rest] = [1,2,3,4,5,6]
+	console.log(first) // [1] // console.log(rest)  // [2,3,4,5,6] 
+	
+	const {a , ...rest} = {a:1, b: 2, c: 6}
+	console.log(a) // 1 // console.log(rest) // {b:2, c: 6}
+
+-- SPREAD operator - expand the array or object into individual elements. unpacks the items into single element of an array, 
+for e.g, const name = [a,b,c]    and then const combined = [z,y,...name] // will spread the elements of name into combined. 
+	console.log(combined) // [z,y,a,b,c]
+ convert a string to array items [...string_variablename]
+ 
+	---- can be used for merging arrays, combining objects and cloning arrays. 
+			-- changes to cloned won't affect original. 
+	const merged = [...a, ...b] ||  const combined = { ...a, ...b} || const cloned = [...array1]
+		
+in ES5, Math.max.apply(null, arr) to return max value in array. 
+as Math.max() expects Comma seperated args. 
+so using Math.max(...arr) - spread operator it spreads the array.
+it only works in argument to a function, or in an array literal.
+for e.g, 
+arr2 = [...arr1]  // to copy the array to another.
+
+--------Destructuring----------------------- 
+const { name: userName, age: userAge } = user;
+// to assign new variable names while destructuring. assign name to userName variable.	
+
+Nested Destructuring + assign new variable names 
+
+const { johnDoe: { age: userAge, email: userEmail }} = user; // user.johnDoe.age & user.johnDoe.email
+
+Array destructuring - 
+
+to get value of particular indexes in array, we can use commas. 
+const [a, b,,, c] = [1, 2, 3, 4, 5, 6];
+console.log(a, b, c); // 1, 2, 5  - 3 commas after b is 3rd index after b. 
+
+array destructuring to swap 2 variables - [a,b] = [b,a]
+[a,b, ...arr] = to perform array destructuring as well as rest parameter
+
+Template literal :  ${person.name}!
+
+can directly write functions to return objects without writing return keyword.
+const getMousePosition = (x, y) => ({ x, y }); // will return x,y object
+
+can directly write function inside object literal
+const bicycle = {
+  gear: 2,
+  setGear(newGear) {
+    this.gear = newGear;
+  }
+};
+
+-------------------------------------------ARROW FUNCTION--------------------------------------------------------
+ARROW function - don't have argument binding, syntax easy. don't have access to their own "this", unlike normal functions. they have access to this of the class.
+ note: arrow function - this gets value from surrounding which is like out of the scope of the object. 
+whereas in normal function - this gets value from this parent class. 
+
+which is calling this function.  
+	arrow functions are only callable and not constructable (cannot be called with new keyword).
+	
+	let arr = {
+	name: "Saurabh",
+	getName: () => { 
+		console.log(" s", this.name)
+	}
+	}
+	
+	arr.getName()			// THIS WILL OUTPUT - s undefined
+		
+	let obj = {
+    name: "Saurabh",
+    getName() {
+       const alert = () => console.log(`Hello ${this.name}`) 
+    alert()
+    }
+	}
+		// this will output - HELLO SAURABH // AS FOR THIS ARROW FUNCTION, IT WILL INHERIT value of "name" from parent object. OUTER CONTEXT IS THE THIS CONTEXT OF obj. 
+
+NOTE FOR ARROW FUNCTION: if the function has only 1 statement & it returns a value, we don't need to mention keyword "return". it will be const hello = (name) => "Hello "+ name
+NOTE: ARROW FUNC DOESN'T HAVE BIND TO "THIS" reference - means own object.  THIS REPRESENTS THE OBJECT OWNING THE FUNCTION. 
+WHEREAS IN NORMAL FUNC, THIS REPRESENTS THE OBJECT CALLING THE FUNCTION. 
+
+NOTE: THEY inherit THIS from the scope in which they are defined. NOT FROM FROM HOW THEY ARE CALLED (EVEN IF WE USE .CALL, .APPLY, .BIND
+ 
+---------------------DIFFERENCE BETWEEN NORMAL AND ARROW------------------------------
+1. normal var FUNCTION IS HOISTED. ARROW FUNCTIONS ARE NOT HOISTED. 
+
+In JS , class syntax is just syntax, and not a full-fledged class-based implementation of an object-oriented paradigm, unlike in languages such as Java, Python, Ruby, etc.
+to create objects .
+	we can also use getter and setter in class 
+	get functionname(){}
+	set functionname(variable name){}
+
+NOTE:  It is convention to precede the name of a private variable with an underscore (_). However, the practice itself does not make a variable private.
+
+----------------------BEHAVIOR OF NORMAL AND ARROW FUNCTION IN CLASS - RELATED TO THIS CONTEXT----------------------------------------
+NOTE: IF NORMAL FUNCTION IS INSIDE A CLASS, IT WILL ENABLE STRICT MODE AND THAT FUNCTION WON'T HAVE ACCESS TO CLASS'S THIS CONTEXT. TO BIND THAT FUNCTION TO CLASS THIS CONTEXT, 
+		IN CONSTRUCTOR WE WILL DO this.functionName = this.functionName.bind(this)
+	OR ELSE WE CAN DIRECTLY USE ARROW FUNCTION AND IT WILL DIRECTLY BIND TO OUTER THIS CONTEXT OF CLASS. 
+
+-------------------------------------------------------------------
+<script type="module" src="index.js"></script>
+
+to export two function , directly write export {uppercaseString, lowercaseString} at the end.
+
+require statement is commonJS module. import is ES2015 module system. 
+new import statement 
+import * as stringFunctions from "./string_functions.js"
+
+for multiple named exports , export {}
+for single export, go for export default.
+
+can also do multiple export default { functions seperated by commas} then to use file.function
+to import export default we don't destructuring. 
+
+--------------------------promises-----------------------------------------
+Promise is an object representing eventual completion or failure of an asynchronous operation. use new to create one. takes a function with 2 args - resolve n reject.  
+to define promise , 
+var something = new Promise((resolve, reject)=> {
+if(success){
+resolve("pass message for success")}
+else {
+reject("pass message for failure")
+}
+})
+
+now to use this promise based logging and handle a fulfilled promise we use then 
+something.then(result => {}).catch(error => {})
+in result and error parameter we get response from the resolve and reject objects.
+
+3 states - pending, fulfilled n rejected. 
+
+---------------------------------------------------------------------REGEX----------------------------------------------------------------------
+REGEX
+ 	multiple ways to do it - 
+patterntofind.test(/String_from_which_to_find/) - returns boolean.
+ 
+to find multple string - test(/string1|string2/) - () 
+to ignore upper/lower case use a flag i after / = test(/string/i)
+to find more than one pattern, use flag "g"
+. is wildcard to match anyone character after/before a string
+[] can match single character with multiple possibilities. also called as character class.
+   for e.g - /b[aiu]g/ - will match with either a/i/u
+/.un/ - will match sun, run, mun 
+ - to define a range of alphabets. for e.g, [a-e] or [a-z0-9]
+^ - to negate or exclude - [^aeiou] negate the chars a,e,i,o,u / ALSO USED TO SEARCH PATTERN AT THE BEGINNING OF THE STRING. - /^story/
++  - match character that occur one or more times. e.g -    /a+/ will also give "aa" and "a"
+*  - match character for 0 or more times. e.g  - go*   will look for 0 or more of o
+$ - to match ending string. e.g /story$/ 
+
+	.*  to match in between characters
+
+ shorthand character classes - \w (alphanumeric)     is equal to /[a-zA-z0-9_]/    (for no alphanumeric)  \W - is for opposite equal to   /[^a-zA-Z0-9_]/
+				\d is for digits     for non numbers , \D 
+
+match() in regex - use to find all actual matches & return in an array
+	Stringfromwhichmatch_is_tobefound.match(/Patterntofind/)    // syntax opp to test()
+	stringfromwhichtofound.match(/String/gi) = can find multiple patterns n return array
+regex are by default GREEDY, SO THEY FIND LARGEST SUB-STRING POSSIBLE TO FIT THE PATTERN. for e.g /t[a-z]*i/ would return "titani" largest sub
+so add ? to change it to LAZY MATCHING (to find smallest sub string).  e.g /t[a-z]*?i/ would return only "ti"
+Also, ? to check for all or none. 0 or all for the preceding element(before questions). 
+	colou?r will match color as well as colour.
+
+/s is for white spaces. /S for non white spaces
+
+{ } quantity specifiers - 2 numbers in it to specify lower n upper range for the pattern to repeat.
+		a{3,5} - a appearing between 3 and 5 times. can also specify lower range only a{3,}
+	a{3} - to specify directly a range.
+
+Lookaheads - patterns to lookahead in the string. 2 types - positive lookahead/ negative lookahead.
++ve will make sure that the element in pattern is there, but wont match it. (?=...) ... not to be matched.
+-ve will make sure that element in pattern is not there. (?!...)  ... we don't want it there.
+capture groups - search for repeat substrings. to specify where repeat string will occur \number
+\1 - match the first capture group.  \2 matches second capture group
+-- .replace(regexpattern, "stringto replace with") or can also give $2 $1 to access capture group and reverse them
+-- .trim() - remove whitespace from start to end 
+
+------------------------------------------------------------DEEP COPY AND SHALLOW COPY--------------------------------------------------------------------
+Difference between Deep Copy and Shallow Copy :
+
+Deep copy is values are copied & disconnected from the original variable, while shallow copy is certain values are still connected to the original variable.
+ -  primitive data type like string , boolean number. if we make its copy, it'll be diconnected with its original variable. 
+ COMPOSITE DATA TYPE - Objects and Array - assigning a variable just creates a pointer to that value( for object).
+				For e.g - const a = { name:saurabh, surname: patil }  ;  b=a 
+						and b.name = sachin will also change a.name as sachin
+		This is called shallow copy. connected to original variable.
+	TO MAKE A DEEP COPY, use spread operator , let a = {..b}. to merge 2 objects - c = {..a,..b}
+before spread operator, there was let b = Object.assign({}, objname)
+
+	For nested objects, a.food.name , if you write let b = {...a}, and then reassign b.food.name to other value, it will again make a shallow copy.
+TO MAKE DEEP COPY, let b = { food: {...a.food}} or const b = {...a, food: {...a.food}}
+
+	OR ANOTHER WAY IS STRINGIFY AND THEN PARSE IT. FOR E.G, const b = JSON.parse(stringify(a))
+
+IN CASE OF ARRAYS :  we can do const arr = [...arr1] . can also merge 2 arrys using ...	
+	or const a = arrayname.map(el => el).
+FOR NESTED ARRAYS, USE STRINGIFY, THEN PARSE FOR DEEP COPY. 
+
+-------------------------------------------	DATA TYPES---------------------------------------
+JS has 2 types of data types - primitives and non primitives -
+PRIMITIVES are immutable and they contain - number, boolean, string, Null, undefined, Symbol and BigINT.  PRIMITIVES STORE ACTUAL VALUES SO MODIFICATION ISN'T POSSIBLE FOR CONST. 
+	bigint - number which is greater than (2 ^ 53) - 1
+	SYMBOLS - ARE USED TO ADD unique property to an object that won't collide with keys. 
+			
+Non PRIMITIVEs are mutable and they contain - arrays, objects and functions. NON PRIMITIVES STORE REFERENCE ADDING, MODIFICATION IS POSSIBLE FOR CONST NON PRIMITIVE. 
+
+indexOf != -1 means element doesn't exist. 
+
+--- for in loop for iterating through keys of objects
+		for(let user in objname) {  if(objname.hasOwnProperty(user)) { objname[user] } }
+
+--- for of loop for iterating :
+		for(let key of Object.keys(objname)) { console.log( key , objname[key] )} 	// Object.keys(objname) - will return array of keys.
+
+---	entries :  Object.entries(objname) // returns array of key-value
+		for(let [key, value] of Object.entries(objname)) { console.log( key, value) } // returns key , value
+	
+TO ACCESS PROP VALUE IN FOR..IN LOOP, objname[users].propname
+
+Object.keys(obj) - to make an array of Object keys 
+
+-----------------------------COERCION-------------------------------------------------
+automatic coercing (conversion) implicit conversion of one data type to another. 
+2 types of coercing - IMPLICIT AND EXPLICIT COERCION. 
+
+Implicit - when JS converts one value to another without explicit instructions from the developer. 
+			EXAMPLE - string concatenation - console.log("Hello " + 123) // HERE 123 WILL BE CONVERTED TO STRING. 
+			console.log(5 == "5") // OUTPUTS TRUE AS ITS LOOSE EQUALITY - string 5 will be converted to number 5. 
+			
+			Boolean contexts 
+				if(0) {} 		// this will be false and will be coerced to  false boolean
+				if("hello") {} // this will be true. 
+
+Explicit - Number() // - converts one value to another. 
+---------------------------------CONVERTING CIRCULAR STRUCTURE INTO JSON ERROR----------------------------------------
+	const c = { a: 1, b: 2}
+	c.a = c  // THIS MODIFY c to be c = { a: c = { a: 1, b: 2}, b: 2} and WILL CREATE OBJECT WITH CIRCULAR REFERENCE. 
+	let str = JSON.stringify(c) // when JSON.stringify tries to serialize the object, it encounters the circular reference n enters an infinite loop. 
+			
+		// TO RESOLVE THIS, 
+		
+-----------------------------------------------ASI - AUTOMATIC SEMICOLON INSERTION--------------------------------------------
+FEATURE OF js Parser to automatically insert semicolon at the end of the statements. 
+	STATEMENTS THAT ARE affected by the ASI are - return statement, empty statements, var statements, do while, continue, break, throw. 
+	
+		FOR EXAMPLE - 
+						return 
+								{}
+				will be converted to return; 
+										{};
+			so if we leave a line after return it might return nothing. 								
+											
+------------------------Object.assign(target, ...source)-------------------------------------------------------
+	static method used to copy all properties one source object to another target object. or can create a new object by copying all properties of a target object. 
+	it creates a shallow copy. 
+
+------------------------MAPS------------------------------------------------------------
+Maps are just like key-value object. 
+
+--- MAPS VS OBJECTS ---
+	- Maps provide better performance for frequent addition n deletion. for read heavy ops on string based key, Objects are better. 
+	- Maps supports any key data type.. whereas objects supports only strings and symbols. for other types like numbers, it converts to string. 
+	- maintains order of insertion for keys. Object doesn't maintain. (in terms of objects - order may vary across different JS engines)
+	
+	- ALL KEYS ARE STRINGS( OR SYMBOLS) IN A PLAIN JS OBJECT. IF WE USE OBJECT AS A KEY IN PLAIN JS OBJECT, JS COERCES THAT KEY FOR A STRING. 
+			AND STRING(any object) =gives=> [Object Object]
+	
+		EXAMPLE : 
+			const a = {}
+			const b = { key: 'b'}
+			const c = { key: 'c'}
+			
+			a[b] = 100
+			a[c] = 200 
+			
+			NOW IF WE PRINT a, it will become  { [Object Object] : 200} 
+		
+----------------------------------------------------------------------------------------------------------------------------------				
+array.sort(function) - if we don't implement this function, then by default elements are converted to string and sorted ascendingly according to each char's unicode value.. if a-b >0 which a is greater than b, sort b before a. for ascending a-b and for descending b - a
+
+static class methods are called on class. cannot call static method on an object, only on object class.
+
+TREE SHAKING - term used to remove dead code. we usually use webpack to automatically remove dead code. 
+
+Optional chaining operator - ?. --- to check value of property if exists for that object. it check if the property exists, if it doesn't it doesn't give error
+of undefined, it prints undefined. 
+
 ECMASCRIPT - scripting language specification on which js is based. Defines rules for the JS. 
 JS is the actual language conforming to the ECMASCRIPT specification. 
 BUN HAS A FASTER RUNTIME THAN NODEJS. WRITTEN IN ZIG.
 
-call() vs bind() vs apply() --
+This - represents the context in which a function is called. 
+call() vs bind() vs apply() -- this are used to manipulate the this context of a function and pass arguments to it. 
 
-call - calls function with a this value and arguments provided individually. used to call a function of one object on another object. 
+------------------------call------------------------------------------this context and then arguments seperated by commas
+call - calls function with a this value and arguments provided individually. used to call a function of one object on another object. Call is a direct assistant and we directly supply who's in charge (which this context) and what are the parameters it needs to use.
 
+----------example---------------
+const car = { model : 'altroz', make : 'Tata'}
+
+const showroom = {model: 'BE6', make : 'Mahindra', makeEngine() {  console.log(`${this.model} and ${this.make}`)  }}
+
+showroom.makeEngine.call(car) 	// will print altroz and Tata. can also pass arguments (car, make, model). 
+showroom.makeEngine.call() // will pring the default values. 
+
+----real world scenario-----------
+	if we have a error logging function, and if anything is not passed to that particular error logging function, it should have its own default value. in this scenario, we can use call function.   and just pass in the values/context we need error logging to have, if there's no value, it will take its default value. 
+ 
+---------------------------apply-------------------------------------------this context and then arguments in 1 single array as second argument. 
 apply - calls function with a this value & arguments provided as an array. 
+	
+	let nameObj = {name: "Toby"}
+	let PrintName = {name: "Steve", sayHi: function (...details) { console.log(`${name} and data is ${details}`)}}
 
-bind - creates a new function ,that when called, has its "this" set to the provided value with a given sequence of arguments preceding any provided when the new function is called. 
+	PrintName.apply(nameObj, [42, 31, 67]) // it will print 42, 41, 67. 
+
+---------------------------bind----------------------can provide this value alongwith sequence of arguments but it create a new function---------------------
+bind - creates a new function, it has to be called - has its "this" set to the provided value with a given sequence of arguments preceding any provided when the new function is called. WE WILL HAVE TO ACTUALLY CALL THE FUNCTION HERE. 
 
 for example, 
-function log(...args){
-console.log(this, ...args)
+function calculateArea(height, width){
+console.log(height * width)
 }
 
-const boundLog = log.bind("this value", 2,3 )
-boundLog(4,5)  /// "this value", 2,3,4,5
+const calArea = calculateArea.bind(null, 2) // first null with be this context so we 
+calArea(4,5)  /// "this value", 2,3,4,5
 
-Immediately Invoked Function Expressions (IIFE) -- 
+------------------------------------------------------Immediately Invoked Function Expressions (IIFE) -- 
 (function (){ 
 // Function Logic Here. 
 })();
 
+-------------------------------------ARCHITECTURE OF JS-------------------------------------------------------------
 JS IS SINGLE THREADED SYNCHRONOUS LANGUAGE. 
-JS is interpreted language. runs code line by line unlike compiled language which compiles the code all at once. 
 JS is single threaded so it uses one core at a time. hences its bad for SCALABLE SYSTEMS. 
 for scalable, we can use java, C++, golang. 
-Javascript runtime environment - container required to run js code. 
+Javascript runtime environment - container required to run js code. runtime environment, platform that has all tools & libraries to execute JS code. 
 JS can run anywhere and on any devices. 
 setTimeout of browsers can be different as compared to the one in Nodejs. 
 ECMASCRIPT - governing body for js standards. 
-JS engine, set of APIs to connect with outer env. event Loop in JRE.. callback queue and microtask queue   --- all this in JRE. 
-JS engine is not a machine. 
 
-if there's a long loop running, thread will be blocked for the loop.. even if the setTimeout timer is over.. and the pending callback will have to wait until the thread is free. 
+------------ INTERPRETION AND COMPILATION OF JS-------------------------------------------------------------
+JS is interpreted language. runs code line by line unlike compiled language which compiles the code all at once. 
+modern JS engine uses both mix of compilation and interpretation known as "JUST IN TIME" COMPILATION. Source code gets compiled into machine code and executed jjust after compilation ends.  
+	
+-------How JIT works for javascript--------------------------
+	1. Parsing - Code is first syntax parsed into data structure - AST - abstract syntax tree - where its split into pieces that are meaningful to the language and are stored into a tree in a structured manner. code is broken down into tokens. this also checks if there are any syntax errors. THE RESULTING TREE WILL GENERATE THE MACHINE CODE. 
+	
+	2. compilation - JS Engine takes the AST and compiles it into machine code. JIT (just in time compilation) - it uses both interpreter alongwith a compiler. 
+		Interpreter - executes code line by line. this is faster. 
+		compilation - code is compiled before execution. code is compiled into optimized version and it is executed. THIS IS MORE EFFICIENT. 
+		JS can be interpreted or compiled based on JS engine. 
+		in some JS engines, there is something called as AOT - AHEAD OF TIME COMPILATION. 
+	3. Execution - memory heap - function and variables are stored and call stack is there to execute the AST. its in sync with garbage collection too. 
 
-setTimeout is an async function. because as soon as JS gets the timer, it starts the timer and switches to another task. 
-setTimeout is a web api.. means its made available by browser and not from JS. 
+Depending upon where JS is running, they are additional different env specific features in the JRE. for e.g, IN browser - DOM events.
 
-Asynchronous functions are better handled by callbacks. can do simple tasks by callbacks but are not beneficial. Promises are syntactic way to handle asynchronous functions. can make our own asynchronous function by using promises. 
-
+----core components of JRE------------------------------------
+	-- JS engine - heart of runtime - responsible for interpreting and running JS code. JS engine contains call stack & heap. 
+		Call stack is where our execution context is , where our code gets executed. 
+		Heap - unstructured memory pool where objects gets stored. 
+	-- Web APIs - this APIs extends JS capabilities to interact with certain environments - DOM manipulation in browser, XMLHTTPRequest (http request capability), timers, file system access in nodejs. WEB APIs are functionalities which are not part of JS language. JS gets this web APIs through windows object. 
+	-- Callback queue - Asynchronous operations are handled in callback queue. Asynchronous operations such as handling network operations, handling user inputs, event listener functions uses callbacks which are kept in callback queue. Set timeout APIs. 
+	-- Event loop 
+	-- Microtask queues -- has higher priority. Promise handling always gets the higher priority. gets callback functions coming through promises. for example - fetch api call. 
+	
 EVENT LOOP - 
 JS is synchronous single-threaded language. it has CALL STACK which can do one thing at a time. CALL STACK PRESENT IN JS ENGINE. 
 it continuously monitors call stack and callback queue. 
-JS engine - heart of JRE.
 
-Inside JS engine, code - parsing then compilation and then execution. 
-1. In Parsing - code is broken down into tokens. also there is syntax parser..which breaks code into AST - abstract syntax tree. 
-2. Compilation - JIT (just in time compilation) - it uses both interpreter alongwith a compiler. 
-		Interpreter - executes code line by line. this is faster. 
-		compilation - code is compiled before execution. code is compiled into optimized version and it is executed. THIS IS MORE EFFICIENT. 
-	JS can be interpreted or compiled based on JS engine. 
-AST goes to interpreter. Interpreter converts high level to byte code and moves it to execution step using compilation...to optimize the code. can happen in multiple phases. 
-	in some JS engines, there is something called as AOT - AHEAD OF TIME COMPILATION. 
-3. Execution - memory heap - function and variables are stored and call stack is there to execute the AST. its in sync with garbage collection too. 
 GARBAGE COLLECTOR - TO SWEEP garbage using mark and sweep algorithm. 
 
 Optimizations done by Compiler - Inlining, Copy elision, Inline caching. 
@@ -78,23 +435,193 @@ EVENT LOOP is responsible as a gatekeeper to check callback queue if we have som
 EVENT LOOP WILL FIRST TAKE MICROTASK QUEUE (FETCH CALL) INSIDE CALL STACK TO EXECUTE ITS CALLBACK AND then it will take the task from callback queue into call stack to execute. 
 
 STARVATION OF CALLBACK QUEUE : if callback functions in microtasks creates more tasks and those tasks create more, then callback queue will starve for execution.. 
+	
+	setTimeout(() => {
+  console.log('setTimeout 1');
+}, 0);
+ 
+Promise.resolve().then(() => {
+  console.log('promise 1');
+  setTimeout(() => {
+    console.log('setTimeout 2');
+  }, 0);
+});
+ 
+Promise.resolve().then(() => {
+  console.log('promise 2');
+});
+ 
+console.log('sync');
 
-CLOSURES - function along with its lexical scope is known as closure. combination of function bundled together with reference to its surrounding state. when inner function is returned, they still maintain their lexical scope irrespective of when its used outside as a reference to outer variable. FUNCTION ALONGWITH ITS LEXICAL SCOPE STATES IS RETURNED... THAT IS CLOSURE.  
+/// phase 1 -  setTimeout will begin. scheduled. Promise 1 will be scheduled ( go into microtask queue). Promise 2 will be scheduled (get into microtask queue).
+				sync will be printed. 
 
-HOISTING - not defined and undefined is different. not defined is we haven't declared. 
-hoisting - we can access variables and functions even before initializing those variables. 
+// phase 2 - microtasks - preference will be given to microtask queue.  
+			Promise 1    - settimeout is scheduled to print - goes into callback queue. 
+			Promise 2. 
+// phase 3 - callback queue - setTimeout 1  printed
+							setTImeout 2 printed. 
+
+
+--------------------------------------------------------	
+if there's a long loop running, thread will be blocked for the loop.. even if the setTimeout timer is over.. and the pending callback will have to wait until the thread is free. 
+
+setTimeout is an async function. because as soon as JS gets the timer, it starts the timer and switches to another task. 
+setTimeout is a web api.. means its made available by browser and not from JS. 
+
+Asynchronous functions are better handled by callbacks. can do simple tasks by callbacks but are not beneficial. Promises are syntactic way to handle asynchronous functions. can make our own asynchronous function by using promises. 
+
+--------------------------UNDECLARED VARIABLES IN JS-------------------------------------------------------------
+undeclared variables (created without let, var, const) are always global, even if they are created in inside function. 
+	function myFunction() {
+  a = 4;
+}
+
+---------------------------------------CLOSURE------------------------------------
+CLOSURES - function along with its lexical scope is known as closure. Closure is a combination of function bundled together with reference to its surrounding state. when inner function is returned, they still maintain their lexical scope irrespective of when its used outside as a reference to outer variable. FUNCTION ALONGWITH ITS LEXICAL SCOPE STATES IS RETURNED... THAT IS CLOSURE.  
+
+	-- Closures gives a function access to its outer scope. In JS, closures are created everytime a new function is called.  
+
+    function createCounter() {
+      let count = 0;
+      return function() {
+        count++;
+        return count;
+      };
+    }
+    const counter1 = createCounter();
+    console.log(counter1()); // Output: 1
+    console.log(counter1()); // Output: 2
+    const counter2 = createCounter();
+    console.log(counter2()); // Output: 1	
+	
+	- CLosure is used to make private variables.
+	- It is used to preserve states between function calls. for a single function, if assigned a different variable for same function call, it will maintain seperate state for that function call. 
+	- Implement currying & memoization. 
+	
+	WHY WE RETURN THE FUNCTION - BY RETURNING THE FUNCTION, WE ARE ACTUALLY packaging the inner function alongwith its surrounding. this allows inner function to remember and access the surrounding state even after outer function has finished executing. 
+	
+------------------------------------LET, CONST AND VAR in scopes-------------------------------------
+let and const have BLOCK LEVEL SCOPE. whereas var has FUNCTION LEVEL scope. 
+	example	
+	for (var i = 0; i < 3; i++) {
+		setTimeout(() => console.log(i), 100);
+		}
+	THIS WILL PRINT 3..as var is having function level and this for loop is not in a function so is in a global scope. SO THE VALUE OF i IS SHARED ACROSS ALL ITERATIONS. NOTE: ALSO IF WE PRINT i outside the for loop, it will give 3. 
+
+	for (let i = 0; i < 3; i++) {
+		setTimeout(() => console.log(i), 100);
+		}	
+	THIS WILL PRINT 0,1,2 AS LET IS A BLOCK LEVEL SCOPE. AND EACH ITERATION BLOCK HAS NEW BINDING OF i. Each setTImeout has a different copy of i. 
+	NOTE: IF WE CONSOLE.LOG OUTSIDE OF THE FOR LOOP, IT WILL OUTPUT reference error as i is not defined. its available inside the block scope. 
+		
+
+---------------------------------------HOISTING--------------------------------------------------
+HOISTING - HOISTING IS JAVASCRIPT'S default behavior to move the declaration to the top. THIS ALLOWS US TO USE functions and variables even before declaring 
+			ONLY DECLARATIONS ARE MOVED TO THE TOP OF THEIR RESPECTIVE SCOPES AND NOT INITIALIZATIONS/ASSIGNMENTS during COMPILATION PROCESS. 
+			-- not defined and undefined is different. not defined is we haven't declared. 
+
 NOTE: even before starting execution of code, javascript create memory allocation for all the properties in the code.  in case of variable memory allocation, it is declared and assigned undefined value but in case of function, whole code is put into assigning. 
 For arrow function, it behaves like a variable... so undefined value is assigned. 
 
-IN NORMAL FUNCTIONS AND NORMAL VAR VARIABLES, IF WE USE IT BEFORE DECLARATION, THEN THEY ARE INITIALIZED TO THE TOP OF THEIR CONTAINING SCOPE. this is called hoisting. 
-WHEREAS IN ARROW FUNCTIONS AND LET/CONST VARIABLES, if we use it before declaration then they are not hoisted to the top. they cause Reference Error. 
+console.log(x)  // accessing x - undefined and its directly initialized here below so it won't be hoisted to the top. 
+var x = 5; // Initialize x INITIALIZATIONS ARE NOT HOISTED TO THE TOP. ONLY DECLARATIONS. 
+
+---------var---------hoisting-----------
+	Variables declared with var are hoisted and initialized with undefined value BY DEFAULT. 
+	
+	1st case : 
+		z = 100
+		console.log(z)	// 100 
+		var z
+	
+	2nd case : JS BROWSER BEHAVIOR. 
+		console.log(z);  /// HERE DECLARATION WILL BE HOISTED TO THE TOP - AND SINCE Z = 100 WAS WRITTED BEFORE DECLARATION - THIS WILL OUTPUT 100.
+			z = 100;			
+			var z;
+
+	3RD CASE (EXCEPTIONAL): AS ITS IN FUNCTION SCOPE AND Z IS VAR AND FUNCTION SCOPED. 
+	
+		(function() {
+		  console.log(z);		// THIS WILL OUTPUT UNDEFINED HERE.. BECAUSE 
+		  z = 100;
+		  var z;
+		})();
+		
+		
+	4th CASE : 	
+		
+		var x = 10
+		function foo() {
+			console.log(x)
+			var x = 20
+			console.log(x)
+		}
+
+		foo()
+		console.log(x)		
+
+	output : foo() - global x is another thing. var x is hoisted with undefined value. and after var x= 20, it would be 20. 
+		undefined 
+		20 
+	outside foo(), console.log(x)	 // 10.  as the var x = 20 is inside the function. 
+		
+-------------VARIABLE IF NOT DECLARED AND DIRECTLY ASSIGNED VALUE WILL BE A GLOBAL OBJECT VARIABLE-------------------
+	note: IF WE DON'T DECLARE IT AND DIRECTLY ASSIGN A VALUE.. WITHOUT MENTIONING ANY KEYWORD, IT WILL CONSIDER THAT VALUE ONLY. 		
+		for example - z = 100 
+						console.log(z)  // will return 100 only.. THIS WILL BE CONSIDERED AS attaching value of z to global obj - window. 
+			If we enable strict mode here, it will give referenceError. z is not defined. 
+	
+-------------------HOISTING---in terms of let and const--------------------
+let and const are hoisted to the top of the block but not INITIALIZED. THEY REMAIN IN THE TEMPORAL DEAD ZONE UNTIL THEIR DECLARATION IS REACHED.
+	accessing LET before declaration : let it will cause a ReferenceError.
+	const will cause a syntax error.
+	for example: 			
+						j = 87
+						console.log(j)
+						let j
+			---------------------------------------THIS WILL GIVE REFERENCE ERROR: CANNOT ACCESS J BEFORE INITIALIZATION. 
+							
+						PI = 3.56
+						console.log(PI)
+						const PI 
+			---------------------------------------UNCAUGHT SYNTAXERROR: MISSING INITIALIZER. 
+			
+-----Functional hoisting-----
+		IN NORMAL FUNCTIONS AND NORMAL VAR VARIABLES, IF WE USE IT BEFORE DECLARATION, THEN THEY ARE INITIALIZED TO THE TOP OF THEIR CONTAINING SCOPE. this is called hoisting. 
+		IN ARROW FUNCTIONS AND LET/CONST FUNCTIONS, if we use it before declaration then they are not hoisted to the top. they cause Reference Error. 
+		
+		FUNCTIONS DECLARED USING FUNCTION KEYWORD WILL HAVE ITS DECLARATION HOISTED TO THE TOP... WE CAN CALL THEM BEFORE THEIR DECLARATION. BUT IF WE DEFINED USING VAR/LET IT WILL BEHAVE LIKE IN CASE OF VAR/LET. 
+		
+		example : var getData = function () {} // THIS WILL ALSO BEHAVE AS VAR HOISTING. 
+		NOTE: IN JS PARSING, FUNCTIONS ARE GIVEN PRIORITY TO GET HOISTED FIRST AND THEN ITS GIVEN SCOPE BEFORE VARIABLE. 
+		
+		
+------CLASS DECLARATIONS ARE NOT HOISTED-----IF WE INSTANTIATE BEFORE DECLARING, IT WILL GIVE REFERENCE ERROR. 
+
+-------------------------------------------------------VAR VS LET/CONST-----------------------------------------------------------------
+let magic = 8 
+let magic = 19 // 	THIS WILL THROW : SYNTAX ERROR AS Identifier magic has already been declared. 
+
+var magic = 8 
+var magic = 19 	// IN CASE OF VAR, IT WILL BE ALLOWED and THE VALUE WILL BE OVERRIDED. 
+
+
+----------------------------------------------------IMPORT DECLARATIONS HOISTING---------------------------------------------------------------------------
+Import declarations are hoisted to the top of the code. 
 
 two types of export and import -
 1. Named export - can export multiple things from same file and import multiple things from same file. import {} from ""
 2. Default export/import - only one per file.. import -- from --
 
-DIFFERENCE BETWEEN DEBOUNCING AND THROTTLING - 
+-------------------------------------------------------STRICT MODE IN JS-------------------------------------------------------------------
+defines that code should be executed in strict mode. With strict mode, we cannot use undeclared variable. IT HELPS US WRITE CLEAN CODE. 
+- LIKE IT WILL THROW ERROR IF WE USE DUPLICATE VARIABLE NAMES. 
+- directly initializing a variable without var/let/const will throw error. 
+- Deleting a variable/object/function is not allowed. 
+-- IT IMPROVES CODE SECURITY BY PREVENTING UNSAFE ACTIONS AND IMPROVING PERFORMANCE OPTIMIZATION. 
 
+------------------------------DIFFERENCE BETWEEN DEBOUNCING AND THROTTLING-------------------- 
 THROTTLING -  DELAY EXECUTING THE FUNCTION. will reduce notification that fires multiple times... IF WE WANT TO RESTRICT THE BEHAVIOR.  TO CALL FUNCTIONS AT REGULAR INTERVALS..
 
 DEBOUNCING - IT WILL MAKE CALLS AT THE END OF A BUNCH OF EVENTS. FOR EXAMPLE.. AT THE END OF TWO KEYSTROKES, API CALLS...  
@@ -187,3 +714,266 @@ use node-heapdump to generate heap dumps and analyze them with chrome devtools.
 ------------------Promise Chaining--------------------------------
 
 used to handle sequence of asynchronous functions in a  more readable way. When a then callback function returns another promise to handle the result of that function we need to chain another .then() to handle the result. this create a asynchronous operation.  
+
+
+http status codes : 
+200: ok status
+201: created
+404: not found
+
+diff between put and patch: 
+put - replaces the entire object (with updated)
+patch - only edits the properties that are updated.
+
+callback - calling a function inside a function.
+
+call_one(callback){
+console.log("calling function two")
+callback()
+}
+call_two(){
+console.log('two')
+}
+call_one(call_two)
+
+Promise represents eventual completion or failure of an asynchronous task. object returns two resolve and reject.
+promise constructor takes an executor function that will be executed and passes in two functions, resolve, to be called when promise is resolved and reject when error.
+
+const readFilepro = file => {
+return new Promise((resolve,reject) => func call if err then reject('')  if successs then resolve(data))
+}
+
+now to use this. call that function
+readFilepro(file).then(result => {})
+.catch(err => console.log(err.message))
+
+Instead of using more callbacks inside promises, we can chain all promises(chain then handlers).
+return a promise in first then callback. 
+
+Promise chaining(then - catch chaining ):
+readFilePro = (file) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, (err, data) => {
+      if (err) reject("Couldn't find the file");
+      resolve(data);
+    });
+  });
+};
+
+writeFilePro = (file, data) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(file, data, (err) => {
+      if (err) reject("Error writing file ");
+      resolve("random dog saved");
+    });
+  });
+};
+readFilePro(`${__dirname}/dog.txt`)
+  .then((data) => {
+    console.log(`Bread ${data}`);
+    return superagent.get(`https://dog.ceo/api/breed/${data}/images/random`);
+  })
+  .then((res) => {
+    console.log(res.body.message);
+    return writeFilePro("dog-img1.txt", res.body.message);
+  })
+  .then((result) => console.log(result))
+  .catch((err) => console.log(err))
+  .catch((err) => console.log("helllll     " + err))
+  .catch((err) => console.log(err));	
+
+WHen using async await, we can basically define functions which return promises. and when calling those functions,
+we can use async await. and put these function call in try catch block, so that the error the promise will return will automatically go into catch block.
+
+----------------------PROMISE METHODS----------------------------------------------------------------------
+---- Promises.all([list of promises]) = handle multiple promises concurrently. all promises mentioned MUST BE resolved TO RETURN A RESPONSE.
+										if all promises resolves, it returns array with all resolved promises. 
+	const p1 = new Promise((resolve) => resolve("resolved")) 
+	
+	Promise.all([p1, p2, p3 , p4]).then(()).catch(())
+	NOTE: IF ANY OF THE PROMISE REJECTS, IT WON'T EXECUTE OTHER, AND WILL BE REJECTED. 
+	
+---- Promise.allSettled - It waits for all promises to resolve or reject. returns an array of objects before representing the outcomes of the input promises. 
+		IF RESOLVED, it returns KEY VALUE ARRAY OF STATUS AND VALUE. IF REJECTED, IT RETURNS ARRAY OF OBJ - STATUS: REJECTED, REASON. 
+
+---- Promise.race([]) = executes as soon as one of promises mentioned is resolved or rejected. it doesn't care if other promises are resolved or rejected. it will give first settled result. 
+
+---- Promise.any() - it will return first resolved promise. if all promises are rejected, it will give AggregateError as all promises were rejected. 
+ 
+
+promise.all() vs promise.allSettled() - all will reject as soon as one of promise in the array rejects. whereas allSettled will never reject. will resolve once all the promises get resolved. promise.allSettled will give object of array with status failure/rejected.  
+
+
+promise is an object which has 2 paras - resolve and reject
+callback :
+function abc(username, callback){
+settimeout(()=> {
+console.log()
+callback()
+}, 1000)
+}
+promises - 
+function abc(username){
+return new promise ((resolve,reject) => {
+setTimeout(() => {
+resolve(Getting all posts)
+}, 1000)
+})
+}
+
+
+---------------------Currying----------------------------------------
+Currying is basically a technique of passing multiple arguments to a function by returning a sequence of functions with a single argument until all the arguments are fulfilled in it.
+
+JS ALWAYS CREATES A LEXICAL ENVIRONMENT TO STORE VARIABLE DEFINED IN A FUNCTION.
+CURRYING IS BASICALLY A TRANSFORMATION OF FUNCTION THAT TRANSLATES FUNCTION FROM CALLABLE AS F(A,B,C) TO F(A)(B)(C)
+
+syntax - function a(func){
+	return function b(x){
+	return function c(y){
+	return func(x, y)	
+		}
+	}
+		}
+USAGE - function sum(a,b) { return a + b }
+	let funcall = a(sum) // basically we're passing sum function to a.
+	alert(funcall(1)(2))   // to call this function 
+
+1. helpful in not passing same variable again & again. 
+2. useful in event handling.
+
+function myfunc(a){
+	return (b) => {
+		return (c)=> {		
+			return a*b*c
+		}
+	}
+}
+
+can call this function as myfunc(11)(4)(3)
+
+or  let abc = myfunc(5)
+    let bcm = abc(28) and then let third = bcm(39)  // to pass all 3 args
+
+
+-------------------------------------------------HIGHER ORDER FUNCTIONS--------------------------------------------------------
+Higher order function - function that receives function as an argument or return the function as an output. 
+
+1. Array.ForEach -  for loop for array . synchronous
+	can accept three params Array.ForEach((item_iterator,index, entire_array)=> )
+
+2. filter() - to filter elements from array. 
+	array.filter((item,index, input_array) => )
+			
+	
+	index, input array are optional
+
+3. reduce - reduce array to a single value. 
+
+	array.reduce((total, item, Index, current_array) => {})
+		total - prev value returned. REQUIRED,   item, : REQUIRED
+
+.some(callback_function)  - returns true if atleast one element passes the test implemented in callback function
+
+
+-------------------------PURE FUNCTION-----------------------------
+pure functions -  no effect on other external variables. no http calls. no changing file system, no querying dom, no console.log, no mutating input. only same input and same output. 
+ but we can return new object with our desired property. 
+ 
+------------------------------DEBOUNCING AND THROTTLING--------------------------------------------
+ 
+Dobouncing is used to improve performance. for searched text, instead of calling api for each character, we call api in some interval. debouncing sets the time interval - 2 secs  between 2 keystrokes. 
+
+throttle - limits the execution of an event handler even when the event triggers continuously  due to user actions.
+
+if time between 2 keystrokes exceeds our threshold value, it'll call api.
+debouncing function updates for every key stroke. 
+
+it ensures that time-consuming tasks do not fire so often. debounce function will ignore all calls to it till a specific time period.
+
+START WITH 0 TIMEOUT
+a button is attached to a event listener that calls a debounce function. - provided with 2 parameters - func, delay 
+
+Dobounce is higher order function that returns another function to form a closure around func and delay. 
+const debounce = function(func, delay){
+      let timer;
+      return function () {     //anonymous function
+        const context = this; 
+	const args = arguments;
+	clearTimeout(timer); 
+	timer = setTimeout(()=> {
+	    func.apply(context, args)
+	},delay);
+       }
+}
+
+debounceBtn.addEventListener('click', debounce(function() {
+  console.info('Hey! It is', new Date().toUTCString());
+}, 3000)); // debouncing the call by 3 seconds.
+
+Example - Don’t make any Axios requests until the user stops typing.
+Autocomplete — Often times, search boxes offer dropdowns that provide autocomplete options for the user’s current input. 
+
+Throttling - throttling will prevent a function from running if it has run “recently”. Throttling also ensures a function is run regularly at a fixed rate.
+Throttling is used to call a function after every millisecond or a particular interval of time only the first click is executed immediately.
+ 
+const throttle = (func, limit) => {
+  let inThrottle;
+  return function() {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);  // after each call throttle is set to false.. avoiding the call for sometime. 
+    }
+  }
+}
+
+--------------------------------------for keeping track of last call------------------------
+const throttle = (func, limit) => {
+  let lastFunc;
+  let lastRan;
+  return function() {
+    const context = this;
+    const args = arguments;
+    if (!lastRan) {
+      func.apply(context, args)
+      lastRan = Date.now();			// first time will set the last ran time
+    } else {
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(function() {
+          if ((Date.now() - lastRan) >= limit) {    /// if time now - last ran is greater than the limit set, then call
+            func.apply(context, args);
+            lastRan = Date.now();
+          }
+       }, limit - (Date.now() - lastRan));
+    }
+  }
+}
+
+example - used in gaming. if user is clicking one button more than its necessary. 
+IN PUBG, SHOTGUN TAKES 2 SECONDS BETWEEN 2 ROUNDS OF FIRE, BUT RIFLE TAKES LESS TIME.  SO USER MIGHT CLICK CONTINOUSLY  BUT WE NEED TO TAKE CARE OF TIME BETWEEN 
+EACH SHOT.
+
+used in scroll event handling when it is fired too frequently. throttling a button so we don't click too much. 
+
+DIFFERENCE - DEBOUNCE IS USED WHEN CARING ABOUT FINAL STATE... THAT IS ONCHANGE OF TEXT INPUT SO GETTING DATA ACC TO CHANGED TEXT
+THROTTLE WHEN WE WANT TO HANDLE INTERMEDIATE STATE FOR PERFORMANCE AT A CONTROLLED RATE. 
+
+IN THROTTLE, WE SETUP A FLAG & CHANGE IT IN TIME INTERVALS AND EXECUTES FUNCTION ACCORDING TO THAT.
+IN DEBOUNCE, WE DIRECTLY PASS A DELAY AFTER WHICH FUNCTION SHOULD CALL.
+
+
+-----------------------
+prettier for formatting and eslint for catching bugs
+
+formatting rules - max -len, no-mixed-spaces-tabs
+
+code quality - no unused vars, no-extra-bind, 
+
+
+
+------------------------------------
+
+

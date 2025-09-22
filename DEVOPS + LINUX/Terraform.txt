@@ -1,0 +1,7 @@
+--------------------------------------------------TERRAFORM-----------------------------------------------------------------------
+For Infrastructure as a service - we have EC2 in AWS. Can create EC2 instance via AWS console.. but creating 20 manually will take lot of time. Creating infrastructure manually for large requirements will take lot of effort. 
+- We have lot of services in different cloud providers which can automate this process. Can use Cloud Formation in AWS to automate this process. 
+- In GCP and Azure, we have different service to automate this process. 
+
+------- Terraform - is single common tool to create, provision infrastructure in any cloud service provider. INFRASTRUCTURE AS A CODE SOFTWARE. FREE AND OPEN SOURCE. 
+					IT USES HCL LANGUAGE - HASHICORP CONFIGURATION LANGUAGE. 

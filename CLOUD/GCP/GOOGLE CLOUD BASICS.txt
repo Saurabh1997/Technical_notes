@@ -1,0 +1,74 @@
+--------------------------------------GOOOGLE CLOUD--------------------------------------------------------------------------
+-----REST----
+- Google Compute Engine - Infrastructure as a service. allows to create virtual servers. 
+- Managed Instance Groups - to create group of VMs. 
+- Cloud Load Balancing - Load balancer
+
+-- COMPUTE SERVICES - compute engine, App Engine, Cloud Functions, GKE, Cloud Run. 
+
+We will go for Cloud MANAGED SERVICE - IT WILL MORE SERVERLESS - it will take care of autoscaling. this gives us a better setup for rest api web app.
+-------------------------------CLOUD MANAGED SERVICE-----------------------------------------------------
+- GOOGLE APP ENGINE - PLATFORM AS A SERVICE - used to build, host and deploy scalable web apps - no need to manage underlying server infrastructure. 
+					- SERVERLESS ARCHITECTURE. 
+					
+- CLOUD RUN - ALLOWS US TO RUN CONTAINERS - RUN DOCKER IMAGE and deploy it. 
+- GOOGLE KUBERNETES ENGINE - to create clusters to orchestrate multiple containers. for complex microservices architecture. 
+
+
+- CLOUD FUNCTIONS -  SERVERLESS - FUNCTION AS A SERVICE. SERVERLESS IS - We are just worrying about our code and not the infrastructure lying under it. it can also autoscale itself depending upon the traffic. WE PAY AS PER THE NUMBER OF INVOCATIONS. Pay Per use. 
+
+
+-----------------------------------------DATABASES - SQL/NOSQL------------------------------------------------------------------
+-- Two options for SQL - CLOUD SQL and CLOUD SPANNER 
+
+- CLOUD SQL - If app is running for a single region only. 99.99% availability no availability in other regions. don't expect data to grow beyong 64 TB. MySQL, PostgresQL, MariaDB are supported here. 
+
+- CLOUD SPANNER - If we want Global Database - If we want horizontal scalability and 99.999% availability and unlimited storage. WITH STRONG TRANSACTION AND STRONG CONSISTENCY. USED FOR BANKING AND FINANCIALS 
+
+--- NOSQL DB - When we want to use for social media with high availability apps  - FIRESTORE & BIGTABLE  
+
+- FIRESTORE (DATASTORE) - for normal noSQL data storing - transactional data storing.
+
+- BIGTABLE - for large amount of streaming data, time series data retrieving on single key. FOR HUGE VOLUMES OF DATA. 
+
+--- ANALYTICAL DBS - where we load data once a week, once a day - for data analysis for loading data as a batch. supports huge queries on petabytes of data. 
+		--- GOOGLE BIGQUERY ---- has simplified industry of data warehousing. 
+
+--- BUSINESS INTELLIGENCE -  for BI services like visalizations, gaining insights into data - 
+							LOOKER (simple service) and DATA STUDIO 
+
+---------------------------------------STORAGE--------------------------------------------------------------
+3 TYPES OF STORAGE - Block, File and Objects. 
+
+- BLOCK STORAGE - Single block storage is attached to 1 VM. 1 HARD DISK IS ATTACHED TO ONE VM only. To 1 VM, we can have multiple HDS. Same disk can't be attached to multiple VMs. 
+		In Google compute, if we create any VM, it'll be created using PERSISTENT DISK SERVICE. if want to create file share, we will go for FILE STORE.  
+
+- FILE STORAGE - File store - File storage shared between multiple VMs - can be physically attached to VM.  BLOCK STORAGE AND FILE STORAGE CAN HAVE DIRECT CONNECT TO VMs.
+
+- OBJECT STORAGE - also known as CLOUD STORAGE (Similar to S3 in aws, blob storage in azure) - for uploading downloading files of Users from client side. We have REST APIs to upload  (key - file name, value - content of file pair) and download. In a bucket kind of thing. ALSO USED TO HOST STATIC FILES OF REACT BUILD. can be expose it as a website. 
+
+-----------------------------------------website----------------------------------------------------------------
+CLOUD DNS - URL mapping can be done. 
+CLOUD CDN - to distribute the content all around the world for caching and getting content fast. 
+
+-----------------------------------------NETWORKING-----------------------------------------------------------------
+VPC - VIRTUAL PRIVATE CLOUD - can control traffic incoming/outgoing each resource. 
+
+- Can create public and private resources in a VPC  using SUBNET - 
+- to expose web application, can create a PUBLIC SUBNET for public service - web app. AND FOR RESTRICTING ACCESS TO DB, can have PRIVATE SUBNET for the private service. 
+
+
+- CLOUD VPN - lets us to connect a DATA CENTER OR VPC OVER THE internet - IPSEC protocol. 
+- CLOUD INTERCONNECT - can be used to connect dedicatedly 
+
+
+-----------------------------------------DEVOPS-------------------------------------------------------
+CI/CD - GOOGLE CLOUD RUN FOR running pipeline. 
+IAAC - Infrastructure as a Code - recommended Terraform - but there is Google cloud deployment manager to do IAAC.  
+Observability - We talk about metrics, Logs and traces - 
+				Metrics - we have Google Cloud Monitoring. 
+				Logs - Cloud logging
+				Traces - Cloud Tracing. 
+				
+				
+			

@@ -8,9 +8,54 @@
 
 
 
+-------------------------------ML model is a subset of AI and deep learning is a subset of ML-----------------------
 
+ML Model types - Supervised learning, unsupervised learning,  Reinforcement Learning. 
+
+-- Supervised Model takes labelled data as its input and unsupervised model takes unlabelled data. 
+
+--- Supervised Learning - Labelled data is provided as input - it learns from the labelled data - for example - 2 types of food orders are given - pickup and delivery. Model will learn based on bill amount how much tip amount is given - it will predict for future models. 
+	WORKING: Input Data is passed into AI model to predict the output. This output is then compared with the expected output. IF ITS NOT MATCHING, IT CAUSES AN ERROR CAUSING AI MODEL TO UPDATE ITS LEARNING AND Until the predicted output matches the input, it will learn. THIS OPTIMIZATION MODEL DOES. 
+	
+--- Unsupervised Learning - No Labelled Data is provided. Raw data is given. It analyzes to see if it falls under any pattern or group. 
+		Working: Input Data is passed into AI Model and it observes the pattern from the example. 
+		
+--- Reinforcement Learning - branch of ML - where agent learns to make decisions by trial and error - to maximize rewards it learns by interacting with environment and receiving feedback. FEEDBACK IS RECEIVED IN FORM OF REWARDS or Penalties. 
+	
+	working : Agent observes current state of environment and chooses to take actions based on its policy (like automatic car maps pedestrian detection for stoppages). Environment responds by either rewarding or prenalizing. Agent updates its knowledge based on reward/penalty by transitioning to a new state. 
+
+-----------DEEP LEARNING----------------------------------------------------------------------
+- it uses artifical neural networks allowing in processing of more complex patterns in machine learning.  Like Brain, artifical neural networks are made up of interconnected nodes/neurons that can learn to perform tasks by processing data and making predictions. 
+	- Deep learning uses both supervised(labelled) as well as unsupervised learning(unlabelled) to learn more complex patterns. This is called SEMI-SUPERVISED LEARNING.
+	- In SEMI-SUPERVISED LEARNING, Neural network is trained on small amount of Labelled data (supervised) to learn basic concepts and then it is trained on large amount of Unlabelled to generalize new examples. 
+	
+
+DEEP LEARNING MODELS CAN BE DIVIDED INTO TWO TYPES - GENERATIVE AND DISCRIMINITIVE. 
+
+- DISCRIMINITIVE models - used to classify and predict labels for data points. typically trained on datasets of labelled data points. 
+		for example - it can classify as dog or cat. 
+
+- GENERATIVE AI MODEL - Generates new data instances based on learned probability of existing data. it generates new content. it can generate a dog/cat picture. 
+
+----------PREDICTIVE ML MODELS----------------------------------------------
+	- it gets data and labels as input and learns relationship between data and label to predict the labels.
+	
+----------Gen AI Models-----------------------------------------------------
+	- it gets unstructured data as input and learns pattern in unstructured content to generate new content. 
+	- If Output is a number/CLass/probability, it is not a GEN AI. if output is Natural language like defined sentence, Image or Audio, its GENAI. 
+			y = f(x)   // x is input. f() is a model which is basically a function. 
+
+	---- TRADITIONAL Supervised AI MODELS TAKE TRAINING CODE AND LABELLED DATA TO BUILD A MODEL. model can predict/classify something based on this training. 
+	---- GENERATIVE model can take training code, labelled and unlabelled data of all data types to build a foundational model. 
+	
+	---- GEMINI - GOOGLE'S MULTIMODAL AI MODEL AND LaMBDA (Language model for dialogue application)  ingest data from lot of sources across the internet and build a foundation model. 
 
 -------------------------GENERATIVE AI------------------------------------
+GEN AI IS A SUBSET OF DEEP LEARNING. LLMs are also subset of DEEP LEARNING. type of AI that create new content based on what it has learnt from existing content. generates new content based on its training . 
+	Generative language models - given some text, it will predict next. 
+	Generative Image Models - produce new images based on prompt. 
+
+
 TYPE OF AI WHICH GENERATES NEW ORIGINAL CONTEXT BASED SET OF DATA AND RULES.  POWERED BY FOUNDATIONAL MODELS - GPT4, NVIDIA'S MEGATRON, 
 -can generate complex text, art, music and even code.
 -Improvement of human computer interaction. 

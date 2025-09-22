@@ -1,0 +1,36 @@
+-------------------------------------------EC2 VS LAMBDA FUNCTION--------------------------------------------------------------------
+EC2 provides virtual servers known as  instance offering infra as a service. We have full control over OS, software stack, env configuration. its suitable for long running processes, consistent resource allocation. We are responsible for everything mostly. Billing is based on instance uptime. 
+
+LAMBDA SERVICE is serverless compute service - function as a service. We can just deploy the code and it will manage the underlying software, infra, server provisioning, scaling for us. Its most ideal for short living tasks - code execution can be triggered by specific events - S3 object upload events, API gateway requests). Billing is based on compute time consumed when their functions are invoked. 
+
+
+
+----------------------------------------------------SECURITY LAYERS IMPLEMENTED IN BACKEND/NODEJS--------------------------------------------------------
+We can address security concerns at 3 levels - Infrastructure level, Applicaiton level and Database level. 
+
+	1. Infrastructure Level - 
+		can enforce WAF Web Application firewall rules to allow necessary traffic. Enable DDOS protection using AWS Shield, Azure DDOS protection.  	
+		Use proper IAM roles/policies in the cloud systems. Apply least amount of rules/policies for all users. 
+		Use secrets management service available in cloud service providers. Regularly apply security patches to infra - servers/OS.
+	2. Application Level - 
+		Use Authentication & authorization. Implement JWT, OAuth. Implement RBAC - role based access control. 
+		DO PROPER INPUT VALIDATION AND SANITIZATION to avoid SQL injection, XSS, CSRF attacks. 
+		Implement proper rate limiting using API gateways or express-rate-limit.
+		Secure coding practices - AVOID SENSITIVE DATA EXPOSURES - PASSWORD/TOKENS IN LOGS, SECRETS/HARDCODED DATA IN CODE - IT SHOULD COME FROM ENV. 
+		Do npm package upgrades frequent to avoid vulnerabilities. 
+		ENFORCE PROPER SECURITY HEADERS using HSTS - HTTPS STRICT TRANSPORT SECURITY headers - enforces to use https and prevents man in middle attack.  
+		FOLLOW OWASP TOP 10 - OPEN WIDE APPLICATION SECURITY PROJECT - TOP 10 SECURITY RISKS - this can be frequently exploited by attackers and can lead to data breaches - Insecure Design, Security Misconfiguration. 
+	3. Database Level - 
+		give least permissions to DB users. for example read only access to analytics based operations. No Alter/Drop permissions to junior devs. 
+		Enable encryption while storing sensitive data in DB. USE PARAMETERIZED QUERIES/ORMS. Always validate inputs before integrating in SQL dynamic. 
+		REGULAR ENCRYPTED BACKUPS. 
+		
+	
+----------------------------------------------------FRONTEND SECURITY BEST PRACTICES----------------------------------------------
+ Never trust user inputs - Always do input validations on both client and backend. DOn't use setDangerouslyInnerHTML in React unless necessary. 
+	USE DOMPURIFY.
+	Enable CROSS SITE SCRIPTING (XSS) PROTECTION. Enable CSP - content security policy headers from backend. 
+	NEVER STORE JWT TOKENS IN LOCALSTORAGE. 
+	
+XSS ATTACKS = User can inject malicious JS script in HTML input and if not validated properly, it will get stored in DB and next time any client requests the data, this malicious JS script might get executed. 
+ 

@@ -7,14 +7,7 @@
 		Now to count the number of digits,  we only need to do n=n/10. 
 			can we say numberOfdigits = int(log10(number) + 1);
 			
-
--------------------DSA---------------------
--ARRAY--
-if array has a static size, it will allocate a heap memory at compile time only.. so runtime would be faster..
-if dynamic, little performance may hit but not significant. 
-
--STRING--
-if all characters are allowed, there are 256 ascii characters. 
+ 
 
 --------EUCLEDEAN ALGORITHM---------- FOR GCD OF STRING AND NUMBERS. 
 FOR TWO NUMBERS OR TWO STRINGS... A AND B, 
@@ -85,3 +78,33 @@ Example - N steps to climb. find ways to climb.. can climb 1,2 ,3 steps at a tim
 		1. Memoization - top down approach - it keeps same recursive approach but uses a lookup table to store the result of each subproblem so that we avoid solving the same subproblem. It breaks down a problem into smaller and smaller subproblems. Once we encounter the same subproblem, we will return same result from the lookup table, if we encounter a new subproblem, we calculate it.. and before returning it we store in the lookup table. 
 		
 		2. Tabulation - bottom up approach - it starts with smallest subproblem, It starts with smallest subproblem and then keeps solving bigger and bigger problems using computations of the previous smaller subproblems until we solve the actual larger problem. 
+				
+------------------------------------------basic algos------------------------------------------------------------------------------
+1. Prefix Sum
+2. Two Pointers
+3. Sliding Window
+4. Fast & Slow Pointers
+5. LinkedList In-place Reversal
+6. Monotonic Stack
+7. Top ‘K’ Elements
+8. Overlapping Intervals
+9. Modified Binary Search
+10. Binary Tree Traversal
+11. Depth-First Search (DFS)
+12. Breadth-First Search (BFS)
+13. Matrix Traversal
+14. Backtracking
+15. Dynamic Programming Patterns
+
+
+const tree1 = {
+  value: "A",
+  children: [
+    { value: "B", children: [{ value: "D" }] },
+    { value: "C", children: [{ value: "E" }, { value: "F" }] },
+  ]
+};
+
+// Expected OutPut:
+// A, B, C, D, E, F
+

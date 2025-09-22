@@ -1,4 +1,4 @@
-----------REACT BASICS 
+-------------------------------------------REACT BASICS---------------------------------------------------------------
 vscode generates something called as emmet to generate code. 
 
 document.createElement to create element and document.appendChild(toRootElementSelected)
@@ -8,6 +8,7 @@ crossorigin in script tag - to change mode of request to an HTTP CORS Request. t
 
 shortcut - rafce - generate template to create functional component. 
 
+-------------------------------------------------CORS---------------------------------------------------------
 CORS - MECHANISM that uses additional http headers which tells browser if a webapp can share resources with other web app.both webapp should have different origins. 
 Before making any api call, browser itself will call a CORS preflight/(also known as OPTIONS request) call to the other origin resource. if call is valid, other origin resource will send additional http headers which will let the browser know that it can proceed with its normal API call
 	OPTIONS REQUEST USING 3 http request headers.
@@ -27,9 +28,10 @@ WHY REACT COMPONENT ONLY RETURNS ONE SIBLING - why not two div sibling because i
 NOTE: REACT ELEMENT IS NOT AN HTML OR DOM ELEMENT. REACT ELEMENT IS AN OBJECT. WHEN WE RENDER IT INTO DOM, THEN IT BECOMES HTMLELEMENT.
 
 NOTE: ORDER OF SCRIPT TAGS AND FILES IMPORTED MATTERS.
-We can use React for just a section of the web page...only for a footer we can use React. below root and above root, we can use normal html tags. 
+We can use React for just a section of the web page..only for a footer we can use React. below root and above root, we can use normal html tags. 
 React is a library.. we can plugin react anywhere. 
 
+-----------------------------------------NPM---------------------------------------------------------------------------
 npm -- is not node package manager. it doesn't have a full form. its just a package manager. 
 package.json - npm configuration. 
 package-lock.json - locks the version. keeps record of every exact version of dependencies. 
@@ -41,7 +43,7 @@ bundler - to bundle our app to push it to production.
 create-react-app uses webpack and babel behind the scenes to bundle our app. 
 2 types of dependencies () - devDependencies - required for development and normal dependencies - used in production. 
 
-parcel - 
+---------------------------------------parcel--------------------------------------------------------------------- 
 npm i -D parcel. 
 npx parcel entry file  // npx is executing package. 
  
@@ -69,6 +71,7 @@ npx parcel index.html -- dev build.
 
 it builds all files into folder dist and uses .parcel-cache to keep track of what files are changing. 
 
+--------------------------------BROWSERSLIST-------------------------------------------------------------------------
 browserslist - npm package to tell what all browsers should your app support. 
 	we put browserslist in package.json 
 	browserslist: [
@@ -84,6 +87,7 @@ browserslist - npm package to tell what all browsers should your app support.
 
 can configure seperately for countries.  cover 99.5% in US. 
 
+------------------------------------------------------CRA----------------------------------------------------
 CRA - create-react-app uses babel and webpack under the hood of react-scripts. 
 	packages that come under CRA - 
 	Babel - transforms higher ES6 to older version(ES5) and add polyfills - code that implements missing feature in browser. 
@@ -99,7 +103,224 @@ CRA - create-react-app uses babel and webpack under the hood of react-scripts.
 ----NOTE: JSX Code is transpiled to React.CreateElement (makes a JS Object)object (JSX => REACTELEMENT (JS Object) object) and then its rendered into browser as HTMLELEMENT
 ------Babel is transpiling jsx code to react.createElement object which can be rendered as htmlElement. it basically read one by one character. 
 		babel create an AST.. abstract syntax tree to read character one by one.
+		
+--------------------------------------PROPS-------------------------------------------------------------
+props : basically custom attributes/properties that we can make for our own components. We can pass data to our custom components with the help of props.
+props can be passed in Object by way of propname={{objectkey:value}}
+to catch that props , props.propname.objectkey.
+
+-------------------------------------STYLES--------------------------------------------------------------
+double braces for describing style = outer braces for returning variable & inner braces for creating object
+
+conditional way to show 
+<span style={{display: props.content.question? "block":"none"}} or {{display: props.content.question && "none"}}
+
+---------------------------------------Class based components----------------------------------------------------------------- 
+class classname extends React.Component{}  // sets up prototype of react component
+Every class based component needs one method - render(). it should return JSX elements. 
+We can also put display logic into a method. and can call method by this.method() and assign to this.variablename.
+In Class based components, we access variables and method by this.props or this.methodname
+
+import React from "react"
+export default class Header extends React.Component{
+    render(){   
+    return (
+            <p>Welcome, {this.props.username}!</p>
+    )}} 
+
+To introduce a state into class based component, we need to have default method contructor() that initializes state for class based component.
+constructor(){
+super()
+this.state = {
+answer: "Yes"
+} }
+
+its okay if we don't declare any constructor. it'll call parent class constructor.
+
+Whenever we use event handlers functions in class based component, we should always bind "this" instance of the class with the method. To do this, in constructor, 
+constructor(){
+//after super() and this.state
+this.method = this.method.bind(this)
+} // TO AVOID DOING THIS, MAKE THE EVENT HANDLER Function AS ARROW FUNCTION. 
+
+When you call setState(), React merges the object you provide into the current state.
+----If we have to interact with previous state: 
+ this.setState((prevState) => {return {count:  prevState.count+1}})
+
+--To call a function to handle an event : onChange, onClick = {this.functionname} 
+--to pass a function to a functional component, directly pass the function as a props
+--example : handleChange={this.handleChange}/>
+
+--- to return updated array     return {todos : updatedtodos}  		//array  
+
+if there is one parent comp and 2 child comp inside it. 
+	1. parent constructor, parent render is called. 
+	2. child 1 constructor, render and then child 2 constructor, render
+	3. child 1 component did mount, child 2 component did mount. 
+	4. parent component did mount will be called at last. 
+	it batches render phase for all child component. React batches the render phase. can make componentDidMount async. 
+	can make call debugger using debugger;
+if updation of state happens, then render will be called and then componentDidUpdate. 
+
+componentWillMount - we have to clear intervals here if we have any. 	
+
+
+-------------------------FUNCTIONAL based components----------------------------------- 
+  	import React from 'react';
+ 	function App() {
+  	const greeting = 'Hello Function Component!'; 
+ 	 return <h1>{greeting}</h1>;
+	}
+	export default App;
+
+--------------------------------------------SET STATE BATCHING QUESTION----------------------------------------------------
+React batches state updates within same event loop. 
 	
+	QUESTION 1
+	 <button onClick={() => {
+          setNumber(number + 5);    // THIS USES CURRENT VALUE FROM CLOSURE WHICH MAYBE STALE IF MULTIPLE UPDATES ARE QUEUED. its less reliable in async/batches 	 //scenario. 
+          setNumber(n => n + 1);   
+        }}>
+	SO SETNUMBER(number + 5) // number is 0 it becomes setNumber( X + 5) AND THEN LAST setNumber becomes X + 5 + 1 => 6
+	so subsequent updates does - 6 + 5 + 1 => 12 , 18, 24. 
+	
+ 	QUESTION 2: ON PREVIOUS STATE
+			 <button onClick={() => {
+		setTimeout(() => {
+			setNumber(number + 5);
+		}, 1000)
+              //  THIS WILL CAUSE ISSUES IN SUBSEQUENT CLICKS - AS WE ARE NOT ACCESSING PREVIOUS STATE HERE. 
+        }}>
+	
+-------------------------------------------------------COMPONENT LIFECYCLE METHODS-----------------------------------------------------------------------------
+3 phases of a component - mounting, updating and unmounting
+1) Mounting - during mounting there are 4 in-built methods in the following order: 
+	a. constructor(props)
+	b. getDerivedStateFromProps() - this method has a rare usecase. Used where state depends on props update. We have to return an object to update the state. 
+								If we want no update based on props change condition, we can do this by returning null. 
+				For example, if a user id from props is not equal to state variable, we can reset all the state variables.. if not, return null to keep as it is. 
+
+ static getDerivedStateFromProps(props, state) {
+    // Any time the current user changes,
+    // Reset any parts of state that are tied to that user.
+    // In this simple example, that's just the email.
+    if (props.userID !== state.prevUserID) {
+      return {
+        prevUserID: props.userID,
+        email: props.defaultEmail
+      };
+    }
+    return null;
+  }		
+				
+				
+				
+	c. render()
+	d. componentDidMount()
+
+2) Updating - During updation of any state/props of components, 5  in-built methods 
+	a. getDerivedStateFromProps() - 
+	b. shouldComponentUpdate() - return true, if we want to continue with rendering. return false if not. 
+	c. render() 
+	d. getSnapshotBeforeUpdate() - access to prop/states  . if this method is present, componentDidUpdate should be present, else ERROR.
+	e. componentDidUpdate() = after the update has been done.
+
+3) Unmounting - when component is removed from DOM, componentWillUnmount
+	
+componentDidUpdate() - always call setState in this method for a certain situation, else error: endless loop of render causes multiple calls of render and componentDidUpdate on same state.
+So use like : 
+componentDidUpdate(prevProps, prevState){
+if(prevState.count != this.state.count){ then only setState}
+}
+
+-----------------------------------------ON CHANGE HANDLERS-------------------------------------------------------------------
+NOTE: Never call setState() in componentDidMount() as it causes extra rendering, can cause performance issues. use async call to reduce or set initial state in constructor.
+
+Note: functional should always render. Parent should handle conditional logic 
+---can get access to input box by in event handler function 
+	handleChange(event){
+	this.setState({firstName: event.target.value})
+	}
+
+we can also access more form elements by,
+	handleChange(event){
+	this.setState({[event.target.name]: event.target.value}) }
+	event.target.name : is basically key. 
+	CAN ALSO DESTRUCTURE LIKE --  const {name, value} = event.target
+	
+DIFFERENCE BETWEEN onclick & onSubmit of form or button
+1. button onclick handler function - just calls the function when on clicked. no reload of page.
+2. onSubmit of form - page is refreshed. TO PREVENT THIS, WE CAN DO e.preventDefault()
+
+FOR CAPTURING FORM ELEMENT,  input name ="uname", e.target.elements.uname.value
+	
+---TO MATCH THE VALUE OF INPUT BOX AS THE STATE VALUE, we forcefully give value={this.state.firstname}
+
+--calling a event.preventdefault() inside form submit method cancels the form submit
+
+-----------------------------------------SYNTHETIC EVENTS---------------------------------------------------------
+Synthtic Events are nothing but a wrapper created around NORMAL NATIVE BROWSERS ORIGINAL EVENTS (on input change, on button click) in order to avoid creating multiple browser methods for multiple browsers - creating common names for all browsers. 
+
+- SYNTHETIC EVENTS ARE LIKE AN ABSTRACTION LAYER THAT REACT PROVIDES OVER NATIVE ORIGINAL BROWSER EVENTS TO EXECUTE THEM IN CONSITENTLY AND CROSS BROWSER COMPATIBLE MANNER. THEY ARE JS OBJECTS WHICH WRAP NATIVE EVENTS. react Also provides event pooling for better performance AND IT USES A MECHANISM CALLED EVENT DELEGATION TO IMPROVE PERFORMANCE. 
+
+- WHEN WE USE REACT ONCHANGE, ONCLICK, WE PASS A FUNCTION TO THIS EVENT HANDLERS N IT TYPICALLY CREATES A SYNTHETIC EVENT OBJECT N PASSES IT TO EVENT HANDLER FUNCTION. 
+	example - IF WE PASS HANDLECLICK FUNCTION TO ONCLICK HANDLER, HANDLECLICK WILL BE CALLED WITH SYNTHETIC EVENT OBJECT AS ITS ARGUMENT. 
+		can access various properties and methods available on synthetic event object such as - 
+			event.target
+			event.type 
+			event.preventDefault() , event.stopPropagation(). 
+		NOTE: event Object (e) that we get as a parameter in handler function is synthetic event object 	
+			
+	benefit of this is - cross browser compatibility, 
+		- Event pooling - reduces memory consumption & improve performance by - after event handler function is done executing, its returned to the pool & can be used for another event. 
+		- Asynchronous Event handling - react batches multiple events together & updates component state in a single rerender. 
+
+---------------------------------------controlled component vs uncontrolled component----------------------------------------------------------------
+controlled - can handle form input using setState or useState(). can use this using events like onChange
+uncontrolled - traditional HTML form inputs that we won't be able to handle the value of input, but DOM will take care of it and we can save it and get this value using useRef. ITS VALUE IS MANAGED BY THE DOM. for example - <textarea>
+Instead of using an event handler for each state update, we can use a ref to get form values from the DOM.
+In class based, 
+in contructor , this.input = React.createRef()
+in render, ref = {this.input}  ---- to get the value this.input.current.value.  defaultValue attribute to specify initial value
+
+defaultProps - React component to set default values for the prop argument.
+If props is passed, it'll be changed. it can be defined as properties for the class.
+
+ReactClass.defaultProps = { propname : 'value'}
+
+for functional based, Reactfunction.defaultProps = {propname : 'value'}
+
+-----------------------------------------------USEREF QUESTIONS AND USECALLBACK----------------------------------------------------------------------------
+- returns a mutable object with a .current property. IT PERSISTS ACROSS RENDERS AND doesn't cause any rerender when its values changes. 
+- We can access DOM elements. its doesn't cause rerenders when updated. ideal for caching previous values. UPDATING REF.CURRENT WON'T RERENDER THE COMPONENT. 
+	ONLY CHANGES TO STATE/PROPS CAN TRIGGER RERENDERS. 
+
+--- INTERVIEW QUESTION : 
+	
+	 function App() {
+    const [count, setCount] = useState(0);
+    const countRef = useRef(count);
+    const increment = useCallback(() => {
+      countRef.current = countRef.current + 1;				//  THIS WILL TAKE LATEST VALUE OF COUNTREF AS ITS NOT TIED TO RENDER CYCLES 
+						// countRef.current = count + 1; 	// THIS WON'T TAKE LATEST VALUE OF COUNT AS ITS INSIDE USECALLBACK  
+      setCount(countRef.current);					
+    }, []);
+	
+		return (
+	  <div>
+	  <button onClick={increment}>Increment</button>
+	  <p>Count: {count}</p>
+	  </div>
+		);
+	  }
+
+	EXPLANATION : 
+		output will be Count: 0 => 1 => 2 => 3
+		
+		useRef will initialize count as 0. useCallback is there so it won't create a new function instance everytime and its not relying on count. 
+NOTE : IF WE USE any state value inside useCallback without having it as dependency for the useCallback, IT WILL TAKE STALE VALUE OF THE STATE. 
+	
+-------------------------------------------------COMPONENTS---------------------------------------------------------------------------------	
 	React functional component - is just a function that will return JSX component. it should always start with capital letter. 
 		React Functional component is a normal js function which returns a react element (JSX Element). 
 to render functional component,   <></>.. and to render normal react element, we directly call it like a function.. react.render(header)
@@ -117,8 +338,111 @@ TO RENDER NORMAL REACT ELEMENT,  INSIDE JSX,    {headerElement}
 	we use const [variable, setVariable] = useState.. how react is able to change a const variable. actually react is rerendering..the component.. so at the time of initialization of rerender, we are setting new value.
 Hooks can only be called inside function or body of a function. 	
 
+------------------------------HOOKS IN REACT-----------------------------------------
+
+-----------react hooks are a way to hook into React state and lifecycle components without using classes.
+
+useState() is hook which lets us use state in functional components.
+useState() from react library(import {useState()} from react). Pass initial value in useState(), i.e const [value] = useState("Yes")
+it returns an array with 2 elements, initial value and a function(for updating the state) 
+
+--------const [count, setCount] = useState()  // count is initial state, setCount is the method to change the state.
+
+-----------we call setCount method in anonymous method n pass function ,   <button onClick={()=> setCount(prevCount=> prevCount+1)} }>
+
+---------setState() vs useState() - with setState we set a single value n it merges with existing one, while in useState(),
+ we need to PASS COMPLETE STATE
+EACH TIME. NOTE : BETTER WAY IS TO USE DIFFERENT VARIABLE FOR EACH STATE.
+
+-----------useEffect() is a replacement method for 3 LIFECYCLE METHODS -  componentDidMount, componentDidUpdate, componentWillUnmount. 
+can also be called as side Effect. useEffect() provides a callback function where we can put our logic.
+
+return statement in useEffect() - if our component unmounts before promise resolves, useEffect will try to update state on unmounted component. 
+we might get an error - can't perform a react state update on an unmounted component. To fix this, we write a clean up function. 
+
+---------useEffect only keeps track of states and props. IF WE JUST KEEP A RANDOM VARIABLE WHICH IS OUTSIDE THE SCOPE OF REACT LIFE CYCLE, THEN IT WILL ONLY CALL THIS USEEFFECT ONCE AT THE TIME OF RENDERING.. IF WE KEEP THAT VARIABLE INSIDE THE COMPONENT, IT WILL GET CALLED. 
+	for example - 
+	EX 1- 	let score = 0
+		function App() {
+			function handleClick() {
+				score = score + 10 
+				}
+			useEffect(() => {
+				console.log("score ", score)   // THIS WILL ONLY GET CALLED ONCE AT INITIAL RENDER BUT SCORE WON'T BE SUBCRIBED AS USEEFFECT ONLY SUBSCRIBES TO   
+			}, [score])							// STATES WHICH INSIDE THE REACT LIFECYLE. 
+			
+			return <button onClick={handleClick}></button>
+		}
+		
+		function App() {
+			let score = 0
+		function handleClick() {
+				score = score + 10 
+				}
+			useEffect(() => {
+				console.log("score ", score)   // THIS WILL GET CALLED EVERYTIME AS ITS IN INSIDE THE REACT LIFECYLE
+			}, [score])							
+			
+			return <button onClick={handleClick}></button>
+		}
+		
+	 
+		
+--------------------3 ways for useEffect----------------------- 
+ 1. componentDidMount + componentDidUpdate - if NO ARRAY is passed as second argument, useEffect() will be called at the time of mounting and every re-render. 
+ 2. componentDidMount  - EMPTY ARRAY - WILL CALL ONLY componentDidMount
+ 3. passing a variable inside array - whenever that variable changes. 
+		After importing,  useEffect from "react",      
+ useEffect(()=> { SET FUNCTION FOR STATE(with its change) }, [state variable]) AN ARRAY IN WHICH WE SPECIFY WHAT VARIABLE
+ I want to watch changes in. when that variable(State variable) changes, useEffect will be called, 
+ i.e ON WHICH PROP CHANGE IT SHOULD CALL THE useEffect() method. 
+NOTE : IF EMPTY ARRAY IN useEffect(), it won't be called at update of any state.
+
+
+--- TO USE "useEffect()" for componentWillUnmount() : use return () inside useEffect( () =>  return() => {}, [])=> function to clean up any state. when user leaves the page.
+
+React.useEffect(()=>{ can pass function to change state in this one)} - also we can pass operation to perform directly for 
+function which is used for changing the state.
+
+e.g   [count, setCount] = React.useState(0) .  can do directly - setCount(count+1)
+
+-----------------useContext---------------------------- 
+export const usrDetails = React.createContext({})
+
+wrap a tag inside <usrDetails.Provider value= {{usr: "saurabh"}}></usrDetails.Provider>
+
+------for using inside nested compo,
+import {usrDetails} = require(parent)
+const {usr} = useContext(usrDetails)
+
+can directly use usr anywhere.
+
+------------------useReducer-----------------------------
+it is a alternative to useState() when we have complex state logic that involves sub values when handling complex states
+
+accepts a reducer of type (state,action) => state and returns current state with dispatch method
+const [state,dispatch] = useReducer(reducer, initialArg, init)
+
+can directly do dispatch({actiontype})
+can add third parameter in dispatch function to change one more state.
+
+useSelector - map state to props
+basically takes function argument and returns the actual state that we want
+const counter = useSelector((state) => state.counter)
+const currentUser = useSelector((state) => state.currentUser)
+
+useDispatch - map dispatch to props
+takes action imported from all actions(combined) and dispatches to appropriate reducer. 
+
+useDispatch(allActions.userActions.setUser(user))
+useDispatch(allActions.couunterActions.increment())
+
+Redux creates a central store for the app and useReducer state is limited to that commponent. WE CAN'T ADD ANY MIDDLEWARE TO useReducer
+
+
+------------------------------RECONCILIATION AND DIFFING ALGORITHM--------------------------------------------------------------------------
 2 process happen in react - reconciliation - to compute which parts of tree are changed.
-rendering - renderer uses the infromation returned by reconciler to actually update the rendered app. 
+rendering - renderer uses the information returned by reconciler to actually update the rendered app. 
 Both happen in seperate process. THIS SEPERATION MEANS SAME RECONCILER CAN BE USED BY REACT AND REACT NATIVE AND CAN USE DIFFERENT RENDERERS. 
 
 React uses RECONCILIATION algorithm (also known as React FIBER - REACT 16)- 
@@ -139,6 +463,7 @@ Note: updation at end of node will hve good performance over updation at beginni
 OBSERVATION : Using indexes as key can cause issues with states if we are doing reordering.. If key is an index, moving an item changes the key only.. 
 NOTE: Rerender doesn't mean component will unmount and mount again.. it will only apply the differences following the diffing algorthm. 
 
+---------------------------------KEYS IN LOOPING ARRAY-------------------------------------------------
 Keys should be stable, predicatable and not Using Math.random() as it will cause many instances unneccessary render AND CAN CAUSE PERFORMANCE DEGRADATION AND LOST STATE in child components.. 
 
 WHY KEY IS IMPORTANT : to uniquely identify an element within the list of elements.. its used to prevent rerendering of list of elements. so that react will know which key number of element to update.. 
@@ -152,7 +477,7 @@ COMPOSITION - Components written by diff people can work together.,
 	[variable, setVariabl] = useState is array destructuring. 
 	Whenever we call setVariable, it rerenders the component.
 
-------------------------SEPERATION OF CONCERN--
+------------------------SEPERATION OF CONCERN----------------------------------------
 for each and every thing, a seperate project folder. this is also single responsibility principle. 	
 	
 CURRYING IN REACTJS - 
@@ -162,7 +487,7 @@ instead of having different handle change for each input text.. can
 		  input onChange={handleChange(setPassword)}
 	const handleChange = (setState) => (event) => setState(event.target.value)	  
 	
------------------onCLick={handleClick()} vs onClick={() => handleclick()} vs onClick={handleClick}------------------
+------------------------onCLick={handleClick()} vs onClick={() => handleclick()} vs onClick={handleClick}--------------------------------------------------
 onCLick={handleClick()} -- this will call the function rightaway but we want it to be called on click.. so we have to pass callback function. 
 onClick={handleClick} -- this returns the function instance so it will be called on click.  
 	
@@ -182,7 +507,7 @@ CORS - Browser block us to call api from one origin to different origin.. (from 
 	
 SHIMMER UI effect - RESEMBLES ACTUAL PAGE'S UI TO SHOW USERS HOW QUICKLY IT WILL LOAD THE PAGE. 
 
----------------React-Router-DOM--------------------------------
+-----------------------------------------------React-Router-DOM--------------------------------
 react-router - BrowserRouter to declare individual routes. needs to be wrapped around entire application tree. 
 LIMITATIONS - cannot access history data outside of router. cannot create a Route outside BrowserRouter.
 need atleast 2 props - path and component reference to render. 
@@ -256,18 +581,10 @@ two types of routing is there :
 to get the :resId, we use "useParams" hook from react-router-dom.
 const {resId} = useParams()
 
--------------------- Class based component -- 
-if there is one parent comp and 2 child comp inside it. 
-	1. parent constructor, parent render is called. 
-	2. child 1 constructor, render and then child 2 constructor, render
-	3. child 1 component did mount, child 2 component did mount. 
-	4. parent component did mount will be called at last. 
-	it batches render phase for all child component. React batches the render phase. can make componentDidMount async. 
-	can make call debugger using debugger;
-if updation of state happens, then render will be called and then componentDidUpdate. 
-
-componentWillMount - we have to clear intervals here if we have any. 	
-
+--------------------------------------------useLocation()----------------------------------------------
+this hook in react router dom provides access to current Location object. pathname - path of URL, query string param, 
+state - optional state object can be passed when navigating.  
+---------------------------------------CUSTOM HOOKS----------------------------------------------------------
 --- Custom hook - can define own hooks. can define our own function. 
 for example can be used for fetching data  or tracking if the friend is online or not. 
 
@@ -285,7 +602,27 @@ return userValue
 in main component, import the hook and can use the hook in all components. 
 const isUserActive = useIsUserActive(userId) 
 
---------------------DIFFERENCE BETWEEN REACT.MEMO AND USEMEMO
+-----------------------------------------------RULES OF HOOKS----------------------------------------------------------
+- FUNCTION WHOSE NAME STARTS WITH USE are called as Hooks in React. 
+- ALWAYS CALL HOOKS AT THE TOP LEVEL.  Never call hooks inside nested loops, conditions, try-catch-finally block. CAN CALL THEM AT TOP LEVEL IN BODY OF CUSTOM HOOK. 
+- DO NOT CALL HOOKS AFTER A CONDITIONAL RETURN STATEMENT,  EVENT HANDLERS, CLASS BASED COMPONENTS, IN FUNCTIONS PASSED AS CALLBACKS TO USEMEMO, USEREDUCER, USEEFFECT. 
+- CUSTOM HOOKS CAN CALL OTHER HOOKS. 
+- DON'T CALL HOOKS FROM REGULAR JS FUNCTIONS. CAN ONLY CALL FROM REACT FUNCTIONAL COMPONENTS, CAN FROM OTHER CUSTOM HOOKS.  
+		ERROR : IF WE BREAK THIS RULE, WE WILL BE SHOWN AN ERROR BAD: INSIDE A LOOP/CONDITIONAL STATEMENT.
+	
+	CAN USE ESLINT-PLUGIN-REACT-HOOKS  - package to enforce the rules of hooks. 
+----------------------------------------------TO WRITE CUSTOM HOOKS----------------------------------------------------------
+NOTE: INTERVIEW QUESTION: CAN WE DIRECTLY RETURN APPEND A STRING to a variable without using useState and useEffect in a custom hook 
+	Yes we that variable won't persist across rerenders and won't trigger rerenders. IT WILL ACT AS PLAIN VARIABLE. 
+	
+	TO PERSIST ACROSS RERENDERS - CAN USE USEREF(). 
+		function useAppend() {
+		  const ref = useRef('Hello');
+		  ref.current += ' World';
+		  return ref.current;
+		}
+
+--------------------DIFFERENCE BETWEEN REACT.MEMO AND USEMEMO-----------------
 ------------------React.memo -  Higher order component used for optimizing functional components. 
 wrap the component inside React.memo to avoid rerendering. If a parent rerenders, child also rerenders unless we use react.memo.  If we use React.memo for the child, when parent rerenders if anything changes in parent, child won't rerender. 
 	for example - const app = React.Memo(({prop1, prop2}) => {}).
@@ -294,8 +631,9 @@ wrap the component inside React.memo to avoid rerendering. If a parent rerenders
 	const value = useMemo(() => {}, [prop1, prop2])
 to memoize the computation result for any expensive task	
 	
-----useCallback-------
+-------------------useCallback----------------------------------------------------------------------------
 to Memoize functions which is passed to child components which rely on reference equality to prevent unneccessary rerender. 
+USECALLBACK FREEZES THE FUNCTION UNLESS AND UNTIL THE DEPENDENCY CHANGES. IF THERE'S NO DEPENDENCY, IT WILL FREEZE THE FUNCTION AND THE STATES USED INSIDE USECALLBACK WILL BE STALE. 
 if we define any function and then pass it on child component, child component will rerender when parent rerenders even if function passed to child is constant unless we wrap that in useCallback.
 
 const func = useCallback(() => {console.log(" rerendered ")})
@@ -349,7 +687,7 @@ for example - metrics accordian.  if we want to close all other accordions, when
 passing props into nested child components. means syntactic uneasiness of code. problem of passing props.
 causes rerender and doesn't look good. 
 
-------------to avoid props drilling-----CONTEXT API----------
+----------------------to avoid props drilling-----CONTEXT API----------
 Context is a global level storage which can be provided to the whole app. 
 	const userContext = createContext({
 	userName: "",
@@ -363,6 +701,29 @@ for FUNCTIONAL BASED -- to update the state as well.
 <UserContext.Provider value={{userName: user, setUserName: setFunctionToBeSupplied}}>   value= {{}} // if multiple key values in an object.
 --DISADVANTAGES OF USING CONTEXT -- 
 	rerender happens when nested components context value changes changes. this context api is just to do syntactically better and cleaner prop drilling. 
+
+
+1. TO SHARE DATA THROUGH COMPONENT TREE IN AN EASIER WAY INSTEAD OF PASSING FROM ONE COMPONENT TO ANOTHER CHILD COMPONENT MANUALLY.
+
+2. CONTEXT LETS US PASS DATA DEEP INTO THE COMPONENT TREE WITHOUT EXPLICITLY THREADING IT FROM ONE COMPONENT TO ANOTHER COMPONENT.
+
+SYNTAX: 	export CONST Theme = React.createContext('black')
+now to pass the theme deeper, in render, 
+			wrap the child component in <Theme.Provider value = {Theme}>child</>
+
+   - to use this value in child components, 
+	import { Theme } from "./Parent"
+	const theme = React.useContext(Theme) /// for functional component
+
+ALWAYS USE CONTEXT WHEN ACCESSSING DATA AT DIFFERENT NESTING LEVELS
+
+
+for class based component,
+component that subscribes to context changes - 
+<MyContext.Consumer>
+  {value => /* render something based on the context value */}
+
+</MyContext.Consumer>
 
 -------------RECOIL REACT-----------------------------------
 its made on top of context api. 
@@ -400,7 +761,7 @@ ATOM - smallest unit of state. its for storing state. can be defined outside of 
 		})
 	NOTES: RECOIL PROVIDES A WAY TO MAP STATE & DERIVED STATE TO COMPONENTS VIA FLOW DATA GRAPH. Recoil can mix synchronous and asynchronous functions in data flow graphs of Selectors. 
 	
-----Asynchronous Data Queries in recoil-------
+----------------------------Asynchronous Data Queries in recoil---------------------------
 cannot do async API calls in Selectors directly. but can pass Selector as default of atoms  and can call async calls in get function. 
 export const getUserAPIResponse = atom({
 	key:"userData",
@@ -526,8 +887,158 @@ REDUX TOOLKIT USES IMMER LIBRARY TO MUTATE THE STATE..
 -- TODO---  why vite create-react-app
 performance - form library -formik, react hook form for form management, REACT QUERY, SWR
 
-
+------------------------------useLayout-------------------------------------------------
+- useEffect runs asynchronously after the component has rendered and browser has rendered the page. 
+- useLayout runs synchronously after DOM MUTATIONS BUT BEFORE BROWSER RENDERS THE PAGE - making it suitable for layout related tasks like DOM measurements, or layout adjustments that require immediate execution. 
 
 ----------------TIPS----------------------------
 
 1. Whenever there are lot of providers for a client side app, its a good practice to wrap all providers in a Single Providers component, where we can wrap children element(actual main app) inside all Providers such as context provider, recoil 
+
+
+--------------------------------get location----------------------------------------
+
+navigator.geolocation.getCurrentLocation((position) => { position.coords.latitude, position.cords.longitude }) 
+
+
+--------------------------------audio/video access-----------------------------------------
+
+const mediaStream = navigator.mediaDevices.getUserMedia({ audio: true, video: true}) 
+
+
+------------------------------------------WEB WORKERS---------------------------------------------------------------------
+Allows to run JS code seperate from the main JS thread preventing UI blocking during expensive operations.  FOR BACKGROUND PROCESSING OF EXPENSIVE OPERATIONS. 
+FOR PERFORMANCE WITHIN A SINGLE PAGE/TAB. 
+- WEB WORKER IS NOTHING BUT AN EXTERNAL JS FILE THAT CAN RUN IN BACKGROUND WITHOUT BLOCKING THE MAIN THREAD OR AFFECTING PERFORMANCE OF THE PAGE. 
+- IT CANNOT ACCESS DOM OR WINDOW OBJECTS. 
+	const w = new Worker("filename.js")	
+
+- data can be sent between main thread and web workers - both sides send messages using POSTMESSAGE() AND RESPOND TO MESSAGES BY ATTACHING onmessage event listener to the web worker job. ==== 
+		w.onmessage = () => {} 
+		
+- CAN DO Image processing, data sorting and filtering, Mathematical simulations, Machine learning simulations, Encryption/Decryption.
+
+- IN TERMS OF REACT --
+
+	worker = new Worker(new URL("./app.worker", import.meta.url))
+	can do worker.postMessage({type: 'LOG', payload: {}}) // SEND MESSAGE TO OUR WORKER. 
+	
+	worker.onmessage = (event) => {
+		const {type, payload} = event.data 
+		}
+		
+		ONCE WEB WORKER SERVICE SENDS DATA, WE CAN HANDLE IT IN THIS EVENT HANDLER. 
+	
+	THEN IN WORKER FILE, 
+		addEventListener('onmessage', (event) => {
+			const {type, payload} = event.data 
+			})
+	
+
+------------------------------------------SERVICE WORKERS---------------------------------------------------------------------
+Used to enable offline functionality, push notifications, background sync. for caching inside service worker. 
+- ACTS AS PROXY BETWEEN BROWSER AND NETWORK 
+- AND OUR WEBSITE CAN BE AVAILABLE OFFLINE AS WELL AS WE HAVE CACHED IT ON INITIAL RENDER. 
+- WE CAN SAVE DATA AND WHEN WE COME ONLINE, WE CAN SEND THAT DATA TO BACKEND. 
+
+	
+	
+	navigator.serviceWorker.register('filepath').then((registration) => ).catch((error) => {})
+	
+	// FOR CACHING OUR WEB APP SO THAT IT WORKS OFFLINE
+	
+	urlsToCache = ["/", "/index.html", "css/base.css", "css/index.css"]
+	self.addEventListener("install", (event)=> event.waitUntil(						// THIS IS WHEN SERVICE WORKER IS INSTALLED. 
+	caches.open(cacheNameVariable).then((cache) => cache.addAll(urlsToCache))
+	))
+	
+	// FOR FETCHING WHEN WEB APP IS OFFLINE 
+	
+	self.addEventListener("fetch", (event) => {
+		event.respondWith(caches.match(event.request).then((response) => { return response || fetch(event.request)})
+	})
+	
+	//activate - can be used when we want to delete old cache which we don't need. 
+	
+	self.addEventListener("activate", (event) => {
+		event.waitUntil(cache.keys().then((cacheName) => {
+			await Promise.all(cacheNames.map(cacheName) => caches.delete(cacheName))
+		
+		}))
+	})
+
+---------------------------------------------------------------JSCONFIG.JSON---------------------------------------------------
+
+jsonconfig.json - this file at root dir indicates that directory is root of a js project. 
+
+use excludes - to exclude node modules it enhances performance
+
+use includes - to use absolute import in js files
+
+
+------------------------------------------------------------CONCURRENCY IN REACT 18---------------------------------------------------------------------
+hOW REACT processes updates & renders UI - enables react to work on multiple tasks simulateneously. WE GOT SUSPENSE, TRANSITIONS.
+
+------------------------------------------------------------TRANSITIONS IN REACT 18---------------------------------------------------------------------
+ - Transistions lets us mark certain state updates as non-urgent without compromising user experience - to prevent blocking UI. 
+ - can wrap state updates that can be delayed without delaying User experience inside startTransition. 
+ - REACT PRIORITIZES URGENT UPDATES (USER INPUTS OR ANIMATIONS) OVER TRANSITIONS. If there is an urgent update while transition is in progress, React will pause the transition, handle the update and then can resume the transition. 
+
+--- can be used where ---
+- CAN BE USED IN SCENARIOS WHERE - THERE IS A SEARCH INPUT WHICH HAS TO UPDATE ITS VALUE AS SOON AS WE TYPE ANYTHIING AND THERE ARE 2000 SEARCH RESULTS WE WANT TO RENDER IN DROPDOWN BASED ON THE ITEM WE ARE SEARCHING IN INPUT. SO SETSTATE FOR INPUT STATE CAN BE URGENT AS WE WANT CLIENT TO SEE WHAT HE IS TYPING.. BUT SEARCH RESULTS IN DROPDOWN CAN BE DELAYED - SO THIS SETSTATE FOR SEARCH RESULTS CAN BE MARKED AS NON-URGENT/LOW PRIORTY AND CAN BE INSIDE START TRANSITION BLOCK. 
+- Updating data that doesn't need updating immediately on the screen - search results, filtering large dataset.
+ - Performing complex calculations or data transformations which can freeze UI. 
+ 
+ - FOR EXAMPLE - 
+		
+	import { startTransition } from "react"
+	
+const handleChange = () => {
+		setStateForInput(e.target.value)
+		startTransition(() => {
+		// DO STATE UPDATES HERE. 
+		setStateForSearchResults(listOfLargeDataset)
+	})
+}
+
+--------- NOTE : ONE THING TO KEEP IN MIND IS TO BE CAREFUL WHILE USING TRANSITIONS AS IT WILL INCREASE THE NUMBER OF RENDERS. REACT DOES BATCHING OF STATE UPDATES AND WILL RERENDER EVERYTHING AT ONCE AFTER UPDATING THE STATE - WHICH WILL ALL BE IN SAME CYCLE - OR ALL STATE UPDATES IN SAME RENDER... BUT IF WE USE TRANSITIONS, IT WILL FIRST DO STATE UPDATES FOR HIGH PRIORITY STATES, AND THEN CAUSE RERENDER.. AND THEN WILL DO STATE UPDATES FOR LOW PRIORITY AND THEN AGAIN RERENDER FOR IT. SO WE ARE INCREASING RENDER CYCLES AND CAUSING ONE MORE SET OF RENDER.
+
+	--- IF WE HAVE LOT OF SMALL STATE UPDATES WHICH CAN BE DONE IN  SINGLE BATCHING, WE DON'T HAVE TO USE TRANSTIONS. IF THE SETTING DATASET IN STATE IS LARGE, WHICH MAY CAUSE SOME ISSUE OF LAGGING WHILE RENDERING AND MIGHT BLOCK USER INPUTS, SO WE CAN USE TRANSITIONS HERE. 
+
+-------------------------------------------------------------useTransition Hook------------------------------------------------------------------------------
+- useTransition is a hook which lets us render a part of the UI OR MARK SOME LOGIC AS NON-URGENT OR LOW PRIORITY. So that Once all HIGH priority tasks are taken care of by React, it will complete the Low Priority.  
+- isPending - this flag tells us whether the transition(NON URGENT/LOW PRIORTY TASK) is pending or not.
+- startTransition - this function lets us create actions.   
+ 
+- FOR EXAMPLE - 
+	- const [isPending, startTransition] = useTransition(). 
+	  const [searchText, setSearchText] = useState("")
+	 const [searchResult, setSearchResults] = useState()
+	 
+	 const handleChange = (e) => {
+		setSearchText(e.target.value) 	// THIS UPDATE IS HIGH PRIORITY BY DEFAULT
+		startTransition(() => {
+			const searchDataList = doAPICall()
+			setSearchResults(searchDataList)
+		})		
+	 }
+
+		return ( <>
+				<input type="text" value = {searchText} onChange={handleChange}>
+					{isPending ? "Loading search results......" :  <Search Results List>
+					</>)
+	
+	///// startTransition can have multiple actions. 
+	 function onSubmit(newQuantity) {
+    startTransition(async function () {
+      const savedQuantity = await updateQuantity(newQuantity);
+      startTransition(() => {
+        setQuantity(savedQuantity);
+      });
+    });
+  }
+  
+  
+  
+  
+  

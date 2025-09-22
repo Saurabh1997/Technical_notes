@@ -1,0 +1,23 @@
+------------------------------------------------------------DICOM-------------------------------------------------------------------------
+Digital Imaging and communication in medicine - DICOM STANDARDS - this is technical standard for the digital storage and transmission of medical images. 
+
+- it includes file format definition. structure of a DICOM file as well as communication protocol used for transmission of medical image. 
+- its purpose is to facilitate communication between software and hardware of medical industry - especailly created by different manufactures. 
+- Entities that utilize DICOM are imaging machines, radiology information systems, scanners, printers.
+- NEMA - NATIONAL ELECTRONICS MANUFACTURERS ASSOCIATION HOLDS COPYRIGHT FOR DICOM. 
+- Its used worldwide to store, exchange and transmit medical images. IT ENCORPORATES STANDARDS FOR IMAGING MODALITIES SUCH AS RADIOGRAPHY, ULTRA SONOGRAPHY, COMPUTED TOMOGRAPHY (CT) AND MAGNETIC RESONANCE IMAGING(MRI) AND RADIATION THERAPY, ANGIOGRAPHY, MAMMOGRAPHY, ENDOSCOPY, MICROSCOPY, OCT - OPTICAL COHERENCE TOMOGRAPHY. 
+
+-- WHY DICOM WAS released - because in begining of 1980s - it was difficult to decode the images that machine generated except by manufactures and the radiologists n other physicists wanted to use the images for planning doses of radiation therapy. so ACR - american college of radiology and NEMA collaborated and n formed a standard committe in 1983 and first DICOM standard was released in 1985. 
+
+------DATA FORMAT OF DICOM------ 
+	DICOM GROUPS information into DATASETs. So a file of chest x-ray will also have patient ID associated with it so that it would never get seperated from the image.  
+		file extension - .dcm
+		internet media type - application/dicom . uniform type identifier - org.nema.dicom. 
+	
+------------------------------------------------------------OHIF---------------------------------------------------------------------------
+Open Health Imaging foundation - OHIF Viewer is a open source, web-based medical imaging platform. 
+	- it provides a core framework for building complex imaging applications. 
+	- its designed to load large radiology studies as quickly as possible. Retrieves metadata ahead of time n streams in imaging pixel data. 
+	- Leverages cornerstone 3D for decoding, rendering medical images. 
+	- Works out of box with Image archives that support DICOMWEB. 
+	- reusable UI components library built with ReactJS and Tailwind.  

@@ -1,113 +1,199 @@
---------------NEXTJS--------------------
+--------------------------------------------------------------------NEXTJS-----------------------------------------------------------------------------------
 
--- NextJS is a full stack framework. both are deployed in a single instance.. Both front end and backend can be served from the same instance. 
+-- NextJS is a full stack framework. REACTJS FRAMEWORK. both are deployed in a single instance.. Both front end and backend can be served from the same instance. 
 -- We can have single codebase for both. No Cors issues. 
 
+-------------------------------------------------Reasons to use NextJS Over reactjs--
+	1. Waterfalling - 
+			initial rendering is slow as whenever we hit a particular link, first the CDN sends HTML Page..
+			and then the JS file mentioned in script tag is sent by server.. then we do authentication and based on that client renders.. this condition is kinda waterfalling. 
+			we have lot of round trips that are happening sequentially. 
+			NOTE: IN REACTJS - WE MAKE BUILDS OF THE JSX FILE AND ITS WRAPPED INTO HTML FILE WHICH HAS JS FILE IN ITS SCRIPTS.. WHICH DOES OUR REACT CODE. 
+		NOTE: WHAT IF IN A SINGLE REQUEST, WE GET A INITIAL RENDERED PAGE. this is provided by nextjs. 
+	2. No JS - sometimes when we want to send email as an HTML page, we are not allowed to use JS in there.. as mail providers block JS execution for security reasons. 
+	3. Not SEO optimized initially - Search engines scraps website through HTML page only and not js. 
+					GOOGLE LISTS WEBSITE BASED ON THE INFO THAT IT GETS FROM HTML AND NOT JS.  initially this used to happen but now web crawlers of google have become much more advanced. if ours is a course selling website, if initial html doesn't have courses , then it wont be be able to recoginize if its a course selling website. 
+					IT RANKS IT ON GOOGLE BASED ON THE HTML IT GETS BAC. CRAWLERS DONT RUN OUR JS FILE TO RENDER OUR PAGE TO SEE FINAL OUTPUT. 
+	4. Seperate front/backend code - We have to create seperate frontend and backend.
+	5. No react-router-dom inclusion - React doesn't provide react router-dom by default.. we have to add it. 
+	6. we have SSR and CSR in nextjs. 
+	7. also supports CSS modules like tailwind css.
+	8. ALSO INCLUDES OPTIMIZATIONS FOR IMAGES, FONTS, SCRIPTS 
+	9. Dev and production build system. 
 
-Reasons to use NextJS Over reactjs--
-1. Waterfalling - 
-		initial rendering is slow as whenever we hit a particular link, first the CDN sends HTML Page..
-		and then the JS file mentioned in script tag is sent by server.. then we do authentication and based on that client renders.. this condition is kinda waterfalling. 
-		we have lot of round trips that are happening sequentially. 
-		NOTE: IN REACTJS - WE MAKE BUILDS OF THE JSX FILE AND ITS WRAPPED INTO HTML FILE WHICH HAS JS FILE IN ITS SCRIPTS.. WHICH DOES OUR REACT CODE. 
-	NOTE: WHAT IF IN A SINGLE REQUEST, WE GET A INITIAL RENDERED PAGE. this is provided by nextjs. 
-2. No JS - sometimes when we want to send email as an HTML page, we are not allowed to use JS in there.. as mail providers block JS execution for security reasons. 
-3. Not SEO optimized initially - Search engines scraps website through HTML page only and not js. 
-				GOOGLE LISTS WEBSITE BASED ON THE INFO THAT IT GETS FROM HTML AND NOT JS.  initially this used to happen but now web crawlers of google have become much more advanced. if ours is a course selling website, if initial html doesn't have courses , then it wont be be able to recoginize if its a course selling website. 
-				IT RANKS IT ON GOOGLE BASED ON THE HTML IT GETS BAC. CRAWLERS DONT RUN OUR JS FILE TO RENDER OUR PAGE TO SEE FINAL OUTPUT. 
-4. Seperate front/backend code - We have to create seperate frontend and backend.
-5. No react-router-dom inclusion - React doesn't provide react router-dom by default.. we have to add it. 
+---------------------------------------------------------------------------for SEO------------------------------------------------------------
+WE CAN ALSO PUT TEXT IN META TAG. but everytime we will have to put meta tag, as our application grows. 
 
--------------------for SEO-----------------
-WE CAN ALSO PUT TEXT IN META TAG. but everytime we will have to put meta tag, as our application grows. f
+-------------------------------------------------------------Server side rendering-----SSR ------------------------------- 
+	1. to avoid waterfalling - in SSR, the html page is first rendered on the server side and then is sent as a field HTML page to the client. 
+	2. low bundle size - also it can load libraries on the server side itself to reduce bundle size which is not required to be sent to the client. 
+	3. Direct access to backend - as backend is closer to the server it can directly query backend services to get the data hence minimizing latency issues. 
+	4. No need of express - as we can directly write http backend routes in nextjs app.  
 
-Solution to all of this: 
-----------Server side rendering - SSR - 
-1. to avoid waterfalling - in SSR, the html page is first rendered on the server side and then is sent as a field HTML page to the client. 
-2. low bundle size - also it can load libraries on the server side itself to reduce bundle size which is not required to be sent to the client. 
-3. Direct access to backend - as backend is closer to the server it can directly query backend services to get the data hence minimizing latency issues. 
-4. No need of express - as we can directly write http backend routes in nextjs app.  
+	Disadvantages of SSR -
+	1. Subsequent rendering happens on the client side only initial rendering happens on the server side. 
+	2. SSR doesn't understand state variables and hooks as its rendered on the server side.. it just takes the initial value set during useState declaration and wraps it into html page and then sends it to the client. 
+	3. SSR doesn't have access to browser objects, window objects and localStorage as this is only available on the browser side. 
+	4. cannot do lazy loading in ssr. 
 
-Disadvantages of SSR -
-1. Subsequent rendering happens on the client side only initial rendering happens on the server side. 
-2. SSR doesn't understand state variables and hooks as its rendered on the server side.. it just takes the initial value set during useState declaration and wraps it into html page and then sends it to the client. 
-3. SSR doesn't have access to browser objects, window objects and localStorage as this is only available on the browser side. 
-4. cannot do lazy loading in ssr. 
 
-FOR THE INITIAL RENDER IN SSR, IF WE HAVE DATA COMING FROM API, THERE WILL BE A SLIGHT DELAY UNTIL THE DATA COMES FROM SERVER.
-TO REDUCE THIS, We can implement "getServerSideProps" function with export default and return the data as props in the same file which is going to be rendered on initial load. 
-
-	export default function getServerSideProps (){
-	
-	const data = doAPICalling()
-	return {props : {data } }
-	}
-	and the component can get the data in its props. now the data is fetched on server side and is rendered 
-
------------DEPLOYMENT OF NEXTJS----------------------
+-------------------------------------------------------DEPLOYMENT OF NEXTJS---------------------------------------------------------
 - For ReactJS, we do npm run build and the html, JS, CSS files are uploaded in S3 bucket and we give the url to CDN for caching purpose.
 - CDN is distributed network of server for caching purpose and delivering static content to users... 
 - We cannot DO CDN for NEXTJS as there is backend as well.. We are delivering 2 things - JSON as well as HTML. 
 - WE CAN DEPLOY NEXTJS APP ON EC2 MACHINE OR EDGE NETWORKS. 
 
-----------NEXTJS OFFERINGS-----------
--  Server side rendering to avoid waterfalling problem.
-- Single codebase will include frontend and backend. 
-- File based routing (no need to react-router-dom)
-- bundle size optimizations (low bundling size), static site generation
-- managed by vercel whivh is a dedicated team. 
-
-DOWNSIDE - 
+--------------------------------------------------------DOWNSIDE TO USING NEXTJS---------------------------- 
 Can't be distributed via CDN as its a server side rendering.. always needs a server running that does SSR.
 opinionated n hard to move out of it. 
 
-NextJS 13 - Based on the file structure in app folder, we have routes. 
-/[courseId].tsx - file name can get the data of route/:courseId in  useParams hook.
-
-use client - in nextjs 13.. 
-we mention use client at the beginning of the file.. even if we are doing ssr to define what logic has to be done in the client side. 
-
-NOTE: Always implement cookie based authentication if we have to render the data based on login and reduce the initial render time.  
-
-------------------Server side rendering---------------------
-In React, initial HTML that we get from server doesn't have any content which can be used by Google crawlers to see if its a site related to course selling. 
-That's why its not SEO optimized. 
-Wherease in NEXTJS, INITIAL HTML THAT WE GET FROM SERVER - is SEO OPTIMIZED. WE GET ALL THE DETAILS THAT CAN BE USED BY GOOGLE CRAWLERS to know that this site is related to that specific course. 
--- GOOGLE RANKS THE WEBSITE BASED ON THE CONTENT THAT THAT INITIAL RENDER RETURNS FOR EACH SITE. 
--- The content is actually rendered on server and then client is sent the actual HTML code. 
-
--------------------CLIENT SIDE RENDERING---------------------------
+---------------------------------------------------------CLIENT SIDE RENDERING----------------------------------------------------------------------------
 In Nextjs, pages are rendered on the client side directly.. 
 Sometimes they can also be pre-rendered on the server and hydrated on the client. 
 
 - HYDRATED ON THE CLIENT - Process of attaching EVENT HANDLERS/ JAVASCRIPT BEHAVIOR TO THE HTML ELEMENTS.
 - Client Components are RENDERED ON SERVER SIDE AND CONVERTED TO HTML. this are rendered on server side and converted to HTML for FASTER LOAD DURING THE FIRST LOADING. 
-- 
 
-------------------------------------------nextjs setup-----------------------------
+------------------------------------------------------------TURBOPACK-----------------------------------------------------------------------------
+	- Rust based incremental bundler used to make local development and builds faster - for react based application. this is used to push the performance of NextJS. 
+	- Turbo pack bundles in dev in an optimized manner to keep large apps fast. 
+	- it provides fast refresh - updates JS, TS, CSS without a full refresh. 
+	- it does lazy bundling - only bundle what is requested by the dev. this reduces memory usage and compile times. 
+	- CURRENTLY DEV IS STABLE, BUILD IS IN alpha. next dev --turbopack / next build --turbopack.  
+
+------------------------------------------------------NEXTJS SETUP---------------------------------------------------------
 
 npx create-next-app@latest 
 
-------------file structure--------------------
-
+---------------------------------------file/folder structure-------------------------------------------------------------
+- tsconfig.json - typescript config file. 
+- eslint.config.js - for eslint config
+- postcss.config.js - tailwind processor
 - tailwind.config.js - config file for tailwind. it already has all the paths configured where tailwind classes might be present. 
 - next.config.js - used for transpiling the project. 
+- next-env.d.ts - typescript declaration for nextjs. 
+-----------folders------------
 - app folder - write all the code. it has a file based routing.  the way we create folders and files will be translated to routes. 	
+- .next folder - gets created when we either run or build the project. ITS WHERE OUR NEXTJS APP GETS SERVED FROM. 
+- app/ page.tsx -  our main home component. 
+	
+--------------------------------------------------------CLIENT AND SERVER COMPONENTS------------------------------------------------------
+	-- 2 types of components - 
+		- Client side - client components are pushed for the client to be rendered.
+		- Server side - server side components are rendered on the server.. and then sent to client. 		
+	-- BY DEFAULT ALL COMPONENTS ARE SERVER SIDE RENDERED. TO MARK A COMPONENT TO BE A CLIENT SIDE, ADD FOLLOWING ON TOP OF THE COMPONENT - 
+		"use client". 
+	
+	--- SERVER COMPONENTS --------
+		- These components can perform server side operations like DB query operations - fetching, reading files.
+		- We can make server components as Async. 
+		- Tradeoff - is they can't use react hooks or handle user interactions. 
+		
+		Adding a normal button onclick handler will give us big error. 
+			-- Error as "Error: Event handlers cannot be passed to client component props."
+			-- NextJS expects us to identify all our components as either server or client. 	
 			
-----------Routing in NEXTJS File based routing---------
+		--REASON FOR ONCLICK HANDLER ERROR - 
+			-- a normal button onclick handler will give error as we can't really simulate a click in server side. because they can't handle client side interaction.. and server side components are specifically used to render HTML on the server.  then have to make signin/signup a client side component using "use client". 
+			-- onclick are not allowed to be part of the server side rendering process because they are used for client side interaction.. which is not part of server side rendering process. 
+			-- the page with button onclick handler, will have to put "use client" to make it a client based component. 
+			
+	---- CLIENT COMPONENTS ------		
+		- WE use "use client" directive at the top of the component. 
+		- They are traditional react components
+		- They can't perform server side operations like DB operations, file read, can use hooks n handle user interactions. 
+		-- REASONS TO CREATE A CLIENT COMPONENT - 
+			1. Whenever we get an error that tells us that we need to create a client component. 
+			2. Whenever we are using something that server doesn't understand - useState, useEffect.. onclick. State needs to be stored in the client.. Onclick - button can't be clicked on server side.. useEffect - this also has dependency on client side. 
+		everything shouldn't be a client side component. 	
+
+	- Work with server components that wait for certain operations to complete before rendering content. Use Client components where we need to use hooks from routing modules. 
+	- Use client when using hooks. 
+-------------------------------------Routing in NEXTJS File based routing--------------------------------------------
+NextJS 13 - Based on the file system structure in app folder, we have routes. 
+
+-- 	ROUTING CONVENTIONS IN NEXTJS ----------------
+	 - All Routes live inside app/ folder. 
+	 - Routes files must either be named as page.tsx/page.js 
+	 - Each folder represents a segment of the URL path. 
+
+---------------------------------------------ROUTING----------------------------------------------------
+NEXTJS USES FILE SYSTEM BASED ROUTER.  NEXTJS will only make the route public if we add page.jsx/page.tsx file in that folder. REACT COMPONENT SHOULD BE A DEFAULT EXPORT. 
+We can COLOCATE ANOTHER COMPONENTS IN SAME ROUTES FOLDER WITH A DIFFERENT NAME OTHER THAN PAGE.TSX and can call this component from route. BUT IN SOME PROJECTS, WE CAN MAINTAIN A DIFFERENT COMPONENT FOLDER FOR THIS. 
+
 / - will try to find page.tsx in app folder. 
-/signup - inside signup folder, it will try to look for page.tsx. 
+/signup - inside signup folder, it will try to look for page.tsx. ROUTE WILL BE AS PER FOLDER NAME.  
+/user/register - inside app folder -> user folder -> page.tsx and then in user folder -> register folder -> page.tsx 
+/courseDetails/[courseId]/page.tsx - file name can get the data of route/:courseId in  useParams hook.            - /courseDetails/1
+/courseDetails/[courseId]/modules/[moduleId]/page.tsx - nexted route for 										- courseDetails/1/modules/2					
+/docs/[...topics]/page.tsx -- THIS WILL BE USED AS Catch All - anything after doc will be routed here.  		- /docs/topic1/topic2 
+/docs/[[...topics]]/page.tsx -- This will be used as optional catch all - will also hit requests for /docs 		- /docs 
+/%5Funderscoreroute/trial/page.tsx - %5F is url encoder for _. 													- /_underscoreroute/trial 
 
-DYNAMIC ROUTING - folder structure should be courses/[...courseId]  - /courses/1  - anything after courses will render code inside page.tsx of courseId folder.
+NOTE: IF THERE'S NO MATCHING ROUTE, WE DON'T NEED TO CREATE ERROR COMPONENT - IT WILL GIVE A RANDOM 404 PAGE BY ITSELF. 
+
+---- CATCH ALL ROUTING - folder structure should be courses/[...courseId]  - /courses/1  - anything after courses will render code inside page.tsx of courseId folder.
 				inside folder name [...courseId]/page.tsx.
-		Nextjs enables SPA - or static page. 
+	Catch all routes is usually used for documentation sites. 	
 
------------Layouts-----------
-- layout.tsx - defines metadata for our root page.tsx. where we have all main things to render. it exporting html tag and inside html, there is children element. 
-				THIS FILE IS CREATING LAYOUT FOR EVERY page that wraps every other component which we might develop. 
-			- common component that we can render for every page. for example - can render header and footer for every page		
+---- OPTIONAL CATCH ALL ROUTING - /docs/[[...topics]]/page.tsx - if there's nothing after docs in route path - then page.tsx will render for /docs - basically [[...topics]] - this is OPTIONAL even if we don't put anything after /docs - this will hit page.tsx inside [[...topics]]/ folder.  
+		
+	TO CATCH PARAMS DATA OF CATCH ALL ROUTER - 
+		const {topics} = await params  // topics will be an array here. 
+- Nextjs enables SPA - or static page. 
 
------------LAYOUTS IN A SPECIFIC SUB ROUTE----------------
+---------------------ACCESSING DATA FROM DYNAMIC ROUTE PARAMS------------------------------		
+	NOTE : TO ACCESS DATA FROM URL FROM DYNAMIC ROUTE, (FOR E.G courseId) 
+	export default async function courseDetails({params} : {params: Promise<{courseId : string}> }) {
+			const courseId =  (await params).courseId
+		
+		}
+		
+------------------------------------------------------NOT FOUND PAGE IN NEXTJS-----------------------------------------------------------------------------------
+- Nextjs has a by default not found page. but if we want custom not found page for our application - can create not-found.tsx/not-found.js in root app folder. 
+- We can either create a not-found.js/tsx file in root or SPECIFIC FOR A ROUTE by having that file inside the specific route folder.  
+
+--------calling not found programmatically--------
+	NOTE: THIS CAN BE USED IN CATCH-ALL/OPTIONAL CATCH-ALL ROUTERS - 
+		import {notFound} from "next/navigation"
+		if(propertyNotFound) {
+			notFound()
+		}
+
+	// NOT FOUND COMPONENT DOESN'T ACCEPT ANY ARGUMENT/PROPS, BUT IF WE WANT SOME DYNAMIC DATA TO BE SHOWN IN NOT FOUND WE CAN PASS IT THROUGH ROUTE PARAMS AND CAN USE "USEPATHNAME" HOOK FROM NEXT/NAVIGATION. 
+	
+		"use Client" 		// as below hook can only be called on client side. 
+		import {usePathName} from "next/navigation"
+		
+		
+-----------------------------------------------------PRIVATE FOLDER-------------------------------------------------
+	If we don't want to include any folder and its subfolders in routing systems . can ADD UNDERSCORE AT START OF THE FOLDERNAME 
+- for example - _lib/dateUtils.ts
+	--- why this is used - 
+		- Keeping UI logic seperate from routing logic. Can organize internal files in project. 
+	
+	- NOTE: IF WE REALLY WANT _ IN ROUTE, CAN START FOLDER NAME WITH %5F - WHICH IS URL ENCODED VERSION OF UNDERSCORE. 
+
+-----------------------------------------------------ROUTE GROUPING/MERGING ROUTES----------------------------------------------------	
+IF WE WANT TO GROUP SIGN IN AND SIGNUP ROUTE IN ONE FOLDER.. AND WE WANT TO IGNORE THE FOLDER NAME while routing - use (). 
+There are 2 options --
+	1. Make a component - which we can import and reuse it in both signup and signin route..
+	2. Or create a folder auth  and shift signin and signup folder inside auth folder. 
+		and then have the layout with banner code in auth folder.. which would be applicable for both signin and signup route.. 
+		BUT THEN OUR ROUTE WOULD LOOK LIKE /auth/signin and /auth/signup...
+		
+	Instead of this, rename auth folder to (auth).. "()" will tell nextjs to ignore the this folder name.. when considering for route..
+	SO OUR ROUTE NOW WILL LOOK LIKE /signin and /signup..		
+
+----------------------------------------------Layouts-----------------------------------------------------------------------------------
+- layout.tsx - shared UI elements across pages. defines metadata for our root page.tsx. where we have all main things to render. it exporting html tag and inside html, there is children element. 
+	- EVEN IF WE DELETE THIS FILE, NEXTJS WILL AUTO GENERATE THE LAYOUT FILE. 
+			- THIS FILE IS CREATING LAYOUT FOR EVERY page that wraps every other component which we might develop. 
+			- common component that we can render for every page. for example - can render header and footer for every page	
+			- EVERY Layout file has to have a children component as a props that it accepts and can render it - which is our actual component that will be rendering. 
+			- WILL MOUNT ONLY NEW COMPONENTS AND KEEP LAYOUT - HTML ELEMENTS INTACT. They won't remount shared components which leads to better performance
+
+---------------LAYOUTS IN A SPECIFIC SUB ROUTE----------------------------------
 Layouts in a specific route - if we want all routes in a specific route "/courses/" anything - to have a specific banner or header in all route inside /courses. 
 		THEN IN THAT SPECIFIC FOLDER, JUST CREATE A LAYOUT.TSX AND INSIDE LAYOUT.TSX - JUST RETURN THAT BANNER DIV. ALSO RENDER CHILDREN AFTER OUR COMPONENT. 
 	courses	
@@ -126,45 +212,185 @@ Layouts in a specific route - if we want all routes in a specific route "/course
 				</div>
 			}
 			
---------------MERGING ROUTES----------------------IF WE WANT A LAYOUT IN 2 OR MORE ROUTES-----------------------
-We want some text/component/banner to render in 2 seperate routes.. signin and signup.. 
+------------------------------------------MULTIPLE ROOT LAYOUTS - for avoid root layout for specific routes-------------------------------------------------------
+If we want to avoid layout for specific routes - we can shift different layout.tsx and page.tsx in that specific route folder and other layout.tsx and page.tsx in other folder. 
 
-There are 2 options --
-	1. Make a component - which we can import and reuse it in both signup and signin route..
-	2. Or create a folder auth  and shift signin and signup folder inside auth folder. 
-		and then have the layout with banner code in auth folder.. which would be applicable for both signin and signup route.. 
-		BUT THEN OUR ROUTE WOULD LOOK LIKE /auth/signin and /auth/signup...
-		
-	Instead of this, rename auth folder to (auth).. "()" will tell nextjs to ignore the this folder name.. when considering for route..
-	SO OUR ROUTE NOW WILL LOOK LIKE /signin and /signup..
+------------------------------------------ROUTING METADATA-----------------------------------------------------------------
+- Metadata API lets us define metadata for each page. Its very useful for indexing by search engines or making sure content looks good when shared. ALSO WEB CRAWLERS OF SEARCH ENGINE SHOULD BE ABLE TO FIND our APP PAGE BASED on Metadata. 
+
+- 2 ways to handle Metadata in NextJS - export a static metadata object and export a dynamic generateMetadata() function . 
+- Rules of Metadata - 
+	- Both layout.tsx and page.tsx can export Metadata. Layout metadata applies to all the routes for the specific folder that its defined in. 
+	- follow a top down approach - starts from root level.
+	- When metadata exists for both layout and page.tsx, IT GETS MERGED OVERRIDING LAYOUT METADATA. 
 	
------------------COMPONENTS DIRECTORY---------------------------------
+	export const metadata: Metadata = {
+		title: "My App",
+		description: "generated by nextjs app"
+	}
+	
+	
+	--------------DYNAMIC METADATA-----------------------------------------------------------------
+		based on productId, we want to have metadata 
+		
+		export const generateMetadata({params}: {params: Promise<{productId : string}>}): Promise<Metadata> {
+			const {productId} = await params 
+			const description = await fetchAPICall()
+			
+			return {
+				title : `ID of product ${productId}`
+			}
+		
+		}
+	
+	NOTE: CANNOT USE BOTH METADATA OBJECT AND GENERATE METADATA IN SAME ROUTE SEGMENT.
+	note: metadata won't work with client components. WE CAN DO METADATA CREATION IN PAGE.TSX AND THEN CALL CLIENT COMPONENT IN IT.. 
+	
+	--- why metadata doesn't work with client components - Because SEOs usually access initial HTML page and with client components, we don't have much content in initial HTML page - by generating metadata on the server - IT ENSURES THAT ITS PROPERLY INDEXED and available.
+
+----------------------------------------------TITLE METADATA-----------------------------------------------------------------
+	- Each title in metadata is used to name the page/document page title. 
+	- Title in metadata can either be a PLAIN STRING OR AN OBJECT. 
+	
+	Each Metadata in title consists of 3 PROPERTIES - default, template, absolute 
+		export const metadata: Metadata = {
+			title: {
+			default : "NextJS Documentation - default metadata"
+			template : "%s | NextJS Documentation - customized title based on route name - for adding prefix suffix",
+			absolute: "Blog - my own document title"
+			},
+			description: ""
+		}
+		
+	default - if we want default metadata title for other pages where we don't have any metadata. 
+	template - if we want to add any prefix or suffix to our main title - can do so by adding template "%s" - it will be replaced by the actual route segment.
+	absolute - IF WE WANT TO IGNORE THE METADATA set by root page/layout.tsx, we can just override it by mentioning here in absolute in child route page/layout.tsx
+	
+-----------------------------------------------NAVIGATION-----------------------------------------------------
+-- Client side navigation - We have <Link> component  to import from next/link and it extends the HTML <a> tag element to navigate between routes. 
+import Link from "next/link"
+
+<Link href = "/about"> About </Link>
+<Link href = "/" replace>Home</Link>
+		
+		-- replace - it just washes entire history/history of back button - and if you press back button of browser, it will go to home page.
+	
+---------------NAVIGATING USER ON A BUTTON CLICK-----------------------
+	------useRouter works only in a client side component. 
+import {useRouter} from "next/navigation";
+
+export function Signup() {
+const router = useRouter(); 
+
+return (
+<div>
+	<button onClick={async ()=> {
+	await axios.post("http:localhost:3000/api/user")
+	router.push('/')  // to navigate to / route. 
+	}}></button>
+	</div>
+	)
+}
+
+--- router.replace("/") - cleans the entire history stack. similar }
+--- router.back() - to go back in history 
+--- router.forward() - to move forward in history. 
+
+------------redirection in server components-------------------
+			-- ROUTING IN SERVER SIDE COMPONENTS-------------
+			
+	import {redirect} from "next/navigation" 
+	
+	onCLick = () => { 	redirect("/home")			`}
+	
+---------------------------------params and searchParams------------------------------------
+Params - promise that resolves to an object containing dynamic route parameters (like id)
+
+SearchParams - promise that resolves to object containing query parameters like sorting and filtering. 
+
+
+ --- page.tsx has access to params only and not searchParams. 
+ 
+---------------------------------use hook------------------------------------------------------------------
+	to ACCESS PARAMS AND SEARCHPARAMS, WE USE ASYNC AWAIT BUT THEN WE HAVE TO MAKE COMPONENT AS ASYNC AND THIS CAN only be helpful in SERVER SIDE COMPONENTS. 
+	Hence, TO DO THE SAME IN CLIENT SIDE COMPONENTS - 
+		
+		import {use } from "react".
+		const {id} = use(params) 
+		
+---------------------------------TEMPLATES------------------------------------------------------
+-- in layouts, - it MOUNT ONLY NEW COMPONENTS AND KEEP LAYOUT - HTML ELEMENTS INTACT. They won't remount shared components which leads to better performance.
+				- templates is similar to layouts, n shares common UI components but we get a fresh start while navigating - 
+						- can be useful where we need a fresh start n new template component is mounted.
+						- DOM elements are recreated.
+						- state is cleared.
+						- effects are resynchronized. 
+	- We create template by exporting a react component in template.tsx/js 
+			
+	- Like Layouts, templates also have to accept a children prop to render the nested route segments.  
+	
+	- LAYOUTS CAN BE USED ALONGWITH TEMPLATE. Layouts are the parent to templates and page component. if page component change, templates are remounted. 
+	
+
+-------------------------------------------LOADERS IN NEXTJS-------------------------implement loading.tsx-------------------------------------------------------------------
+- In any specific route, if we think any thing is going to take some time to load, we can have a "loading.tsx" file in that route.. and for that route, the code inside loading.tsx will get rendered till we have something to load. 
+- loading.tsx by default wraps the page.tsx and its nested component within a suspense boundary 
+
+- NEXTJS KEEPS SHARED LAYOUT INTERACTIVE  while new content loads. 
+
+-------------------------------------------Errors in NEXTJS - error.tsx -----------------------------------------------------------------------------------
+Error.tsx - is used for error handling - unhandled runtime error, API errors. It acts as a ErrorBoundary function 
+	NOTE : it must be a client component - "use client" at the top. 
+	
+	"use client"
+	
+	export default function ErrorBoundary() {
+	return	<div>Error </div>
+		}	
+		
+	- IT AUTOMATICALLY WRAP ALL ROUTE SEGMENTS AND THEIR NESTED CHILDREN AS REACT ERROR BOUNDARY. 
+	- can create custom UI errors for specific segments using the file system.
+	- it also isolates errors to affected segments while keeping rest of the application functional. 
+	- IT ENABLES US TO ATTEMPT TO RECOVER FROM ERROR WITHOUT REQUIRING A FULL PAGE RELOAD. 
+	
+	
+	------RETRY option in ERRORBOUNDARY COMPONENTS ---
+		
+		- USED TO RETRY RERENDERING CLIENT SIDE.  BUT IF THE ERROR IS HAPPENING ON THE SERVER SIDE - No matter how many times we retry rerendering client - it will give the same Error. 
+		- TO Recover from the Server side, we can use startTransition From React and useRouter from NEXTJS. 
+	
+		export default function ErrorBoundary({error, reset} : { error: Error, reset: ()=> void}) {
+			return	<div>{error.message}
+				<button onClick={()=> reset()}> /// 	RETRY OPTION FOR TRYING TO RERENDER THE COMPONENT. 
+			</div>
+		}	
+	
+	
+------------------------------------------SPECIAL FILES IN NEXTJS and COMPONENT HEIRARCHY IN NEXTJS-----------------------------------------------------	
+	<Layout> 							// Layout.tsx
+		<Template> 						// template.tsx
+			<ErrorBoundary fallback={<Error/>}>						// Parent - error.tsx
+				<Suspense fallback={<Loading/>}> 					// Loading coming from loading.tsx
+					<ErrorBoundary fallback={<NotFound/>}>			// ERROR BOUNDARY FOR MISSING RESOURCES
+						<Page/>										// 
+					</ErrorBoundary>
+				</Suspense>  
+			</ErrorBoundary> 			
+		</Template>						
+	
+	</Layout>
+	page.tsx
+	layout.tsx
+	template.tsx
+	loading.tsx
+	not-found.tsx
+	error.tsx
+	
+------------------------------------------COMPONENTS DIRECTORY---------------------------------
 Instead of having all components inside app/routes/....., we should make a components folder inside root directory outside app folder and inside components folder, we can have all the components. 
 We can also have some other folder, but then we will have to configure the folder name in tailwind.config.js to include css in that folder also.
 
 NOTE : ALWAYS HAVE ALL THE COMPONENTS INSIDE COMPONENTS FOLDER AND IMPORT IT IN /app folder to render it into specific routes..page.tsx. 
-
------------------CLIENT AND SERVER COMPONENTS-------------------------------------
-Adding a normal button onclick handler will give us big error. 
-	-- Error as "Error: Event handlers cannot be passed to client component props."
-	
-	-- NextJS expects us to identify all our components as either server or client. 
-	-- 2 types of components - 
-		- Client side - client components are pushed for the client to be rendered.
-		- Server side - server side components are rendered on the server.. and then sent to client. 
-		
-	-- BY DEFAULT ALL COMPONENTS ARE SERVER SIDE RENDERED. TO MARK A COMPONENT TO BE A CLIENT SIDE, ADD FOLLOWING ON TOP OF THE COMPONENT - 
-		"use client". 
-	
---REASON FOR ONCLICK HANDLER ERROR - 
-	-- a normal button onclick handler will give error as we can't really simulate a click in server side. because they can't handle client side interaction.. and server side components are specifically used to render HTML on the server.  then have to make signin/signup a client side component using "use client". 
-	-- onclick are not allowed to be part of the server side rendering process because they are used for client side interaction.. which is not part of server side rendering process. 
-	-- the page with button onclick handler, will have to put "use client" to make it a client based component. 
-	
--- REASONS TO CREATE A CLIENT COMPONENT - 
-	1. Whenever we get an error that tells us that we need to create a client component. 
-	2. Whenever we are using something that server doesn't understand - useState, useEffect.. onclick. State needs to be stored in the client.. Onclick - button can't be clicked on server side.. useEffect - this also has dependency on client side. 
-everything shouldn't be a client side component. 
 
 ----------------CSR VS SSR VS SSG (static site generation)----------------------------
 -- CSR - client side rendering - rendering of a webpage is done on browser using Javascript. instead of server sending a full fledged rendered HTML page to client. 
@@ -229,9 +455,19 @@ IT SHOULD BE RENDERED ONCE ONLY ON THE SERVER AND THAT RENDERED LANDING PAGE SHO
 	PREVIOUS versions of nextjs - we can do getStaticPaths 
 	new version - generateStaticParams 
 		
-		
 
--------------------------DATA FETCHING------------------------------------------------
+----------------------------------GET SERVER SIDE PROPS-------------------------------------------------------------------------------------------------
+-----FOR THE INITIAL RENDER IN SSR, IF WE HAVE DATA COMING FROM API, THERE WILL BE A SLIGHT DELAY UNTIL THE DATA COMES FROM SERVER.
+TO REDUCE THIS, We can implement "getServerSideProps" function with export default and return the data as props in the same file which is going to be rendered on initial load. 
+
+	export default function getServerSideProps (){
+	
+	const data = doAPICalling()
+	return {props : {data } }
+	}
+	and the component can get the data in its props. now the data is fetched on server side and is rendered 
+
+-------------------------------------------------DATA FETCHING--------------------------------------------------------------------------
 In client side, we can do fetching in useEffect but that is not SEO optimized.. as we don't have rendered data on first load. 
 WE CAN USE CDN FOR CLIENT SIDE RENDERING.   
 
@@ -260,16 +496,13 @@ WE CAN USE CDN FOR CLIENT SIDE RENDERING.
 		</div>	
 	}
 	
-----BEFORE NEXTJS 14 - 13 - DATA FETCHING -----
+--------BEFORE NEXTJS 14 - 13 - DATA FETCHING -----
 getServerSideProps() - 
 export default function getServerSideProps (){
 	const data = doAPICalling()
 	return {props : {data } }
 	}
 	and the component can get the data in its props. now the data is fetched on server side and is rendered 
-
--------------------------------LOADERS IN NEXTJS-------------------------implement loading.tsx------------ 
-- In any specific route, if we think any thing is going to take some time to load, we can have a "loading.tsx" file in that route.. and for that route, the code inside loading.tsx will get rendered till we have something to load. 
 
 --------------------------------------API ROUTES----------------------------------------------------
 - IF A WEBSITE IS NOT HAVING ANY API CALLS TO GET SOME DATA.. AND ONLY NETWORK REQUEST IS FOR GETTING RENDERED HTML, THEN ITS USING NEXTJS. 
@@ -326,25 +559,6 @@ We can directly fetch all the data in the UI component only.. AND THIS WILL HAPP
 	and in async UI component, 
 		const data = await fetchData()
 		
-		
-
-	
----------------NAVIGATING USER ON A BUTTON CLICK-----------------------
-import {useRouter} from "next/navigation";
-
-export function Signup() {
-const router = useRouter(); 
-
-return (
-<div>
-	<button onClick={async ()=> {
-	await axios.post("http:localhost:3000/api/user")
-	router.push('/')  // to navigate to / route. 
-	}}></button>
-	</div>
-	)
-}
-
 --------------------INTRODUCING PRISMA IN NEXTJS APP----------------ITS STRAIGHTFORWARD ONLY------------
 npx prisma init 
  - prisma folder will be created in root directory. 
@@ -423,7 +637,7 @@ For example, there is a signup post API.. instead of API call,
 	Client UI page nextjs will understand that signup function is a server side server action and will call the API /user/signup.
 		
 
-------------MIDDLEWARES IN NEXTJS--------------------
+------------------------------------------------------------MIDDLEWARES IN NEXTJS---------------------------------------------------------------
 
 MIDDLEWARES are generally used to run some operation before or after request is completed. For example for stuff like - Analytics, Authentication, logging, redirection, modifying request and response headers. 
 
@@ -462,3 +676,8 @@ We can break down functions in different files and then import them in middlewar
 	}
 	
 	
+---------------------------------------------------------------------------------------------------------------------------------------------------
+use client - in nextjs 13.. 
+we mention use client at the beginning of the file.. even if we are doing ssr to define what logic has to be done in the client side. 
+
+NOTE: Always implement cookie based authentication if we have to render the data based on login and reduce the initial render time.  

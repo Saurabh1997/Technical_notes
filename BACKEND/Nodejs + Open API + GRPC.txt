@@ -150,6 +150,11 @@ THREADS ARE HELPFUL FOR PERFORMING CPU INTENSIVE TASKS.
 
 ----------------USING CLUSTER MODULE, - WE CAN SPAWN MULTIPLE NODEJS PROCESS RUNNING THEIR OWN EVent loop and having own memory data. 
 
+-----------------------------CLUSTERING IN NODEJS-------------------------------------------------------
+Since nodejs runs on a single threaded event loop. we are not able to fully utilize our multipe core CPUs. So we can use clustering for fully utilizing all the cores of the CPU. 
+	We can spawn multiple child processes each running as its own independent instance.  A MASTER PROCESS IS RESPONSIBLE FOR MANAGING WORKER PROCESS.. AND DISTRIBUTE THE WORKLOAD AMONG THE WORKERS. THIS PROCESSES CAN RUN ON SAME SHARED PORT.   
+
+
 -----------------------------STREAMS IN NODEJS-------------------------------------------------------
 
 Stream is an abstract interface for working with streaming data in nodejs. 

@@ -1,0 +1,38 @@
+Accessibility in html - web page & application accessible to everyone including people with disabilities. 
+User should be able to navigate & interact with the site. 	
+First step to accessiblity is good design and good user experience. 
+4 accessiblity issues - visual, motor, auditory, cognitive
+
+WCAG - WEB CONTENT Accessibility GUIDLINES SHOULD BE FOLLOWED.  - 4 principles to be followed - POUR 
+
+PERCEIVABLE - User should be able to understand the info being presented.
+OPERABLE - UI COMPONENTS should be easily operable - should be controllable by user. button must be clickable.
+UNDERSTANDABLE - user must be able to understand the operation of the UI. 
+ROBUST - content must be developed in such a manner  using well adopted standeards that should work across different browsers.  
+
+Web content accessiblity = to make content more accessible to people with disabilities.
+3 levels of conformance - A (min level), AA (includes A and AA) and AAA. 
+A - basic addressed issues. essential content should be accessible to broad range of users.
+AA - adding more usability for people with range of disabilities. enhanced color contrast for clear navigation.
+AAA - more usability for people with more disabilities - for audio/video sign language interpretation.   
+
+ARIA GUIDES - ACCESSIBLE RICH INTERNET APPLICATIONS - to make web  accessible to people with disabilities.  should be readable by 
+screen readers
+    aria-label - defining aria-label serves the purpose of providing an accessible name or label for an element. IT IS PART OF WAI-ARIA(Accessible rich internet applications) Suite. 
+                it aims to enhance the accessibility of web content for users with disabilities who rely on assistive devices like screen readers. 
+                used when we need to define a new label from scratch for element without a suitable visible label. 
+    aria-labelledby - When there is already visible text - can serve as accessible name for element.
+
+    for e.g :
+
+        <button aria-label="Close dialog">X</button> // HERE WE DON'T HAVE ANY VISIBLE TEXT 
+
+        <button aria-labelledby="product-title">Details</button> // HERE WE DO HAVE A VISIBLE TEXT. 
+
+
+Semantics HTML - using correct html element for correct purpose. If we need a button, use a button element not div 
+A screen reader will identify it as button. it will be focusable & clickable. 
+Semantic elements - form, table & <article>
+non-semantics - div & span
+Headers are important - Search engines use it to index the structure. 
+create good alternative text (alt) = alternative text for the image. 

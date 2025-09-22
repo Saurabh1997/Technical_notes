@@ -1,0 +1,310 @@
+----------------------------------------------hoisting questions-----------------------------------------------------------------
+console.log(a);
+var a = 10;
+output - undefined. only declaration is hoisted.
+console.log(y)
+y = 100
+
+OUTPUT - REFERENCE ERROR Y IS NOT DEFINED. 
+
+------------------------------------------------------------------------------------
+const x = 100
+
+function foo() {
+console.log(x)
+var x = 200;
+}
+
+foo();
+
+OUTPUT - UNDEFINED. as x is declared using var, its initialized with undefined. 
+-----------------------------------------------------------------------------------
+console.log(myFunc()) // console.log(myFunc) - this will print function definition. 
+function myFunc(){
+	console.log("calling function")
+}										// THIS WILL CALL myFunc() - calling function
+
+--------------------------------------------DUPLICATE VARIABLE FOR FUNCTION AND FUNC CALLING AT END--------------------------------------------------
+var magic = 1
+function magic() {  console.log("calling here ") }
+magic() //  									
+
+		OUTPUT : TypeError : magic is not a function. BECAUSE magic function will be hoisted first but then var magic = 1 will override it, making magic as a variable. 
+
+-----------------------------------------------DUPLICATE IN TERMS OF LET-------------------------------------------------------------------------
+let magic1 = 1
+function magic1() {  console.log("calling here ") }
+magic1()
+
+OUTPUT : SyntaxError: Identifier 'magic1' has already been declared. 
+
+--------------------------------------------------DUPLICATE FUNCTION AND VAR FUNCTION -----------------------------------------------------------------------
+zoo(); 
+function zoo() {				// THIS WILL TAKE PREFERENCE OVER VAR HOISTING. 
+  console.log("Hello");
+}
+
+var zoo = function () {		 // THIS WILL BE HOISTED AS VAR ZOO
+  console.log("Bye");		
+};								
+
+NOTE : FUNCTION DECLARATIONS WIN OVER VAR DECLARATIONS DURING HOISTING. BUT WHEN ZOO() IS CALLED, ITS STILL THE FUNCTION DECLARATION THAT WILL RUN. 
+	AND THEN ZOO WILL BE REASSIGNED BUT IT'S TOO LATE AS ZOO() IS ALREADY EXECUTED. 
+	because here we are calling zoo() first 
+------------------------------------------------------------------------------
+let a = 5;
+(function () {
+	console.log(a)
+	let a = 10
+})()
+
+	OUTPUT : referenceError: cannot access a before initialization
+	EXPLANATION: variable a is declared with let..let is hoisted but its in temporal dead zone.. until initialized. therefore accessing it will cause an error. 
+---------------------------------------------------------------------------
+
+for(var i = 0; i<3;i++) {
+	setTimeout(()=> console.log(i), 1000)
+}
+	OUTPUT - 3 3 3 
+	var is function-scoped and by the time setTimeout gets over  we get 3 value. 
+---------------------------------------USING OBJECT AS KEY FOR INSERTING AS A PROPERTY IN PLAIN JS OBJ----------------------------------------------------------
+const a = {d: 'd'}
+const b = {key: 'b'}
+const c = {key : 'c'}
+a[b] = 100
+a[c] = 200
+console.log(a[b])
+
+
+// HERE b and c are different objects which are being used as a key. JS COERCES KEY TO A STRING
+
+	so  a { "[key:'b']" :100 } 	// first statement - THIS WILL BE COERCED/CONVERTED TO [OBJECT OBJECT] : 100
+		a { "[key:'c']" :200} // second statement  -  THIS WILL BE COERCED/CONVERTED TO [OBJECT OBJECT] : 200
+
+	OUTPUT: 200 
+---------------------------------------------COPYING ONLY FUNCTION REFERENCE AND SEPERATING IT-------------------------------------
+const person = {
+    name: "Saurabh",
+    sayHi: function() {
+        console.log(`Hi ${this.name}`)
+    }
+}
+
+const greet2 = person.sayHi;
+greet2();
+
+OUTPUT: Hi undefined
+		BECAUSE HERE we are just copying the function reference but detaching it from its object person. this is undefined in strict mode. 
+	
+	IF WE WANT TO ACCESS name. we can call person.sayHi() -- this will execute the function. 
+	but - if we do const greet2 = person.sayHi() // IT WON'T ASSIGN ANYTHING TO greet2 as we don'T HAVE ANY RETURN. RETURN VALUE IS UNDEFINED
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+let user = {
+  name: "Saurabh",
+  sayHi() {
+    return () => {
+      console.log(this.name);
+    };
+  },
+};
+
+let greet = user.sayHi();
+greet();
+
+OUTPUT: Saurabh
+
+-----------------------typeof---------------------------------------------
+typeof null // object 
+typeof undefined // undefined
+typeof NaN // number
+
+-----------------------------------------NaN-----------------------------------------------------------------
+const a = NaN
+const b = NaN
+console.log(a === b)
+ // FALSE - NaN is defined as a value that is not equal to anything. IT REPRESENTS AN INVALID NUMBER RESULT- can be anything 0/0, Math.sqrt(-1)
+ 
+ const a = NaN;
+console.log(Number.isNaN(a)); // true
+---------------------------------------------------------------------------------------------
+console.log(typeof func);
+{
+  function func() {}
+}
+
+OUTPUT : in non-strict mode : function 
+		in strict mode : 'use strict' : undefined
+	IN STRICT MODE, BLOCK SCOPED FUNCTION DECLARATIONS DO NOT hoist. IN NON STRICT, THEY DO HOIST.   
+
+===============HARD=====================
+	
+	function foo() {
+	return {
+		bar: "hello"
+	}
+	}
+		  .log(typeof foo().bar)
+	
+	function foo2() {
+	return 
+	{
+		bar: "hello"
+	}
+	}
+		console.log(typeof foo2().bar)
+		
+	OUTPUT : string 
+			TypeError : can't read property 'bar' from undefined. 
+	EXPLANATION : FOR first foo() , its returning bar: string and its type is string.. but for second foo2, there's a new line so ASI AUTOMATIC SEMICOLON INSERTING WILL HAPPEN. so basically it will be return; { bar: "hello "};
+	
+	BASICALLY WE ARE RETURNING NOTHING.. so we will get TypeError : can't read property 'bar' from undefined. 
+	
+-------------------------CONCATENATIONS--------------------------------------
+console.log('5' + 1); // 51
+console.log('5' - 1);	// 4
+
++ with a string does concatenation. -
+
+-------------------------------------------------------------------------------------------
+console.log( "2" > "10")	// THIS WILL GIVE TRUE as if we compare STRINGS by <,>.. it will check char by char via unicode. so 2 => 50, 1 = 49.. so will get true
+console.log( 2 > "10")	// false -  NOW AS WE ARE COMPARING STRING WITH NUMBER, IT WILL TRY TO COERCE STRING TO A NUMBER. 
+
+--------------------------var and lets-------------------------------------------------
+
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 0);
+}
+
+OUTPUT : 3 3 3 BECAUSE VAR IS FUNCTION SCOPED SO SAME variable i is shared across all loop. 
+
+for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 0);
+}
+ 
+OUTPUT: 0 1 2 // BECAUSE LET IS BLOCK SCOPED AND EVERY SCOPE WILL HAVE OWN VARIABLE I. 
+
+--------------------------------------------------------CLOSURE TRAPS INSIDE LOOP--------------------------------------------------
+var funcs = [];
+
+for (var i = 0; i < 3; i++) {
+  funcs[i] = function () {
+    return i;
+  };
+}
+
+console.log(funcs[0]()); // ?
+console.log(funcs[1]()); // ?
+console.log(funcs[2]()); // ?
+
+// 3 3 3  as its we are defining as var. 
+
+
+for (let i = 0; i < 3; i++) {
+  funcs[i] = function () {
+    return i;
+  };
+}
+RESULT : 0 1 2 
+
+
+-----------------------------------------ARROW FUNCTIONS------------------------------------------------
+let a = 10
+const obj = {a : 20}
+const func = () => {
+	let a = 30;
+	console.log(this.a)
+}
+	func.call(obj)
+	
+OUTPUT : UNDEFINED. 
+
+	EXPLANATION : ARROW FUNCTIONS DON'T have their own this. THEY inherit it from the scope in which they are defined. NOT FROM FROM HOW THEY ARE CALLED (EVEN IF WE USE .CALL, .APPLY, .BIND)
+--------------------------------ARROW FUNCTIONS AND REGULAR-----------------------------------------------------------
+const obj = {
+  name: "Saurabh",
+  arrowFn: () => {
+    console.log("arrow:", this.name);
+  },
+  regularFn: function () {
+    console.log("regular:", this.name);
+  },
+};
+
+obj.arrowFn(); 
+obj.regularFn();
+
+OUTPUT : ARROW UNDEFINED
+			REGULAR: SAURABH
+
+------------------------------------------CLOSURES------------------------------------------------------------
+function outer() {
+  let count = 0;
+  return function inner() {
+    count++;
+    console.log(count);
+  }
+}
+
+const fn = outer();
+fn();
+fn();
+
+// OUTPUT - 1 2 INNER FUNCTION CLOSES OVER COUNT - preserving its value due to closure. 
+
+
+-----------------------------------------OBJECTS REFERENCE-------------------------------------------------------------------
+const a = { x: 1 };
+const b = { x: 1 };
+console.log(a === b);
+
+// FALSE AS OBJECT EQUALITY IS CHECKED BY REFERENCE. 
+-------------------------------------------------------------------------------------------------------------
+let f = function g() {
+	return 23
+}
+console.log(typeof g)
+
+OUTPUT: REFERENCEEORROR: g is not defined. 
+	EXPLANATION : function g is a named function expression. It is only accessible inside function itself . g is not defined - leading to a ref error. 
+	
+-------------------------------------------------------------------------------------
+(async() => {
+return await Promise.resolve(1);
+})().then((res)=>console.log(res))
+
+(async() => {return 1})().then((res)=>console.log(res))
+
+OUTPUT : 1 1
+FIRST WILL RESOLVE THE PROMISE SUCCESSFULLY AND RETURN 1 IN RESPONSE. 
+SECOND ONE ALSO WILL RESOLVE PROMISE SUCCESSFULLY BECAUSE AS FUNCTION IS ASYNC - IT AUTOMATICALLY WRAPS ITS RETURN VALUE IN A PROMISE. 
+
+
+---------------------------------------OBJECTS REF IN SETS------------------------------------------------------------
+let obj = { a: 1, b: 2 };
+let str = new Set();
+str.add(obj);
+obj = null;
+console.log(str.has(obj));
+
+	OUTPUT : false.  WHEN WE STORE AN OBJECT IN SET, IT STORES REFERENCE TO THE OBJECT, NOT OBJECT NAME or its content.. 
+	as we are reassigning obj to null here. SET STILL HAS REFERENCE TO OBJ 
+	
+	DETAIL -- 
+			obj → 0x123     , str → contains 0x123
+			WHEN WE DO obj = null, we only change obj to null, wherease Set still has 0x123
+			but when we do str.has(obj) - HERE OBJ is null. and null !=0x123 so it returns false. 
+	
+let obj = { a: 1, b: 2 };
+let str = new Set();
+str.add(obj);
+let ref = obj;
+obj = null;
+console.log(str.has(ref)); // ✅ true
+ 
+ 
+-------------------------------------------FLOATING POINT PRECISION IN JS------------------------------------------------
+
+console.log("0.56" * 100) // → 56.00000000000001 ❗
+console.log("0.59" * 100) // → 59 ✅
+console.log("0.76" * 100) // → 76 ✅
+

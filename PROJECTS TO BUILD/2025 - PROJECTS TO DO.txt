@@ -1,0 +1,31 @@
+--------------------------BETTING PLATFORM-------------------------------------------------
+
+Centralized orderbooks, async architecture, low latency platform. 
+
+kinda like Polymarket. 
+
+---------------------------ON CHAIN ORDERBOOK-----------------------------------------------
+Orderbook similar to betting platforms - but this should be on chain. not directly on L1, but on L2 as it would impact the latency. 
+
+can build on rust
+
+--------------------------LLM parsers/Agents--------------------------------------------------
+3D modelling like blender AI tool - cursor for blender. AI will execute your command - try to create a hero running on mountain. 
+
+
+
+------------------------------EASY PROJECT------------------------------------------
+1. YOUTUBE LAYER -    For uploading video on youtube - 2 logins - one main channel and other - editor permissions 
+					editor will upload video and main channel admin can see that and video is stored on aws and then its uploaded to youtube by main admin. 
+					DB n youtube key/credentials should be in AWS
+					
+					
+2. INTERNATIONALIZATION AS A SERVICE - SOME WEBSITE LETS US CHANGE LANGUAGE. its an uphill task to add this to website. New strings can get added - we need translators. 
+
+
+3. Adding OPENAI to backend - Basically User will come to chatgpt that do that stuff and this chatgpt should be able to perform some operation by hitting our backend apis  - for example - will tell chatgpt to buy shares n it will talk to zerodha / call zerodha apis to buy shares
+
+4. Adding tests to a codebase using AI.  
+
+5. Moving to NextJS 13 - do open source contribution 
+					

@@ -8,6 +8,7 @@ cons -- 1. Serverless is very expensive at scale.. as will have to pay per reque
 	can have a warm pool - configure some set of server to be always up even if there's no traffic. 
 --Famous serverless providers - AWS Lambda, Google cloud functions, Cloudfare workers.
 
+----------------------------------------CLOUDFLARE WORKERS------------------------------------
 Cloudfare workers - we create a worker - basically a function that will run on the cloud. They don't use nodejs runtime. they have some other runtime. Cloudfare worker - Own JS Runtime - basically a compiler associate. 
 	They used v8 to create their own runtime. Worker functions run on cloudfare edge network - global network of thousands of machines distributed across the world. 
 	They claim faster than AWS - V8 orchestrate isolates - which is lightweight contexts that provide our code a safe environment with variables it can access and be executed within. 	basically instead of multiple index.js for every nodejs process. a single index.js will call multiple nodejs processes... basically a routing. 
@@ -32,7 +33,7 @@ direct access to files url from S3 is a bad practice.
 PREFLIGHT REQUEST  is a CORS MECHANISM OF BROWSER - HTTP REQUEST made by browser to check if its safe to send the actual request. TO DETERMINE IF THE REQUEST (METHOD - GET, POST, PUT, DELETE) IS allowed by server or not. 
 	checks whether this request is allowed is not.. its usually cached to make it faster. 
 
-BACKEND ENGINEERING FUNDAMENTALS ---
+-----------------------------BACKEND ENGINEERING FUNDAMENTALS----------------------------
 
 1. communication protocols - TCP VS UDP. 
 tcp is stream based connectioned oriented protocol. UDP IS message based and connectionless. 
@@ -82,6 +83,7 @@ NOTE : IT IS IMPORTANT TO UNDERSTAND THE COST OF SERIALIZING AND DESERIALIZING.
 
 SSH - secure shell - tunneling connection into the system..
 IPs cannot be more than 255.255.255.255
+
 -----------------------------------------------NGINX------------------------------
 open source software for web server , reverse proxying, caching, load balancing, media based streaming - RTMP module.
 WHILE LOAD BALANCERS BALANCE ACROSS MACHINES, REVERSE PROXY BALANCE ACROSS PROCESSES IN SAME MACHINE. 
@@ -162,3 +164,34 @@ Captcha is one of the way to prevent ddos attack. After a request reaches the se
 --------Authenticator protocol---------------
 	It can be a function of user id , current time and secret key.. so otp can be generated using this and can be send to gmail. 
 	then while verifying, user can input the otp (received in mail). same function can be called in backend to verify if same otp is being generated or not. THIS WAY WE CAN IMPLEMENT 2 FACTOR AUTHENTICATION. 
+	
+	
+	
+----------------------------THINGS TO CONSIDER WHILE DESIGNING AN API-------------------------------------------
+
+1. Project structure & modularity - how to keep it. keep routes, controllers, service layer and DB logic seperate. use MVC based or service based architecture.
+2. routing naming conventions should be precise. 
+3. Request validation - validate request strucuture in proper way. use joi, zod. use typescript. use trpc - for type checking on both front end and backend. 
+4. Rate limiting - if its a sensitive api like verify otp, or login, can use rate-limiting - express rate-limiter is good library to limit each IP to few requests.
+5. Error handling - use centralized middleware for error handling and send proper appropriate http codes. 
+6. Authentication & authorization - using proper jwt or Oauth2 for authentication. RBAC (role based access control) for sensitive routes. 
+7. Pagination for large datasets. 
+8. security best practices - sanitize input to avoid sql injection/xss attacks. use https in prod, using helmet for setting secure http headers. 
+9. Use proper logging & monitoring for each api request. with morgan or winston. 
+10. use dotenv to manage secrets or env specific variable. Never hardcode secrets or config values in code. 
+11. proper API versioning  to maintain backward compatibility. 
+12. proper unit & integration testing. 
+13. Swagger documentation can do.
+14. Performance optimization can be done using caching (redis) cache for frequently accessed data. 
+	- indexing in DB queries. checking the cost of joins if we are using.. checking the cost of fetching data in DB. 
+	There's a great SQL query which we can use to check how much cost of that query is. 
+	
+
+------------------------------security practices-----------------------------------
+1. Implement proper authentication & authorization - we can use JWT or Oauth2 for authentication. 
+2. Input validation and sanitization. sanitize all the inputs using either joi or zod. 
+3. Rate limiting 
+4. secure headers - content-security-policy tool, x-frame-options - helmet.js library
+5. configure cors policy to only allow trusted domains. 
+6. hash the passwords. 
+7. disable unused http methods. 

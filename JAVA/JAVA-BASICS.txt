@@ -42,7 +42,7 @@ literals are source represenations of fixed values. used to repesent constant va
 ----------------------DATA TYPES AND WRAPPER CLASSES-------------------
 	Data TYpes - primitives 
 	Primitives - 4 types : Integer, float, boolean, char
-		Integer - int, short, byte, long , Float- float, double , Character - char , Boolean - boolean 
+	Integer - int, short, byte, long , Float- float, double , Character - char , Boolean - boolean 
 	Byte - 1 byte - 8 bits range - -2 raise to 7 to 2 raise to 7 - 1
 	Short - 2 bute - 16 bits range - -2 raise to 15 to 2 raise to 15 - 1
 	Int - 4 bytes - 32 bits range - -2 raise to 31 to 2 raise to 31 -1
@@ -477,7 +477,6 @@ NOTE: ALWAYS WARN OF EXCEPTIONS USING throws Exception.. Otherwise while compili
 to warn of exception :    void show() throws exception1, exception2 {
 								}
 
-
 			psvm() {
 				try{
 				show()
@@ -521,6 +520,7 @@ class App {
 	i.m();
 	
 ------------------------------------------------------MULTITHREADING--------------------------------------------
+ONE PROCESS ===== MULTIPLE THREADS. 
 In the same process, same task, we can divide everything into multiple subprocess and tasks into smallest unit to execute them together with the help of threads. This is called multi-threading. Thread is a light weight process in java which runs concurrently with other threads. Threads are independent of each other & can run simultaneously. 
 Threads can be more used for doing CPU intensive tasks or concurrently executing two small processes at the same time. CPU intensive as in full utilizing multi cores of the system. Unlike nodejs which has asynchronous nature and single threaded and can handle IO operations more efficiently. 
 

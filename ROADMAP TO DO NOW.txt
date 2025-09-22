@@ -1,0 +1,70 @@
+---------------------------------------------ROADMAP TO DO NOW on how to find jobs-----------------------------------------------------------------------
+
+-- DO LEETCODE EVERYDAY - 2 leetcode questions everyday - med level 
+-- DO HLD , LLD 
+-- 1 HOURS OF APPLYING. 3 HOURS OF STUDYING. 
+
+---------RESUME SHOULD FOLLOW JAKE TEMPLATE--------
+
+
+---------------------------------------------LEETCODE------------------------------------------------------------
+
+- TARGET A, B and C of leetcode contest problems. 
+- Rating should be around 1750-1800
+
+- https://leetcode.com/studyplan/top-interview-150/
+
+
+---------------------------------------------LOW LEVEL DESIGN----------------------------------------------------------
+
+LINK FOR PREP - https://bento.me/jagrit
+
+------------   https://github.com/ashishps1/awesome-low-level-design
+
+---------------------------------------------HIGH LEVEL DESIGN----------------------------------------------------------
+
+LINK FOR PREP - https://github.com/karanpratapsingh/system-design
+
+- https://github.com/karanpratapsingh/system-design?tab=readme-ov-file
+	
+- SYSTEM DESIGN BOOK BY ALEX XU. 
+
+---------------------CAREER PORTAL---------------------------------------------------------------------
+- make list of companies - which can give that much CTC - offering 40-50 LPA/ Onsite opportunity. 
+- Look for 5-10 companies everyday - their career portal everyday to see opening. DO IT EVERYDAY. 
+
+---------------------linkedin-------------------------------------------------
+- make sure we have good connection for each of the company 10-20 where you have applied via career portal. 
+- Send message - with job ID ask for referral. 
+- grind leetcode.  ALONGWITH EASY APPLY, WE SHOULD APPLY DIRECTLY ON CAREER PORTAL. 
+
+---------------------INSTAHYRE-------------------------------------------------------
+- apply 30-40 openings everyday. 
+
+----------------------Naukri---------------------------------------
+- more we use, more our profile will be invited. 
+- 
+--------------PHASE 1----------------------------------------------
+
+1. Finish NextJS. Build projects on it. 
+2. AI friendly Plugins for react/next. 
+3. Use Github Copilot, Cursor - prompt engineering basics course.
+4. DEPLOY WITH AI - ADD CHATBOTS & AI FILTERS USING OPEN AI'S API. HOST PROJECTS TO IMPRESS RECRUITERS. 
+
+
+5. START WITH COMMON DSA PROBLEM SOLVING PATTERNS - DO 2 QUESTIONS FROM DSA EVERYDAY.  
+
+--------------PHASE 2-------------------------------------------------
+
+1. Learn little Python  for AI. can take up Java spring, spring boot. 
+2. LEARN AI DATABASES - VECTOR DATABASE  - PINECONE 
+3. NORMAL DEVOPS - HOW TO SETUP CI/CD USING AWS/AZURE + DOCKER + SCALING AI MODELS 
+4. Create sentimental analysis tool/API - AI powered SAAS tool. 
+
+
+
+
+--------------PHASE 3--------------------------------------------------
+
+1. BLOCKCHAIN 
+ 
