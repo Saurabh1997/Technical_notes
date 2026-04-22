@@ -20,6 +20,8 @@ We can address security concerns at 3 levels - Infrastructure level, Applicaiton
 		Do npm package upgrades frequent to avoid vulnerabilities. 
 		ENFORCE PROPER SECURITY HEADERS using HSTS - HTTPS STRICT TRANSPORT SECURITY headers - enforces to use https and prevents man in middle attack.  
 		FOLLOW OWASP TOP 10 - OPEN WIDE APPLICATION SECURITY PROJECT - TOP 10 SECURITY RISKS - this can be frequently exploited by attackers and can lead to data breaches - Insecure Design, Security Misconfiguration. 
+			
+	
 	3. Database Level - 
 		give least permissions to DB users. for example read only access to analytics based operations. No Alter/Drop permissions to junior devs. 
 		Enable encryption while storing sensitive data in DB. USE PARAMETERIZED QUERIES/ORMS. Always validate inputs before integrating in SQL dynamic. 

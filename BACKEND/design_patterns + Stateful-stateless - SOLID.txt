@@ -223,3 +223,83 @@ Dependency inversion principle - MODULES THAT CONTAIN HIGH LEVEL CODE OR DIRECTI
 	2. setter injection - client exposes a setter method that injector uses to inject dependency.
 	3. interface injection - 
 	
+
+---------------------------------------TWO PHASE COMMIT protocol---------------------------------------
+- Problem statement : Imagine a ecommerce website and it has keep to track of inventory - system needs to check in 3 systems -
+	- inventory - if items are in stock
+	- Payment - if payment is successful.   
+	- delivery - delivery partner availability. 
+	Now here if any one of 3 fails, that order can't be successful. 2PC IS USED TO ENSURE ATOMIC TRANSACTION IN DISTRIBUTED SYSTEM. 
+-  Coordinator will oversee all the participants (inventory, payment, delivery) and will ensure all participants agree to this transaction. 
+or either if anyone fails, all participants rollback. 
+
+- Working: it works in 2 phases - Prepare and Commit 
+	- Prepare : coordinator will send prepare request to all the participants. 
+		- Each participant will check if it can complete the transaction and will respond will Yes or No. 
+		- If any participant responds with No, process halts and transaction will be rollback. 
+	- Commit Phase: If all participants respond with Yes, coordinator will send COMMIT request to all participants.
+		- All participants commit the transaction. 
+		- If participant respond with NO, coordinator will send ABORT request to all participants and they will rollback the 
+		transaction. 
+
+- Disadvantages: If coordinator fails during the commit phase, some participant may not fully receive the final decision. 
+	- Can result in blocking if coordinator fails to send response. 
+
+	2 PC IS USED IN FINANCIAL SYSTEMS OR ERPs WHERE NETWORK FAILURES ARE RARE. 
+
+------------------------------------3 PHASE COMMIT PROTOCOL----------------------------------------
+3 PC - enhanced 2 PC with an additional phase between prepare and commit called as PRE-COMMIT PHASE.
+
+PRE-COMMIT IS THERE TO ENSURE participants have enough time to respond - reducing risk of blocking. 
+
+1. Prepare phase : Similar to 2PC, coordinator sends a prepare request to all participants, asking them to do checks and if they can commit.
+2. PRE-COMMIT PHASE: if all participants respond Yes, coordinator sends Pre-commit message - indicating transaction is ready to commit.
+						Participants acknowledge the Pre-commit preparing to submit transaction, but not completing. 
+3. COMMIT PHASE: If all participants acknowledge the pre-commit, coordinator sends Commit command.
+				If any participants fails to acknowledge pre-commit, transaction is aborted. 
+
+ ADVANTAGES : There is timeout mechanism if participants don't hear anything from coordinator and coordinator doesn't hear frmo participants.
+  - THIS IS IDEAL FOR FAULT TOLERANT, HIGH availability SYSTEMS - MICROSERVICES ARCHITECTURE on cloud - Where network stability varies. 
+  - for DISTRIBUTED databases.   
+
+------------------------------------------SAGA DESIGN PATTERN-----------------------------------------
+- it means of sequence of events that make up a whole narrative. 
+- Usually used in microservice based architecture. SAGA pattern breaks down a complex transaction into series of smaller, isolated operations, each handled by a service.
+
+- Problem Statement - There is a distributed Transaction - that involves multiple seperate systems or DBs often spread across multiple locations/networks 
+need to work together to complete a task. For example above example of ecommerce where stock availability is checked, payment transaction is done and inventory updation is done. 
+	FOR THIS TYPE OF TRANSACTION, USUALLY 2PC IS PREFERRED. But it has limitations - it has single point of failure. Blocking nature. 
+
+- To resolve all this, SAGA DESIGN PATTERN IS used to manage long running distributed transactions in a microservice based architecture. 
+- large complex operations is divided into smaller steps called SAGA STEPS - executing sequentially or in parallel. 
+
+- HOW IT RESOLVES ISSUES OF 2PC - 
+-- Breaking down transaction into smaller, independent steps. 
+-- If any step fails, SYSTEM DOESN'T ROLLBACK EVERYTHING like in 2PC. It will UNDO THE WORK DONE IN PREVIOUS successful STEPS.
+	- like refunding a payment/cancelling reservation. 
+-- Each step runs independently without waiting for others to finish. 
+-- SAGA LOG - Helps manage track the state of a distributed transaction. 
+
+---- WORKING OF SAGA DESIGN PATTER ------
+
+- EXAMPLE OF E-COMMERCE SAGA PATTERN - 
+1 - Create Order. Process begins by executing first step in sequence. System performs by performing first sub-transaction that is
+creating the order and reserving the Product. If successful, move to step 2. if not, trigger its compensating mechanism (CANCEL THE ORDER - ADD THE STOCK IF REMOVED). 
+2 - PROCESS PAYMENT. If step 1 was successful, next step is to process the payment. If Payment fails, compensating action would be reverse the payment and unreserve the product. 
+3 - UPDATE INVENTORY. If step 2 was successful, next step is update the inventory. If ITS FAILED, COMPENSATING ACTION WOULD BE REFUND THE PAYMENT. REVERSE INVENTORY UPDATE. 
+4 - DELIVER ORDER. If all steps successful, delivery is executed. IF ANY STEP HAS FAILED, COMPENSATING ACTIONS ARE TRIGGERED. 
+
+---------------------------------------2 TYPES OF SAGA DESIGN PATTERNS-----------------------------------------
+
+1. Choreography Based APPROACH (Event driven) - 
+	- There is no central coordinator. Each service knows what to do and triggers next step by emitting events. 
+	- Services communicates through events - messaging queues. Each service listens for events and performs action based on the event. 
+	- Services act independently
+	- If any service fails, it registers a failure event and other services listening to failure event can listen to it and perform compensating actions.
+	
+2. ORCHESTRATION BASED APPROACH - 
+	- This is a centralized approach. Coordinator controls the flow of execution.
+	- Orchestrator tells each service when to start, what to do, when to do. 
+	- Orchestrator has knowledge of each service and their responsbilities in the saga. 
+
+-- CAREFUL DESIGN IS REQUIRED TO IMPLEMENT SAGA DESIGN PATTERN AND THE COMPENSATING ACTIONS OF EACH FAILURE. 

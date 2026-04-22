@@ -86,4 +86,5 @@ SERVICES - to access other services inside a kubernetes cluster.. for e.g an ora
 	- Circuit Breaker monitors health of the services by analyzing metrics such as response time, error rates or timeout. IF ANY OF predetermined THRESHOLD is breached, it signals that service is broken n it transitions to the Open state. 
 	
 	
-	
+---------------------------------3 PHASE COMMIT PROTOCOL------------------
+REFER DESIGN_PATTERNS + STATEFUL-STATELESS FILE. 

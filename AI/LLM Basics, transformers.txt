@@ -1,0 +1,37 @@
+-----------------------------------Basic--------------------------------------------
+- LLMs are AI systems that are trained on vast amount of data to understand and generate human like language. 
+
+- Transformers - transformers architecture are the backbones of all LLMs. lets understand LLMs each word in input text at the same time in parallel - THIS MECHANISM IS CALLED AS SELF-ATTENTION. 
+
+- GPT - Generative pre-trained transformer. GPTs generates the text by predicting the next word/token - known as AUTOREGRESSION - NEXT TOKEN PREDICTION. 
+
+-  
+
+-----------------------------------------LLLMS WORKING--------------------------------------------------------------------------
+It doesn't read full sentence - it will convert each word into Tokens (tokenization) and then each token is converted into Vectors (list of numbers) which captures meanings.
+- this list of number - vectors - uses word embeddings to understand the relationship between this words (for example - cat is related to animal but not to car - it finds out the relationship between 2 words). 
+
+- Now order matters in languages. for this Models use Positional encoding to identify how sentences should be formed from words. NOW THE DATA IS READY TO BE PROCESSED - THE ROLE OF TRANSFORMERS COMES HERE - Transformer ARCHITECTURE WHICH MIGHT HAVE MULTIPLE LAYERS (MORE THAN 100 SOMETIMES) - EACH LAYER PROCESSES THE INPUT TO UNDERSTAND AND REFINE. 
+
+--- Self-Attention - it sees which words matter the most. For example - Explain photosynthesis. it will focus on photosynthesis and then will explain it using the words. 
+
+-----------------------------------------GPT - TRANSFORMERS - TECH BEHIND LLMS --------------------------------------------------
+
+GPT - GENERATIVE PRE-TRAINED TRANSFORMERS - 
+		GENERATIVE - bots that generate new text, Pre-trained - how models went through process of learning from massive amount of data 
+		Transformer - Specific kind of neural network, a machine learning model  
+
+
+
+
+After 100+ hours of trial, error, and breakdowns
+These 8 videos are what you need to understand AI agents:
+
+1. LLM Introduction: https://lnkd.in/gN8sv7Q5
+2. LLMs from Scratch: https://lnkd.in/gJt-SQj2
+3. Agentic AI Overview (Stanford): https://lnkd.in/gk4GKdxa
+4. Building and Evaluating Agents: https://lnkd.in/ghBiVjdF
+5. Building Effective Agents: https://lnkd.in/g_m78sid
+6. Building Agents with MCP: https://lnkd.in/gAzBzr3W
+7. Building an Agent from Scratch: https://lnkd.in/g9GR9b9F
+8. Philo Agents: https://lnkd.in/gnxRq9n9
