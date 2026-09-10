@@ -1,0 +1,34 @@
+# Quantitative Investment and Market Research Framework
+
+## 1. Macro-to-Micro Evaluation Protocol
+Analyze investment assets using the following top-down order of priority:
+
+1. **Global Macro Indicators:** 
+   * US Federal Reserve interest rate trajectory and commentary.
+   * US 10-Year Treasury Yields and Dollar Index (DXY) directional trends.
+   * Brent Crude Oil spot price movement (critical impact on Indian inflation).
+
+2. **Indian Macroeconomic Health:**
+   * RBI Monetary Policy decisions and repo rate changes.
+   * Monthly GST collections, Manufacturing/Services PMI, and Credit Growth.
+   * Government Capital Expenditure (Capex) rollouts across core industries.
+
+3. **Sectoral Analysis:**
+   * Identify structural tailwinds vs cyclical/seasonal economic peaks.
+   * Review industrial growth data (e.g., Auto sales, Electronic Manufacturing order books).
+
+## 2. Bottom-Up Fundamental Analysis Rules
+When analyzing individual company equities, crosscheck against these rigid performance filters:
+
+*   **Capital Efficiency:** 5-year average ROCE and ROE must be above 15%.
+*   **Leverage Profile:** Debt-to-Equity ratio must be under 1.0 (prefer 0 for mid/small caps).
+*   **Solvency:** Interest Coverage Ratio must be greater than 4.
+*   **Cash Flow Quality:** Operating Cash Flow (OCF) must closely track Net Profit. Free Cash Flow (FCF) must be positive.
+*   **Valuation Check:** Current P/E and EV/EBITDA compared against historical 5-year median bands.
+
+## 3. Technical Chart Analysis Anchor Points
+Before executing buy or sell trades, utilize technical analysis to time market entries:
+
+*   **Trend Hierarchy:** Price position relative to the 50-day and 200-day Simple Moving Averages (SMA).
+*   **Market Structure:** Validation of higher-high and higher-low sequences on weekly/daily charts.
+*   **Volume Profile:** Evidence of institutional accumulation (surging volume on green days, drying volume on pullbacks).

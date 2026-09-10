@@ -1,0 +1,73 @@
+Infra -  VPC (virtual private cloud - dedicated to each account)  - includes EC2 and RDS, Dynamo
+and S3 Bucket for storing file objects.
+EC2  instance - web hosting, high processing power.
+RDS (Relational Database). Dynamo - NoSQL db
+if traffic goes up, EC2 instances are added. if goes down, EC2 instances are removed. 
+ECR - EC2 container registery - basically dockerhub of AWS.
+
+
+
+aws lambda - runs backend code in response to events like object uploads to s3 buckets, updates to dynamoDB tables, amazon kenesis streams or in app activities. basically function to handle various events.
+	Once you upload code to lambda, service handles all the scaling, capacity, and adminstration of infra and provides visibility into performance metric. Real time logs to amazon cloud watch. All we do is code. when we upload code to aws lambda, service handles all the capacity, scaling, patching and adminstration to run your code, and provides visibility to performance by publishing real time metrics/logs. 
+Low cost. charges - low fee per request n for time code runs measured in increments of 1k ms.
+Code we run on aws lambda is "LAMBDA FUNCTION". WE UPLOAD CODE AS A ZIP FILE OR DESIGN AN IDE IN AWS CONSOLE. Once function is loaded, we select event source to monitor. can be s3 bucket, dynamo db. Now within few sec, lambda will be ready to trigger function automatically, when an event triggers.
+THIS WAY APPLICATION CAN PERFORM FASTER. 
+
+AWS INFRASTRUCTURE SERVICES :
+
+EC2 machines(instances) are scaled up horizontally(more instances are added) with EBS (Elastic block storage)(for disk - like a RAM)attached to it. 
+EC2 with EBS handle the traffic. 
+for Redis, memecache, there is ElasticCache service. 
+ELB - Elastic load balancer service as a load balancing service - distribute traffic to multiple backends.
+Route53 - DNS mapping service to load balancer 
+Rekognition - as a content filter for files before uploading to S3 bucket.
+AWS lambda function - whenever there is new upload on S3 Bucket.
+Kenesis - Click stream analysis service. - to analyze user's every click and store data in S3, to identify his likes, mood. 
+EMR () - service for hadoop/spark. 
+Glue - ETL service 
+Redshift - Data warehousing service for storing petabytes of data. can perform analysis on this data using BI(Business intelligence) tools
+Amazon Quicksight/ Athena - BI tools to give insights of data.
+CloudFront - service stores or caches the data in nearest Edge location -- CDN Content Delivery Network - to cache static content.
+SNS - AMazon  Simple notifcation service. for Email - SES service. for messaging, chatting, SQS is there
+for dashboard, performance metrics - Cloudwatch service is used.to take some action, we can setup a cloudwatch alarm.
+
+AWS Application Services: 
+Write code for your API, Rest API.AWS will provides its API Gateway.
+Cognito - Web and Mobile user management Service To manage user pool, User accessibility,User must signup, authentication 
+
+Security Services :
+IAM - Identity Access management for securing AWS account and services.
+KMS - Key management Service for encrypting data stored in every part, EC2, S3 , RDS, DynamoDB. manages encryption key 
+ACM - Amazon certificate manager for doing SSL, Https
+WAF - WEb application firewall. can prevent SQL injection , DDoS attack. can deploy it on cloudfront, load balancer, API gateways
+AWS inspector - it puts agent in machine n scans machine for any vulnerabilities.
+
+AWS Development & DevOps Services:
+can write Infrastructue as a code. 
+CloudFormation : takes Yaml/ json file to create the infrastructure from scratch.. within 30 minutes.
+CodeBuild : to build your code, will do unit test.whatever it produces will be deployed on EC2 machines using CodeDeploy Service.
+ This is CI/CD pipelines. to make this automated, we can have Codepipeline Service
+
+AWS Codestar : Project management service, bug tracking.. like Jira
+
+
+AWS Codestar is software development tool that enables to quickly develop, build and deploy app on aws.
+With CodeStar, we can setup our continuous delivery toolchain using AWS codeCommit for source control and aws codepipeline to automate release.
+
+Cloud9 - cloud ide for writing, running and debugging code.
+
+can use aws codestar to build lambda based nodejs serverless web app.
+
+
+
+aws vs azure vs gcp
+
+aws - 24 launched zones , 77 available zones, azure - 54, while gcp - 73
+aws - 32.4% of market, azure - 17.6% and gcp - 6%
+aws- netflix, bbc,fb, linkedin. azure - icloud . gcp - snapchat,twitter, spotify
+
+public cloud support - shared data. whereas private cloud - private , more privileges and more charges. 
+
+ aws - default vpc, public n private subnet. concept of route table. 
+ azure - doesnt have default vnet. have concept of resource group manager
+ Cloud vpc - all are global resource 
